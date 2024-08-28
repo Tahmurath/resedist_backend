@@ -1,0 +1,6 @@
+app:
+  name: "onereseve"
+
+server:
+  host: "localhost"
+  port: "3000"
