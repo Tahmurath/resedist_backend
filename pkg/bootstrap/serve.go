@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"resedist/pkg/config"
+	"resedist/pkg/database"
 	"resedist/pkg/html"
 	"resedist/pkg/routing"
 	"resedist/pkg/static"
@@ -9,6 +10,8 @@ import (
 
 func Serve() {
 	config.Set()
+
+	database.Connect()
 
 	routing.Init()
 
