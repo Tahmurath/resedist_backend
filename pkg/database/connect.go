@@ -2,10 +2,11 @@ package database
 
 import (
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"resedist/pkg/config"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func Connect() {
@@ -17,7 +18,10 @@ func Connect() {
 		cfg.DB.Port,
 		cfg.DB.Name,
 	)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: DblogConfig(),
+	})
 
 	if err != nil {
 		log.Fatal("cannot connect to database")

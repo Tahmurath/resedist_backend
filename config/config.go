@@ -4,6 +4,7 @@ type Config struct {
 	App    App
 	Server Server
 	DB     DB
+	Dblog  Dblog
 }
 type App struct {
 	Name string
@@ -20,4 +21,9 @@ type DB struct {
 	Host     string
 	Port     string
 	Name     string
+}
+
+type Dblog struct {
+	LogLevel int
+	Colorful bool
 }
