@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"resedist/pkg/html"
 	"strconv"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
@@ -24,17 +25,26 @@ func (controller *Controller) Show(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+
+		html.Render(c, http.StatusInternalServerError, "templates/errors/html/500", gin.H{
+			"title":   "Server Error",
+			"message": "error converting the id",
+		})
 		return
+
 	}
 	article, err := controller.articleService.Find(id)
 
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		html.Render(c, http.StatusNotFound, "templates/errors/html/404", gin.H{
+			"title":   "Page not found",
+			"message": err.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	html.Render(c, http.StatusOK, "modules/article/html/show", gin.H{
+		"title":   "Show article",
 		"article": article,
 	})
 }

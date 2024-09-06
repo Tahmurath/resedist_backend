@@ -1,0 +1,14 @@
+{{ define "templates/errors/html/500" }}
+
+    {{ template "templates/layouts/html/head" .}}
+    {{ template "templates/layouts/html/navbar" .}}
+    {{ template "templates/layouts/html/header" .}}
+
+    <div class="col-12">
+        <h1>{{ .title }}</h1>
+        <h1>{{ .message }}</h1>
+    </div>
+
+    {{ template "templates/layouts/html/footer" .}}
+    {{ template "templates/layouts/html/foot" .}}
+{{ end }}
