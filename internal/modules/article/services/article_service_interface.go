@@ -1,10 +1,10 @@
 package services
 
 import (
-	articleModels "resedist/internal/modules/article/models"
+	ArticleResponse "resedist/internal/modules/article/responses"
 )
 
 type ArticleServiceInterface interface {
-	GetFeaturedArticles() []articleModels.Article
-	GetStoriesArticles() []articleModels.Article
+	GetFeaturedArticles() ArticleResponse.Articles
+	GetStoriesArticles() ArticleResponse.Articles
 }

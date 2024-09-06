@@ -1,8 +1,8 @@
 package services
 
 import (
-	articleModels "resedist/internal/modules/article/models"
 	ArticelRepository "resedist/internal/modules/article/repositories"
+	ArticleResponse "resedist/internal/modules/article/responses"
 )
 
 type ArticleService struct {
@@ -15,12 +15,14 @@ func New() *ArticleService {
 	}
 }
 
-func (ArticleService *ArticleService) GetFeaturedArticles() []articleModels.Article {
+func (ArticleService *ArticleService) GetFeaturedArticles() ArticleResponse.Articles {
 
-	return ArticleService.articelRepository.List(4)
+	articles := ArticleService.articelRepository.List(4)
+	return ArticleResponse.ToArticles(articles)
 }
 
-func (ArticleService *ArticleService) GetStoriesArticles() []articleModels.Article {
+func (ArticleService *ArticleService) GetStoriesArticles() ArticleResponse.Articles {
 
-	return ArticleService.articelRepository.List(6)
+	articles := ArticleService.articelRepository.List(6)
+	return ArticleResponse.ToArticles(articles)
 }
