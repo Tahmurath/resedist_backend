@@ -27,8 +27,4 @@ func (controller *Controller) Index(c *gin.Context) {
 		"featured": controller.articleService.GetFeaturedArticles(),
 		"stories":  controller.articleService.GetStoriesArticles(),
 	})
-	//c.JSON(http.StatusOK, gin.H{
-	//	"featured": controller.articleService.GetFeaturedArticles(),
-	//	"stories":  controller.articleService.GetStoriesArticles(),
-	//})
 }
