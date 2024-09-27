@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resedist/internal/modules/user/requests/auth"
 	UserService "resedist/internal/modules/user/services"
+	"resedist/pkg/errors"
 	"resedist/pkg/html"
 )
 
@@ -31,7 +32,10 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 	var request auth.RegisterRequest
 	// This will infer what binder to use depending on the content-type header.
 	if err := c.ShouldBind(&request); err != nil {
-		c.Redirect(http.StatusFound, "/register")
+
+		errors.Init()
+		errors.SetFromError(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": errors.Get()})
 		return
 	}
 	// create user
