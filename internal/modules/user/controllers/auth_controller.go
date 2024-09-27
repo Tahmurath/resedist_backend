@@ -1,13 +1,16 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"resedist/internal/modules/user/requests/auth"
 	UserService "resedist/internal/modules/user/services"
+	"resedist/pkg/converters"
 	"resedist/pkg/errors"
 	"resedist/pkg/html"
+	"resedist/pkg/sessions"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
@@ -35,7 +38,10 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 
 		errors.Init()
 		errors.SetFromError(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": errors.Get()})
+
+		sessions.Set(c, "errors", converters.MapToString(errors.Get()))
+
+		c.Redirect(http.StatusFound, "/register")
 		return
 	}
 	// create user
