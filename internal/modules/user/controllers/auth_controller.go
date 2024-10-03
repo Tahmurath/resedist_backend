@@ -8,6 +8,7 @@ import (
 	"resedist/pkg/converters"
 	"resedist/pkg/errors"
 	"resedist/pkg/html"
+	"resedist/pkg/old"
 	"resedist/pkg/sessions"
 
 	"github.com/gin-gonic/gin"
@@ -38,8 +39,11 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 
 		errors.Init()
 		errors.SetFromError(err)
-
 		sessions.Set(c, "errors", converters.MapToString(errors.Get()))
+
+		old.Init()
+		old.Set(c)
+		sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
 
 		c.Redirect(http.StatusFound, "/register")
 		return
