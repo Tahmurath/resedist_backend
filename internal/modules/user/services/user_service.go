@@ -2,10 +2,11 @@ package services
 
 import (
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	userModels "resedist/internal/modules/user/models"
 	"resedist/internal/modules/user/requests/auth"
+
+	"golang.org/x/crypto/bcrypt"
 
 	UserRepository "resedist/internal/modules/user/repositories"
 	UserResponse "resedist/internal/modules/user/responses"
@@ -43,4 +44,15 @@ func (UserService *UserService) Create(request auth.RegisterRequest) (UserRespon
 	}
 
 	return UserResponse.ToUser(newUser), nil
+}
+
+func (UserService *UserService) CheckUserExist(email string) bool {
+
+	user := UserService.userRepository.FindByEmail(email)
+
+	if user.ID != 0 {
+		return true
+	}
+
+	return false
 }

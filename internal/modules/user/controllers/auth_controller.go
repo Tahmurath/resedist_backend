@@ -10,6 +10,7 @@ import (
 	"resedist/pkg/html"
 	"resedist/pkg/old"
 	"resedist/pkg/sessions"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,12 +49,27 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/register")
 		return
 	}
+
+	if controller.userService.CheckUserExist(request.Email) {
+		errors.Init()
+		errors.Add("Email", "Email address used")
+		sessions.Set(c, "errors", converters.MapToString(errors.Get()))
+
+		old.Init()
+		old.Set(c)
+		sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
+
+		c.Redirect(http.StatusFound, "/register")
+		return
+	}
 	// create user
 	user, err := controller.userService.Create(request)
 	if err != nil {
 		c.Redirect(http.StatusFound, "/register")
 		return
 	}
+
+	sessions.Set(c, "auth", strconv.Itoa(int(user.ID)))
 
 	// redirect
 	log.Printf("user created with name %s", user.Name)

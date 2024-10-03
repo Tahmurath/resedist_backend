@@ -1,9 +1,10 @@
 package repositories
 
 import (
-	"gorm.io/gorm"
 	userModels "resedist/internal/modules/user/models"
 	"resedist/pkg/database"
+
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -22,4 +23,12 @@ func (UserRepository *UserRepository) Create(user userModels.User) userModels.Us
 	UserRepository.DB.Create(&user).Scan(&newUser)
 
 	return newUser
+}
+
+func (UserRepository *UserRepository) FindByEmail(email string) userModels.User {
+	var user userModels.User
+
+	UserRepository.DB.First(&user, "email=?", email)
+
+	return user
 }
