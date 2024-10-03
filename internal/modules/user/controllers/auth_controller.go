@@ -76,3 +76,15 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 
 }
+
+func (controller *Controller) Login(c *gin.Context) {
+	html.Render(c, http.StatusOK, "modules/user/html/login", gin.H{
+		"title": "Login",
+	})
+}
+
+func (controller *Controller) HandleLogin(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{"message": "you are logged in"})
+
+}
