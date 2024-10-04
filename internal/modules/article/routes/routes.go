@@ -1,13 +1,23 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
+	"resedist/internal/middlewares"
 	articleCtrl "resedist/internal/modules/article/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Routes(router *gin.Engine) {
 
 	ArticleController := articleCtrl.New()
-	router.GET("/articles/:id", ArticleController.Show)
+
+	authGroup := router.Group("/articles")
+
+	authGroup.GET("/:id", ArticleController.Show)
+
+	authGroup.Use(middlewares.IsAuth())
+	{
+		authGroup.GET("/create", ArticleController.Create)
+	}
 
 }

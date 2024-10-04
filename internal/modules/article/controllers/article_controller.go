@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/pkg/html"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 	ArticleService "resedist/internal/modules/article/services"
@@ -47,4 +48,9 @@ func (controller *Controller) Show(c *gin.Context) {
 		"title":   "Show article",
 		"article": article,
 	})
+}
+
+func (controller *Controller) Create(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{"message": "create form"})
 }

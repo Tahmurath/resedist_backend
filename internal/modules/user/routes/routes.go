@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"resedist/internal/middlewares"
 	userCtrl "resedist/internal/modules/user/controllers"
 
 	"github.com/gin-gonic/gin"
@@ -9,12 +10,21 @@ import (
 func Routes(router *gin.Engine) {
 
 	UserController := userCtrl.New()
-	router.GET("/register", UserController.Register)
-	router.POST("/register", UserController.HandleRegister)
 
-	router.GET("/login", UserController.Login)
-	router.POST("/login", UserController.HandleLogin)
+	guestGroup := router.Group("/")
+	guestGroup.Use(middlewares.IsGuest())
+	{
+		guestGroup.GET("/register", UserController.Register)
+		guestGroup.POST("/register", UserController.HandleRegister)
 
-	router.POST("/logout", UserController.HandleLogout)
+		guestGroup.GET("/login", UserController.Login)
+		guestGroup.POST("/login", UserController.HandleLogin)
+	}
+
+	authGroup := router.Group("/")
+	authGroup.Use(middlewares.IsAuth())
+	{
+		authGroup.POST("/logout", UserController.HandleLogout)
+	}
 
 }
