@@ -8,5 +8,5 @@ import (
 
 func Start(router *gin.Engine) {
 	store := cookie.NewStore([]byte("secret"))
-	router.Use(sessions.Sessions("sessions", store))
+	router.Use(sessions.Sessions("sitecolor", store))
 }

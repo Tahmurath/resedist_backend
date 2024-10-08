@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
+
 	ArticleService "resedist/internal/modules/article/services"
 )
 
@@ -52,5 +53,12 @@ func (controller *Controller) Show(c *gin.Context) {
 
 func (controller *Controller) Create(c *gin.Context) {
 
-	c.JSON(http.StatusOK, gin.H{"message": "create form"})
+	html.Render(c, http.StatusOK, "modules/article/html/create", gin.H{
+		"title": "Create article",
+	})
+}
+
+func (controller *Controller) Store(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{"message": "article created"})
 }
