@@ -1,15 +1,22 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"resedist/pkg/converters"
+	"resedist/pkg/errors"
 	"resedist/pkg/html"
+	"resedist/pkg/old"
+	"resedist/pkg/sessions"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
+	"resedist/internal/modules/article/requests/articles"
 	ArticleService "resedist/internal/modules/article/services"
+	"resedist/internal/modules/user/helpers"
 )
 
 type Controller struct {
@@ -60,5 +67,30 @@ func (controller *Controller) Create(c *gin.Context) {
 
 func (controller *Controller) Store(c *gin.Context) {
 
-	c.JSON(http.StatusOK, gin.H{"message": "article created"})
+	var request articles.StoreRequest
+	// This will infer what binder to use depending on the content-type header.
+	if err := c.ShouldBind(&request); err != nil {
+
+		errors.Init()
+		errors.SetFromError(err)
+		sessions.Set(c, "errors", converters.MapToString(errors.Get()))
+
+		old.Init()
+		old.Set(c)
+		sessions.Set(c, "old", converters.UrlValuesToString(old.Get()))
+
+		c.Redirect(http.StatusFound, "/articles/create")
+		return
+	}
+
+	user := helpers.Auth(c)
+
+	// create article
+	article, err := controller.articleService.StoreAsUser(request, user)
+	if err != nil {
+		c.Redirect(http.StatusFound, "/articles/create")
+		return
+	}
+
+	c.Redirect(http.StatusFound, fmt.Sprintf("/articles/%d", article.ID))
 }

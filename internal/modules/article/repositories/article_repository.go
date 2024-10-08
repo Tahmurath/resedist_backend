@@ -1,9 +1,10 @@
 package repositories
 
 import (
-	"gorm.io/gorm"
 	ArticleModels "resedist/internal/modules/article/models"
 	"resedist/pkg/database"
+
+	"gorm.io/gorm"
 )
 
 type ArticleRepository struct {
@@ -30,4 +31,12 @@ func (ArticleRepository *ArticleRepository) Find(id int) ArticleModels.Article {
 	ArticleRepository.DB.Joins("User").First(&article, id)
 
 	return article
+}
+
+func (articleRepository *ArticleRepository) Create(article ArticleModels.Article) ArticleModels.Article {
+	var newArticle ArticleModels.Article
+
+	articleRepository.DB.Create(&article).Scan(&newArticle)
+
+	return newArticle
 }
