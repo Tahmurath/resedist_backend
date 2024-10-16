@@ -7,45 +7,51 @@ import (
 )
 
 var UrlData = make(map[string][]string)
+var pattern string
 
-type UrlDataSet struct {
-	row []UrlDataRow
-}
-type UrlDataRow struct {
-	key   string
-	value string
-}
+var UrlString string
 
-var key = "title"
-var key2 = "title2"
-var value = "body"
-var value2 = "body2"
+var key string
+var value string
 
 func init() {
-	UrlData = map[string][]string{
-		key:  {value, value2},
-		key2: {value, value2},
+
+	key = "key"
+	value = "value"
+
+	for i := 1; i < 2; i++ {
+
+		_key := fmt.Sprintf("%s%d", key, i)
+
+		_value1 := fmt.Sprintf("%s%d", value, i)
+		_value2 := fmt.Sprintf("%s%d", value, i+1)
+
+		UrlData[_key] = append(UrlData[_key], _value1, _value2)
 	}
+
+	pattern = fmt.Sprintf(`{"%s1":\["%s1","%s2"]}`, key, value, value)
 }
 
 func TestUrlValuesToString(t *testing.T) {
-	//var UrlData = make(map[string][]string)
-
-	pattern := `{"title2":\["body`
-
-	UrlData = map[string][]string{
-		key:  {value, value2},
-		key2: {value, value2},
-	}
-	fmt.Println(UrlData)
-	//UrlData[key] = []string{value, value2}
-	//UrlData[key2] = append(UrlData[key2], value, value2)
 
 	str := UrlValuesToString(UrlData)
-	fmt.Println(str)
 
 	want := regexp.MustCompile(pattern)
+
 	if !want.MatchString(str) {
-		t.Fatalf(str)
+		t.Fatalf("Could not find the pattern in the string str & pattern: %s %s", str, pattern)
+	}
+}
+
+func TestStringToUrlValues(t *testing.T) {
+
+	str := UrlValuesToString(UrlData)
+	data := StringToUrlValues(str)
+
+	want := fmt.Sprintf("%s%d", value, 1)
+	got := data[fmt.Sprintf("%s%d", key, 1)][0]
+
+	if got != want {
+		t.Errorf("want %s, got %s", want, got)
 	}
 }
