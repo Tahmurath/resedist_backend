@@ -8,10 +8,13 @@ server:
 db:
   username: "root"
   password: ""
-  host: "192.168.100.127"
+  host: "127.0.0.1"
   port: "3306"
   name: "resedist"
 
 dblog:
   LogLevel: 4
   Colorful: true
+
+jwt:
+    secret: "sdfsdfsdfsdfsdfs"

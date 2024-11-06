@@ -5,6 +5,7 @@ type Config struct {
 	Server Server
 	DB     DB
 	Dblog  Dblog
+	Jwt    JWT
 }
 type App struct {
 	Name string
@@ -26,4 +27,8 @@ type DB struct {
 type Dblog struct {
 	LogLevel int
 	Colorful bool
+}
+
+type JWT struct {
+	Secret string
 }
