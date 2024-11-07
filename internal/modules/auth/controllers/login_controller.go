@@ -36,6 +36,48 @@ func (controller *Controller) Login(c *gin.Context) {
 	})
 }
 
+func (controller *Controller) HandleRegister(c *gin.Context) {
+	var request auth.RegisterRequest
+
+	if err := c.ShouldBind(&request); err != nil {
+		errors.Init()
+		errors.SetFromError(err)
+
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "Opps, there is an error with bind",
+			"errors":  errors.Get(),
+		})
+		return
+	}
+
+	if controller.userService.CheckUserExist(request.Email) {
+		errors.Init()
+		errors.Add("Email", "Email address already exists")
+
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "Opps, there is an error with email",
+			"errors":  errors.Get(),
+		})
+		return
+	}
+
+	// Create the user
+	user, err := controller.userService.Create(request)
+
+	// Check if there is any error on the user creation
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "Opps, there is an error with user creation",
+		})
+		return
+	}
+
+	log.Printf("The user created successfully with a name %s \n", user.Name)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User registered successfully",
+	})
+}
+
 func (controller *Controller) HandleLogin(c *gin.Context) {
 	var request auth.LoginRequest
 
@@ -75,6 +117,11 @@ func (controller *Controller) HandleLogin(c *gin.Context) {
 		"token":   token,
 		"message": "User logged in successfully",
 	})
+}
+
+func (controller *Controller) User(c *gin.Context) {
+	user, _ := c.Get("auth")
+	c.JSON(http.StatusOK, gin.H{"message": "Authenticated", "user": user})
 }
 
 func createJwt(user UserResponse.User) (string, error) {
