@@ -11,12 +11,6 @@ export default function Home() {
   return (
     <div>
       <h1>Home</h1>
-      <hr></hr>
-      <Button>Click me</Button>
-      <hr></hr>
-      <Button variant="outline">Button</Button>
-      <hr></hr>
-      <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
       <Button
       variant="outline"
       onClick={() => {

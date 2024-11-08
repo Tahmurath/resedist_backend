@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
+import Link from "next/link";
+import {buttonVariants} from "@/components/ui/button";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,6 +31,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <Link href="/" className={buttonVariants({ variant: "outline" })}>Home</Link>
+      <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
         {children}
         <Toaster />
       </body>
