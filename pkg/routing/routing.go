@@ -1,26 +1,18 @@
 package routing
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	// "github.com/gin-contrib/cors"
+
 	"resedist/internal/providers/routes"
-	"time"
+
+	"github.com/gin-gonic/gin"
+
+	cors "github.com/rs/cors/wrapper/gin"
 )
 
 func Init() {
 	router = gin.Default()
-
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://127.0.0.1:3000"},
-		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "OPTIONS"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		AllowOriginFunc: func(origin string) bool {
-			return origin == "http://127.0.0.1:3000"
-		},
-		MaxAge: 12 * time.Hour,
-	}))
+	router.Use(cors.Default())
 }
 
 func GetRouter() *gin.Engine {

@@ -32,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
       <Link href="/" className={buttonVariants({ variant: "outline" })}>Home</Link>
+      <Link href="/test" className={buttonVariants({ variant: "outline" })}>Test</Link>
       <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
         {children}
         <Toaster />

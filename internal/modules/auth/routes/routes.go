@@ -18,7 +18,6 @@ func Routes(router *gin.Engine) {
 	{
 		guestGroup.POST("/register", AuthController.HandleRegister)
 		guestGroup.POST("/login", AuthController.HandleLogin)
-		guestGroup.OPTIONS("/login", AuthController.HandleLogin)
 	}
 
 	authGroup := router.Group("/api/v1/auth")

@@ -186,11 +186,11 @@ export default function Home() {
 
   return (
       <div>
-          <h1>Dashboard</h1>
+          <h1>Test</h1>
           {Message(count)}
           <h1>{advice}</h1>
           <Button onClick={getAdvice}>get Advice</Button>
-          <InputForm password={""} username={''}></InputForm>
+        
       </div>
   );
 }
