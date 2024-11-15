@@ -34,6 +34,9 @@ export default function RootLayout({
       <Link href="/" className={buttonVariants({ variant: "outline" })}>Home</Link>
       <Link href="/test" className={buttonVariants({ variant: "outline" })}>Test</Link>
       <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>Dashboard</Link>
+      <Link href="/en" className={buttonVariants({ variant: "outline" })}>en</Link>
+      <Link href="/fa" className={buttonVariants({ variant: "outline" })}>fa</Link>
+      <Link href="/not" className={buttonVariants({ variant: "outline" })}>not</Link>
         {children}
         <Toaster />
       </body>
