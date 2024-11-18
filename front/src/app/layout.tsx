@@ -4,7 +4,7 @@
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 import Link from "next/link";
-
+import { usePathname } from 'next/navigation'
 
 
 
@@ -33,12 +33,15 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
+// const pathname = usePathname()
+// console.info(pathname)
+
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon, current: true },
   { name: 'Team', href: '/dashboard', icon: UsersIcon, current: false },
-  { name: 'Projects', href: 'en', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: 'fa', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
+  { name: 'Projects', href: '/en', icon: FolderIcon, current: false },
+  { name: 'Calendar', href: '/fa', icon: CalendarIcon, current: false },
+  { name: 'Documents', href: '/test', icon: DocumentDuplicateIcon, current: false },
   { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
 ]
 const teams = [
@@ -61,6 +64,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+
+  const pathname = usePathname()
+  // console.info(pathname)
 
   return (
     <>
@@ -113,7 +120,7 @@ export default function RootLayout({
                               href={item.href}
                               onClick={() => setSidebarOpen(false)}
                               className={classNames(
-                                item.current
+                                pathname==item.href
                                   ? 'bg-gray-50 text-indigo-600'
                                   : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                                 'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -122,7 +129,7 @@ export default function RootLayout({
                               <item.icon
                                 aria-hidden="false"
                                 className={classNames(
-                                  item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                                  pathname==item.href ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
                                   'h-6 w-6 shrink-0',
                                 )}
                               />
@@ -181,7 +188,7 @@ export default function RootLayout({
           </div>
         </Dialog>
 
-        {/* Static sidebar for desktop */}
+        {/* Static sidebar for desktop lg:w-72 */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
@@ -201,7 +208,7 @@ export default function RootLayout({
                         <Link
                           href={item.href}
                           className={classNames(
-                            item.current
+                            pathname==item.href
                               ? 'bg-gray-50 text-indigo-600'
                               : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
                             'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
@@ -210,7 +217,7 @@ export default function RootLayout({
                           <item.icon
                             aria-hidden="true"
                             className={classNames(
-                              item.current ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
+                              pathname==item.href ? 'text-indigo-600' : 'text-gray-400 group-hover:text-indigo-600',
                               'h-6 w-6 shrink-0',
                             )}
                           />
@@ -346,7 +353,9 @@ export default function RootLayout({
           </div>
 
           <main className="py-10">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              {children}
+            </div>
             <Toaster />
           </main>
         </div>
