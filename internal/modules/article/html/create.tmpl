@@ -12,14 +12,14 @@
         <form class="article-form-container" action=/articles/store method="POST">
             <div class="form-group">
                 <label class="h4 form-control-label" for="title">Title</label>
-                <input type="text" class="form-control" name="title" id="title" placeholder="Title" required="" value="">
-                <span class="text-danger"></span>
+                <input type="text" class="form-control" name="title" id="title" placeholder="Title" required="" value="{{ range .OLD.title}}{{ . }}{{ end }}">
+                <span class="text-danger">{{ .ERRORS.title }}</span>
             </div>
 
             <div class="form-group">
                 <label class="h4 form-control-label" for="content">Content</label>
-                <textarea class="form-control" name="content" id="content" placeholder="Content" required="" rows="10"></textarea>
-                <span class="text-danger"></span>
+                <textarea class="form-control" name="content" id="content" placeholder="Content" required="" rows="10">{{ range .OLD.content}}{{ . }}{{ end }}</textarea>
+                <span class="text-danger">{{ .ERRORS.content }}</span>
             </div>
 
             <div>

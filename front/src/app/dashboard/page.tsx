@@ -48,6 +48,40 @@ export default function Home() {
             //setLoading(false);
         }
     }
+    async function getUser() {
+        //setLoading(true);
+        setError(null); // پاک کردن خطای قبلی
+
+        const token = getTokenFromCookie()
+
+        try {
+            const res = await fetch("http://localhost:8080/api/v1/auth/user?" + new Date().getTime(),
+            {
+              method: 'GET',
+              headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`, // ست کردن هدر Authorization
+            }
+          }
+          );
+            if (!res.ok) {
+                throw new Error("Network response was not ok");
+            }
+            const data = await res.json();
+          
+            // toastaction({messagetxt:data.message})
+            toastaction({messagetxt:data.user.Email})
+            console.info(data)
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setError("خطا در دریافت داده‌ها. لطفاً بعداً تلاش کنید.");
+        } finally {
+            //setLoading(false);
+        }
+    }
+    function getJWT(){
+      const token = getTokenFromCookie()
+    }
 
     const Message = (count:number):any => {
         return (
@@ -87,6 +121,17 @@ export default function Home() {
     //<Button variant="outline" onClick={toastaction({messagetxt:"23423423"})}>toastaction</Button>
     
     
+    const saveTokenToCookie = (token) => {
+      document.cookie = `Bearer=${token}; max-age=${7 * 24 * 60 * 60}`;
+    };
+
+    const getTokenFromCookie = () => {
+      const cookies = document.cookie.split('; ');
+      const tokenCookie = cookies.find((row) => row.startsWith('Bearer='));
+      //console.info(tokenCookie.split('=')[1])
+      return tokenCookie ? tokenCookie.split('=')[1] : null;
+    };
+    
     
     function InputForm({username,password}:{username: string,password: string}) {
     
@@ -101,25 +146,29 @@ export default function Home() {
       function onSubmit(data: z.infer<typeof FormSchema>) {
         //alert(JSON.stringify(data, null, 2))
     
+        const token = getTokenFromCookie()
           fetch("http://127.0.0.1:8080/api/v1/auth/login", {
               method: "POST",
+              
               body: JSON.stringify({
                   email: data.username,
                   password: data.password
               }),
               headers: {
-                  "Content-type": "application/json; charset=UTF-8"
+                  "Content-type": "application/json; charset=UTF-8",
+                  //'Authorization': `Bearer ${token}`,
               }
           })
               .then((response) => response.json())
               .then((json) => 
                 {
                   console.log(json)
+                  saveTokenToCookie(json.token)
                   toast({
                     title: "You submitted the following values:",
                     description: (
                       <pre className="mt-2 w rounded-md bg-slate-950 p-4">
-                        <code className="text-white">{json.message}</code>
+                        <code className="text-white">{json.token}</code>
                       </pre>
                     ),
                   })
@@ -190,6 +239,7 @@ export default function Home() {
           {Message(count)}
           <h1>{advice}</h1>
           <Button onClick={getAdvice}>get Advice</Button>
+          <Button onClick={getUser}>getJWT</Button>
           <InputForm password={""} username={''}></InputForm>
       </div>
   );
