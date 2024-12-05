@@ -18,3 +18,15 @@ dblog:
 
 jwt:
     secret: "sdfsdfsdfsdfsdfs"
+
+cors:
+  AllowOrigins:
+    - "http://localhost:3000"
+    - "http://localhost:80"
+
+  AllowMethods: ["GET", "POST", "PUT", "DELETE"]
+  AllowHeaders: ["Origin", "Content-Type", "Authorization"]
+  ExposeHeaders: ["Content-Length"]
+  AllowCredentials: true
+
+

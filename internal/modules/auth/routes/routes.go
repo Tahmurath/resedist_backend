@@ -1,18 +1,15 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin"
 	"resedist/internal/middlewares"
 	authCtrl "resedist/internal/modules/auth/controllers"
-
-	"github.com/gin-gonic/gin"
-	cors "github.com/rs/cors/wrapper/gin"
 )
 
 func Routes(router *gin.Engine) {
 
 	AuthController := authCtrl.New()
 
-	router.Use(cors.Default())
 	router.GET("/auth/login", AuthController.Login)
 
 	guestGroup := router.Group("/api/v1/auth")

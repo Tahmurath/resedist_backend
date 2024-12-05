@@ -3,26 +3,27 @@ package routing
 import (
 	// "github.com/gin-contrib/cors"
 
+	"github.com/gin-contrib/cors"
 	"resedist/internal/providers/routes"
+	"resedist/pkg/config"
 
 	"github.com/gin-gonic/gin"
-
 	// cors "github.com/rs/cors/wrapper/gin"
-	"github.com/gin-contrib/cors"
+	//"github.com/gin-contrib/cors"
 )
 
 func Init() {
 	router = gin.Default()
 
-	config := cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // یا "*" برای اجازه به همه دامنه‌ها
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
+	cfg := config.Get()
+	corsConfig := cors.Config{
+		AllowOrigins:     cfg.Cors.AllowOrigins,
+		AllowMethods:     cfg.Cors.AllowMethods,
+		AllowHeaders:     cfg.Cors.AllowHeaders,
+		ExposeHeaders:    cfg.Cors.ExposeHeaders,
+		AllowCredentials: cfg.Cors.AllowCredentials,
 	}
-	router.Use(cors.New(config))
-	// router.Use(cors.Default())
+	router.Use(cors.New(corsConfig))
 }
 
 func GetRouter() *gin.Engine {

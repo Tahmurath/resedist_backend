@@ -6,6 +6,7 @@ type Config struct {
 	DB     DB
 	Dblog  Dblog
 	Jwt    JWT
+	Cors   CORS
 }
 type App struct {
 	Name string
@@ -31,4 +32,12 @@ type Dblog struct {
 
 type JWT struct {
 	Secret string
+}
+
+type CORS struct {
+	AllowOrigins     []string
+	AllowMethods     []string
+	AllowHeaders     []string
+	ExposeHeaders    []string
+	AllowCredentials bool
 }
