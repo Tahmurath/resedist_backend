@@ -14,7 +14,18 @@ import (
 
 func Init() {
 	router = gin.Default()
+}
 
+func GetRouter() *gin.Engine {
+	return router
+}
+
+func RegisterRoutes() {
+	routes.RegisterRoutes(GetRouter())
+}
+
+func ConfigureCorsConfig() {
+	router = gin.Default()
 	cfg := config.Get()
 	corsConfig := cors.Config{
 		AllowOrigins:     cfg.Cors.AllowOrigins,
@@ -24,12 +35,4 @@ func Init() {
 		AllowCredentials: cfg.Cors.AllowCredentials,
 	}
 	router.Use(cors.New(corsConfig))
-}
-
-func GetRouter() *gin.Engine {
-	return router
-}
-
-func RegisterRoutes() {
-	routes.RegisterRoutes(GetRouter())
 }

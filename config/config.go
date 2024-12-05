@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type Config struct {
 	App    App
 	Server Server
@@ -8,6 +10,7 @@ type Config struct {
 	Jwt    JWT
 	Cors   CORS
 }
+
 type App struct {
 	Name string
 }
@@ -31,7 +34,8 @@ type Dblog struct {
 }
 
 type JWT struct {
-	Secret string
+	Secret   string
+	Duration time.Duration
 }
 
 type CORS struct {

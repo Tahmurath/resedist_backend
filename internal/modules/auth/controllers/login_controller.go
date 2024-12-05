@@ -128,8 +128,9 @@ func createJwt(user UserResponse.User) (string, error) {
 	cfg := config.Get()
 
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"sub":      user,
+		"ExpireAt": time.Now().Add(cfg.Jwt.Duration).Unix(), //jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		"IssuedAt": jwt.NewNumericDate(time.Now()),
 	})
 
 	// Sign the claim with a secret key

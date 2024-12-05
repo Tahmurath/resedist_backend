@@ -16,6 +16,8 @@ func Serve() {
 
 	routing.Init()
 
+	routing.ConfigureCorsConfig()
+
 	sessions.Start(routing.GetRouter())
 
 	static.LoadStatic(routing.GetRouter())

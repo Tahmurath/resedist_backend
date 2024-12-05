@@ -53,7 +53,7 @@ fetch("http://localhost:8080/api/v1/auth/login", {
 
 
 
-  
-
+// CompileDaemon -log-prefix=false -command="go run . serve"
+//
 
 
