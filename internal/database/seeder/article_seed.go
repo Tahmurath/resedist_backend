@@ -7,7 +7,7 @@ import (
 	userModels "resedist/internal/modules/user/models"
 )
 
-func ArticleSeed(user userModels.User) (articleModels.Article, error) {
+func ArticleSeed(user userModels.User) articleModels.Article {
 
 	var article articleModels.Article
 
@@ -18,5 +18,5 @@ func ArticleSeed(user userModels.User) (articleModels.Article, error) {
 		log.Printf("Article created with title: %s", article.Title)
 	}
 
-	return article, nil
+	return article
 }

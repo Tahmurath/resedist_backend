@@ -6,13 +6,13 @@ import (
 	userModels "resedist/internal/modules/user/models"
 )
 
-func UserSeed() (userModels.User, error) {
+func UserSeed() userModels.User {
 
 	var user userModels.User
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte("password"), 12)
 	if err != nil {
-		return user, err
+		return user
 	}
 
 	user = userModels.User{Name: "uanme", Email: "test@test.com", Password: string(hashPassword)}
@@ -20,5 +20,5 @@ func UserSeed() (userModels.User, error) {
 
 	log.Printf("User created with email: %s", user.Email)
 
-	return user, nil
+	return user
 }

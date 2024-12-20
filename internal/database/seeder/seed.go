@@ -14,16 +14,11 @@ func Seed() {
 
 	db = database.Connection()
 
-	user, err := UserSeed()
-	if err != nil {
-		log.Fatal("hash password error")
-	}
+	user := UserSeed()
 
-	article, err := ArticleSeed(user)
-	if err != nil {
-		log.Fatal("hash password error")
-	}
-	log.Printf(article.Title)
+	ArticleSeed(user)
+
+	OrderStatusSeed(user)
 
 	log.Printf("Seeder done")
 }

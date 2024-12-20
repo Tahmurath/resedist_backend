@@ -16,6 +16,13 @@ dblog:
   LogLevel: 4
   Colorful: true
 
+redis:
+  Addr: "localhost:6379"
+  Password: ""
+  DB: 0
+#  Protocol: 2
+
+
 jwt:
     secret: "fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c"
     duration: "0h30m0s"

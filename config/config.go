@@ -7,6 +7,7 @@ type Config struct {
 	Server Server
 	DB     DB
 	Dblog  Dblog
+	Redis  Redis
 	Jwt    JWT
 	Cors   CORS
 }
@@ -31,6 +32,13 @@ type DB struct {
 type Dblog struct {
 	LogLevel int
 	Colorful bool
+}
+
+type Redis struct {
+	Addr     string
+	Password string
+	DB       string
+	//Protocol     string
 }
 
 type JWT struct {
