@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"resedist/pkg/converters"
 	"resedist/pkg/errors"
 	"resedist/pkg/html"
 	"resedist/pkg/old"
+	"resedist/pkg/redis"
 	"resedist/pkg/sessions"
 	"strconv"
 
@@ -59,6 +61,25 @@ func (controller *Controller) Show(c *gin.Context) {
 }
 
 func (controller *Controller) Create(c *gin.Context) {
+
+	ctx := context.Background()
+	err := redis.Connection().Set(ctx, "aa", "bb", 0).Err()
+	if err != nil {
+		panic(err)
+	}
+
+	hashFields := []string{
+		"model", "Deimos",
+		"brand", "Ergonom",
+		"type", "Enduro bikes",
+		"price", "4972",
+	}
+	res1, err := redis.Connection().HSet(ctx, "bike:1", hashFields).Result()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(res1)
 
 	html.Render(c, http.StatusOK, "modules/article/html/create", gin.H{
 		"title": "Create article",
