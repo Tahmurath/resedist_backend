@@ -3,12 +3,10 @@ package middlewares
 import (
 	"encoding/json"
 	"net/http"
+	"resedist/internal/modules/user/helpers"
 	"resedist/internal/modules/user/models"
-	UserRepository "resedist/internal/modules/user/repositories"
 	"resedist/internal/modules/user/responses"
 	"resedist/pkg/config"
-	"resedist/pkg/sessions"
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -61,14 +59,15 @@ func IsAuthJwt() gin.HandlerFunc {
 }
 
 func IsAuth() gin.HandlerFunc {
-	var userRepo = UserRepository.New()
+	//var userRepo = UserRepository.New()
 
 	return func(c *gin.Context) {
 
-		authID := sessions.Get(c, "auth")
-		userID, _ := strconv.Atoi(authID)
+		//authID := sessions.Get(c, "auth")
+		//userID, _ := strconv.Atoi(authID)
 
-		user := userRepo.FindByID(userID)
+		//user := userRepo.FindByID(userID)
+		user := helpers.Auth(c)
 
 		if user.ID == 0 {
 			c.Redirect(http.StatusFound, "/login")

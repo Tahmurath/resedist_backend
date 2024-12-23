@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	UserRepository "resedist/internal/modules/user/repositories"
 	UserResponse "resedist/internal/modules/user/responses"
@@ -9,18 +10,36 @@ import (
 )
 
 func Auth(c *gin.Context) UserResponse.User {
+
+	if user, exist := c.Get("user"); exist {
+		if typedUser, ok := user.(UserResponse.User); ok {
+			fmt.Println(typedUser)
+			return typedUser
+		}
+	}
+
 	var response UserResponse.User
+
 	authID := sessions.Get(c, "auth")
-
-	userID, _ := strconv.Atoi(authID)
-
-	var userRepo = UserRepository.New()
-	user := userRepo.FindByID(userID)
-
-	if user.ID == 0 {
+	if authID == "" {
 		return response
 	}
 
-	return UserResponse.ToUser(user)
+	userID, err := strconv.Atoi(authID)
+	if err != nil {
+		return response
+	}
+
+	userRepo := UserRepository.New()
+	foundUser := userRepo.FindByID(userID)
+
+	if foundUser.ID == 0 {
+		return response
+	}
+
+	convertedUser := UserResponse.ToUser(foundUser)
+	c.Set("user", convertedUser)
+
+	return convertedUser
 
 }
