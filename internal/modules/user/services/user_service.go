@@ -1,10 +1,15 @@
 package services
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"log"
 	userModels "resedist/internal/modules/user/models"
 	"resedist/internal/modules/user/requests/auth"
+	"resedist/pkg/redis"
+	"strconv"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -72,4 +77,27 @@ func (UserService *UserService) HandleUserLogin(request auth.LoginRequest) (User
 	}
 
 	return UserResponse.ToUser(existUser), nil
+}
+
+func (UserService *UserService) GetCachedUserById(userId int) (UserResponse.User, error) {
+
+	ctx := context.Background()
+	key := "user:" + strconv.Itoa(userId)
+	//tag := "users"
+	ttl := 10 * time.Minute
+
+	fetchFunc := func() (UserResponse.User, error) {
+		userRepo := UserRepository.New()
+		foundUser := userRepo.FindByID(userId)
+		if foundUser.ID == 0 {
+			return UserResponse.User{}, errors.New("user not found")
+		}
+		return UserResponse.ToUser(foundUser), nil
+	}
+	value, err := redis.GetOrSetJSON(ctx, key, ttl, fetchFunc)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return UserResponse.User{}, errors.New("user not found")
+	}
+	return value, nil
 }
