@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	articleModels "resedist/internal/modules/article/models"
+	contactModels "resedist/internal/modules/contact/models"
 	orderModels "resedist/internal/modules/order/models"
 	userModels "resedist/internal/modules/user/models"
 	"resedist/pkg/database"
@@ -15,7 +16,9 @@ func Migrate() {
 		&userModels.User{},
 		&articleModels.Article{},
 		&orderModels.Order{},
+		&orderModels.OrderPassenger{},
 		&orderModels.OrderStatus{},
+		&contactModels.Person{},
 	)
 
 	if err != nil {

@@ -11,9 +11,9 @@ func OrderStatusSeed(user userModels.User) orderModels.OrderStatus {
 	var orderStatus orderModels.OrderStatus
 
 	orderStatus = orderModels.OrderStatus{
-		Title:     "paid",
-		UserID:    user.ID,
-		Published: true,
+		Title:         "paid",
+		AddedByUserID: user.ID,
+		Published:     true,
 	}
 	db.Create(&orderStatus)
 	log.Printf("orderStatus created with title: %s", orderStatus.Title)
