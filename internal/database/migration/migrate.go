@@ -5,6 +5,7 @@ import (
 	"log"
 	articleModels "resedist/internal/modules/article/models"
 	contactModels "resedist/internal/modules/contact/models"
+	departmentModels "resedist/internal/modules/department/models"
 	orderModels "resedist/internal/modules/order/models"
 	userModels "resedist/internal/modules/user/models"
 	"resedist/pkg/database"
@@ -19,6 +20,7 @@ func Migrate() {
 		&orderModels.OrderPassenger{},
 		&orderModels.OrderStatus{},
 		&contactModels.Person{},
+		&departmentModels.Department{},
 	)
 
 	if err != nil {

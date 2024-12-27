@@ -7,7 +7,7 @@ import (
 
 type Article struct {
 	gorm.Model
-	Title   string `gorm:"varchar:191"`
+	Title   string `gorm:"size:255;not null"`
 	Content string `gorm:"text"`
 	UserID  uint
 	User    models.User
