@@ -20,7 +20,7 @@ func New() *DepartmentRepository {
 func (DepartmentRepository *DepartmentRepository) List(limit int) []DepartmentModels.Department {
 	var department []DepartmentModels.Department
 
-	DepartmentRepository.DB.Limit(limit).Joins("User").Order("rand()").Find(&department)
+	DepartmentRepository.DB.Limit(limit).Joins("DepartmentType").Find(&department)
 
 	return department
 }
@@ -28,7 +28,7 @@ func (DepartmentRepository *DepartmentRepository) List(limit int) []DepartmentMo
 func (DepartmentRepository *DepartmentRepository) Find(id int) DepartmentModels.Department {
 	var department DepartmentModels.Department
 
-	DepartmentRepository.DB.Joins("User").First(&department, id)
+	DepartmentRepository.DB.Joins("DepartmentType").First(&department, id)
 
 	return department
 }

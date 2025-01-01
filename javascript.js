@@ -52,6 +52,25 @@ fetch("http://localhost:8080/api/v1/auth/login", {
   .then((json) => console.log(json));
 
 
+add department:
+  fetch("http://localhost:8080/api/v1/department/new", {
+    method: "POST",
+      body: JSON.stringify({
+          title: "hooman@test.com",
+          departmenttypeid: "1,
+          parentid: 1,
+      }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFeHBpcmVBdCI6MTczNTc0NDMzMSwiSXNzdWVkQXQiOjE3MzU3NDI1MzEsInN1YiI6eyJJRCI6NiwiSW1hZ2UiOiJodHRwczovL3VpLWF2YXRhcnMuY29tL2FwaS8_bmFtZT1ob29tYW5AdGVzdC5jb20iLCJOYW1lIjoiaG9vbWFuQHRlc3QuY29tIiwiRW1haWwiOiJob29tYW5AdGVzdC5jb20ifX0.37Y1k1Qy8y-2k_T1B0Zj_M1MKJOJ8QVy0mT00EMo4HA"
+    }
+  })
+  .then((response) => response.json())
+  .then((json) => console.log(json));
+
+
+
+
 
 // CompileDaemon -log-prefix=false -command="go run . serve"
 //
