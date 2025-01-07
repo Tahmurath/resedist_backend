@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	UserResponse "resedist/internal/modules/user/responses"
+	"resedist/pkg/applog"
 	"resedist/pkg/config"
 	"strings"
 
@@ -14,6 +15,7 @@ import (
 func AuthJWT(c *gin.Context) UserResponse.User {
 	if user, exist := c.Get("user"); exist {
 		if typedUser, ok := user.(UserResponse.User); ok {
+			applog.Info("return user from contxt")
 			return typedUser
 		}
 	}
@@ -54,6 +56,7 @@ func AuthJWT(c *gin.Context) UserResponse.User {
 
 	//Store the user in the context
 	c.Set("user", response)
+	applog.Info("return user by parse jwt and set into context")
 
 	return response
 }
