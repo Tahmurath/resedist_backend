@@ -1,11 +1,12 @@
 package helpers
 
 import (
-	"github.com/gin-gonic/gin"
 	UserResponse "resedist/internal/modules/user/responses"
 	UserService "resedist/internal/modules/user/services"
 	"resedist/pkg/sessions"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Auth(c *gin.Context) UserResponse.User {
