@@ -12,9 +12,11 @@ func Routes(router *gin.Engine) {
 	DepartmentController := depCtrl.New()
 
 	authGroup := router.Group("/api/v1/department")
+	authGroup.GET("/list", DepartmentController.Test)
 	authGroup.Use(middlewares.IsAuthJwt())
 	{
 		authGroup.POST("/new", DepartmentController.Store)
+
 	}
 
 }

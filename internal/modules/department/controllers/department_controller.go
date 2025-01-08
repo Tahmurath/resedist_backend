@@ -26,9 +26,12 @@ func New() *Controller {
 }
 
 func (controller *Controller) Test(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"token":   "3453",
-		"message": "User logged in successfully",
+
+	firstname := c.DefaultQuery("query", "")
+	c.JSON(http.StatusOK, []gin.H{
+		{"label": "French " + firstname, "value": 1},
+		{"label": "German " + firstname, "value": 2},
+		{"label": "Spanish " + firstname, "value": 3},
 	})
 }
 func (controller *Controller) Store(c *gin.Context) {
