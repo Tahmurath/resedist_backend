@@ -2,10 +2,12 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
-	UserService "resedist/internal/modules/user/services"
+	"resedist/internal/modules/auth/helpers"
 	"resedist/pkg/errors"
+
+	"github.com/gin-gonic/gin"
+
 	//articleRepository "resedist/internal/modules/article/repositories"
 
 	DepRequest "resedist/internal/modules/department/requests/department"
@@ -47,9 +49,7 @@ func (controller *Controller) Store(c *gin.Context) {
 		return
 	}
 
-	//user, _ := c.Get("auth")
-	userService := UserService.New()
-	user, _ := userService.GetCachedUserById(6)
+	user := helpers.AuthJWT(c)
 
 	// create article
 	department, err := controller.departmentService.StoreAsUser(request, user)
