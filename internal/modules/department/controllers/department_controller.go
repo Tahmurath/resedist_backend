@@ -34,6 +34,7 @@ func (controller *Controller) Test(c *gin.Context) {
 		{"label": "Spanish " + firstname, "value": 3},
 	})
 }
+
 func (controller *Controller) Store(c *gin.Context) {
 
 	var request DepRequest.AddDepartmentRequest
