@@ -6,3 +6,4 @@
 profile.out
 *.exe
 build-errors.log
+/front/
