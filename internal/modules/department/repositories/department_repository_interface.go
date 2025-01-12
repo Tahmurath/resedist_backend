@@ -5,7 +5,8 @@ import (
 )
 
 type DepartmentRepositoryInterface interface {
-	List(limit int) []DepartmentModels.Department
-	Find(id int) DepartmentModels.Department
+	// List(limit int) []DepartmentModels.Department
+	// Find(id int) DepartmentModels.Department
 	Create(department DepartmentModels.Department) DepartmentModels.Department
+	FindAll(title string, limit int) []DepartmentModels.Department
 }

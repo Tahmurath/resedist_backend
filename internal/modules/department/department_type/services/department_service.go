@@ -17,7 +17,7 @@ func New() *DepartmentTypeService {
 
 func (DepartmentTypeService *DepartmentTypeService) Search(title string) DepTypeResponse.DepartmentTypes {
 
-	departments := DepartmentTypeService.depTypeRepository.FindAll(title, 10)
+	depTypes := DepartmentTypeService.depTypeRepository.FindAll(title, 10)
 
-	return DepTypeResponse.ToDepartmentTypes(departments)
+	return DepTypeResponse.ToDepartmentTypes(depTypes)
 }

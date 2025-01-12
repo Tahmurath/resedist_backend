@@ -19,23 +19,12 @@ func New() *DepartmentService {
 	}
 }
 
-// func (DepartmentService *DepartmentService) List() DepResponse.Departments {
+func (DepartmentService *DepartmentService) Search(title string) DepResponse.Departments {
 
-// 	departments := DepartmentService.depRepository.List(4)
-// 	return DepResponse.ToDepartments(departments)
-// }
+	departments := DepartmentService.depRepository.FindAll(title, 10)
 
-// func (DepartmentService *DepartmentService) Find(id int) (DepResponse.Department, error) {
-
-// 	var response DepResponse.Department
-// 	department := DepartmentService.depRepository.Find(id)
-
-// 	if department.ID == 0 {
-// 		return response, errors.New("department not found")
-// 	}
-
-// 	return DepResponse.ToDepartment(department), nil
-// }
+	return DepResponse.ToDepartments(departments)
+}
 
 func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 	var department DepartmentModel.Department

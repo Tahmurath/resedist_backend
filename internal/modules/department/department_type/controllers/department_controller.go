@@ -23,8 +23,8 @@ func New() *Controller {
 
 func (controller *Controller) Search(c *gin.Context) {
 
-	firstname := c.DefaultQuery("query", "")
-	depTypes := controller.departmentTypeService.Search(firstname)
+	depTypeTitle := c.DefaultQuery("query", "")
+	depTypes := controller.departmentTypeService.Search(depTypeTitle)
 
 	c.JSON(http.StatusOK, depTypes.Data)
 }

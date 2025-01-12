@@ -25,14 +25,12 @@ func New() *Controller {
 	}
 }
 
-func (controller *Controller) Test(c *gin.Context) {
+func (controller *Controller) Search(c *gin.Context) {
 
-	firstname := c.DefaultQuery("query", "")
-	c.JSON(http.StatusOK, []gin.H{
-		{"label": "French " + firstname, "value": 1},
-		{"label": "German " + firstname, "value": 2},
-		{"label": "Spanish " + firstname, "value": 3},
-	})
+	deptitle := c.DefaultQuery("query", "")
+	depTypes := controller.departmentService.Search(deptitle)
+
+	c.JSON(http.StatusOK, depTypes.Data)
 }
 
 func (controller *Controller) Store(c *gin.Context) {
