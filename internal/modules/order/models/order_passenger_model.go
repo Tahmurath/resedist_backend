@@ -11,7 +11,7 @@ type OrderPassenger struct {
 	Title         string `gorm:"size:255;not null"`
 	Published     bool   `gorm:"default:false;not null"`
 	PersonID      uint
-	Person        *contactModels.Person
+	Person        contactModels.Person
 	AddedByUserID uint
-	AddedByUser   *userModels.User
+	AddedByUser   userModels.User
 }

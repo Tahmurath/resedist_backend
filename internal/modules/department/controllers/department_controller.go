@@ -28,9 +28,9 @@ func New() *Controller {
 func (controller *Controller) Search(c *gin.Context) {
 
 	deptitle := c.DefaultQuery("query", "")
-	depTypes := controller.departmentService.Search(deptitle)
+	departments := controller.departmentService.Search(deptitle)
 
-	c.JSON(http.StatusOK, depTypes.Data)
+	c.JSON(http.StatusOK, departments.Data)
 }
 
 func (controller *Controller) Store(c *gin.Context) {

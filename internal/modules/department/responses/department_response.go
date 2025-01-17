@@ -7,18 +7,20 @@ import (
 type Department struct {
 	ID             uint
 	Title          string
-	DepartmentType string
-	Parent         string
+	DepartmentType uint
+	Parent         uint
 }
 
 type Departments struct {
 	Data []Department
 }
 
-func ToDepartment(article departmentModels.Department) Department {
+func ToDepartment(department departmentModels.Department) Department {
 	return Department{
-		ID:    article.ID,
-		Title: article.Title,
+		ID:             department.ID,
+		Title:          department.Title,
+		DepartmentType: department.DepartmentTypeId,
+		Parent:         department.ParentID,
 	}
 }
 
