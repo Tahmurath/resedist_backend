@@ -17,12 +17,49 @@ func New() *DepartmentRepository {
 	}
 }
 
-func (DepartmentRepository *DepartmentRepository) FindAll(title string, limit int) []DepartmentModels.Department {
-	var department []DepartmentModels.Department
+func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, limit int, expand bool) []DepartmentModels.Department {
+	var departments []DepartmentModels.Department
+	db := DepartmentRepository.DB
+	if limit > 0 {
+		db = db.Limit(limit)
+	}
+	if title != "" {
+		query := "%" + title + "%"
+		db = db.Where("title LIKE ?", query)
+	}
+	if expand {
+		db = db.Preload("DepartmentType")
+	}
+	result := db.Find(&departments)
+	if result.Error != nil {
+		// Log the error or handle it as needed
+		return nil
+	}
 
-	DepartmentRepository.DB.Limit(limit).Where("title like ?", "%"+title+"%").Find(&department)
+	return departments
+}
 
-	return department
+func (DepartmentRepository *DepartmentRepository) FindAll2(title string, limit int, expand bool) []DepartmentModels.Department {
+	var departments []DepartmentModels.Department
+	query := "%" + title + "%"
+
+	db := DepartmentRepository.DB
+	if limit > 0 {
+		db = db.Limit(limit)
+	}
+
+	// Check if expand is true, and preload related data
+	if expand {
+		db = db.Preload("DepartmentType") // Assuming there's a DepartmentType relation
+	}
+
+	result := db.Where("title LIKE ?", query).Find(&departments)
+	if result.Error != nil {
+		// Log the error or handle it as needed
+		return nil
+	}
+
+	return departments
 }
 
 // func (DepartmentRepository *DepartmentRepository) List(limit int) []DepartmentModels.Department {

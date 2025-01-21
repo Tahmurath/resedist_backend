@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	"resedist/pkg/errors"
-
-	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -27,8 +26,11 @@ func New() *Controller {
 
 func (controller *Controller) Search(c *gin.Context) {
 
-	deptitle := c.DefaultQuery("query", "")
-	departments := controller.departmentService.Search(deptitle)
+	title := c.DefaultQuery("query", "")
+	//limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	expand := c.Query("expand") == "true"
+
+	departments := controller.departmentService.Search(title, 10, expand)
 
 	c.JSON(http.StatusOK, departments.Data)
 }

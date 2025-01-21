@@ -19,11 +19,11 @@ func New() *DepartmentService {
 	}
 }
 
-func (DepartmentService *DepartmentService) Search(title string) DepResponse.Departments {
+func (DepartmentService *DepartmentService) Search(title string, limit int, expand bool) DepResponse.Departments {
 
-	departments := DepartmentService.depRepository.FindAll(title, 10)
+	departments := DepartmentService.depRepository.FindAllByTitle(title, limit, expand)
 
-	return DepResponse.ToDepartments(departments)
+	return DepResponse.ToDepartments(departments, expand)
 }
 
 func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
@@ -41,5 +41,5 @@ func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDe
 		return response, errors.New("error in creating newDepartment")
 	}
 
-	return DepResponse.ToDepartment(newDepartment), nil
+	return DepResponse.ToDepartment(newDepartment, true), nil
 }
