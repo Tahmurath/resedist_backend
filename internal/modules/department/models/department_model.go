@@ -14,7 +14,7 @@ type Department struct {
 	DepartmentTypeId uint                         `gorm:"index"`
 	DepartmentType   *depTypeModel.DepartmentType `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL; foreignKey:DepartmentTypeId"`
 	ParentID         uint                         `gorm:"index"`
-	Parent           *Department                  `gorm:"foreignKey:ParentID"`
+	Parent           *Department                  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL; foreignKey:ParentID"`
 	Children         []Department                 `gorm:"foreignKey:ParentID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	AddedByUserID    uint
 	AddedByUser      userModels.User

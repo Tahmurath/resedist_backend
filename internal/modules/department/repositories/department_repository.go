@@ -29,6 +29,7 @@ func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, l
 	}
 	if expand {
 		db = db.Preload("DepartmentType")
+		db = db.Preload("Parent")
 	}
 	result := db.Find(&departments)
 	if result.Error != nil {
