@@ -7,6 +7,7 @@ import (
 	DepRequest "resedist/internal/modules/department/requests/department"
 	DepResponse "resedist/internal/modules/department/responses"
 	UserResponse "resedist/internal/modules/user/responses"
+	"resedist/pkg/pagination"
 )
 
 type DepartmentService struct {
@@ -19,6 +20,12 @@ func New() *DepartmentService {
 	}
 }
 
+func (DepartmentService *DepartmentService) SearchP(pack *pagination.PagePack) DepResponse.Departments {
+
+	departments := DepartmentService.depRepository.FindAllByTitleP(pack)
+
+	return DepResponse.ToDepartments(departments, pack.Expand)
+}
 func (DepartmentService *DepartmentService) Search(title string, page int, pageSize int, expand bool) DepResponse.Departments {
 
 	departments := DepartmentService.depRepository.FindAllByTitle(title, page, pageSize, expand)

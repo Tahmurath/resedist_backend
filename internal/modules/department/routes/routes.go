@@ -17,6 +17,7 @@ func Routes(router *gin.Engine) {
 
 	authGroup.GET("/department-type", DepartmentTypeController.Search)
 	authGroup.GET("/department", DepartmentController.Search)
+	authGroup.GET("/department2", DepartmentController.Search2)
 
 	authGroup.Use(middlewares.IsAuthJwt())
 	{

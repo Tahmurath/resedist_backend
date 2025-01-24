@@ -18,6 +18,31 @@ func New() *DepartmentRepository {
 	}
 }
 
+func (DepartmentRepository *DepartmentRepository) FindAllByTitleP(pack *pagination.PagePack) []DepartmentModels.Department {
+	var departments []DepartmentModels.Department
+	var totalRows int64
+	db := DepartmentRepository.DB
+
+	if pack.Search != "" {
+		query := "%" + pack.Search + "%"
+		db = db.Where("title LIKE ?", query)
+	}
+
+	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
+	pack.SetRows(totalRows)
+
+	if pack.Expand {
+		db = db.Preload("DepartmentType").Preload("Parent")
+	}
+
+	result := db.Scopes(pack.Paginate()).Find(&departments)
+	if result.Error != nil {
+		// Log the error or handle it as needed
+		return nil
+	}
+
+	return departments
+}
 func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, page int, pageSize int, expand bool) []DepartmentModels.Department {
 	var departments []DepartmentModels.Department
 
@@ -42,28 +67,28 @@ func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, p
 	return departments
 }
 
-func (DepartmentRepository *DepartmentRepository) FindAll2(title string, limit int, expand bool) []DepartmentModels.Department {
-	var departments []DepartmentModels.Department
-	query := "%" + title + "%"
-
-	db := DepartmentRepository.DB
-	if limit > 0 {
-		db = db.Limit(limit)
-	}
-
-	// Check if expand is true, and preload related data
-	if expand {
-		db = db.Preload("DepartmentType") // Assuming there's a DepartmentType relation
-	}
-
-	result := db.Where("title LIKE ?", query).Find(&departments)
-	if result.Error != nil {
-		// Log the error or handle it as needed
-		return nil
-	}
-
-	return departments
-}
+//func (DepartmentRepository *DepartmentRepository) FindAll2(title string, limit int, expand bool) []DepartmentModels.Department {
+//	var departments []DepartmentModels.Department
+//	query := "%" + title + "%"
+//
+//	db := DepartmentRepository.DB
+//	if limit > 0 {
+//		db = db.Limit(limit)
+//	}
+//
+//	// Check if expand is true, and preload related data
+//	if expand {
+//		db = db.Preload("DepartmentType") // Assuming there's a DepartmentType relation
+//	}
+//
+//	result := db.Where("title LIKE ?", query).Find(&departments)
+//	if result.Error != nil {
+//		// Log the error or handle it as needed
+//		return nil
+//	}
+//
+//	return departments
+//}
 
 // func (DepartmentRepository *DepartmentRepository) List(limit int) []DepartmentModels.Department {
 // 	var department []DepartmentModels.Department

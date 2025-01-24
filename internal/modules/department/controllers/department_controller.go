@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	"resedist/pkg/errors"
+	"resedist/pkg/pagination"
 	"strconv"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
@@ -25,6 +26,21 @@ func New() *Controller {
 	}
 }
 
+func (controller *Controller) Search2(c *gin.Context) {
+
+	//pp := pagination.NewConfig(c, "page", "page_size", "expand", "search")
+	pp := pagination.New(c)
+
+	departments := controller.departmentService.SearchP(pp)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":        "",
+		"error_message": "",
+		"error_code":    "",
+		"_metadata":     pp,
+		"data":          departments.Data,
+	})
+}
 func (controller *Controller) Search(c *gin.Context) {
 
 	title := c.DefaultQuery("query", "")

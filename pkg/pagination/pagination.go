@@ -6,7 +6,7 @@ import (
 
 func Paginate(page, pageSize int) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		//q := r.URL.Query()
+
 		//page, _ := strconv.Atoi(c.Query("page"))
 		if page <= 0 {
 			page = 1
@@ -34,7 +34,7 @@ func Paginate(page, pageSize int) func(db *gorm.DB) *gorm.DB {
 //	Rows       interface{} `json:"rows"`
 //}
 //
-//func Paginate(value interface{}, pagination *Pagination, db *gorm.DB) func(db *gorm.DB) *gorm.DB {
+//func (p *Pagination) Paginate2(value interface{}, pagination *Pagination, db *gorm.DB) func(db *gorm.DB) *gorm.DB {
 //	var totalRows int64
 //	db.Model(value).Count(&totalRows)
 //
