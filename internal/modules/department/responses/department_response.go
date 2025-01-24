@@ -25,9 +25,10 @@ type Parent struct {
 
 func ToDepartment(department departmentModels.Department, expand bool) Department {
 	response := Department{
-		ID:    department.ID,
-		Title: department.Title,
-		//Parent: department.ParentID,
+		ID:             department.ID,
+		Title:          department.Title,
+		Parent:         department.ParentID,
+		DepartmentType: department.DepartmentTypeId,
 	}
 	if expand && department.DepartmentType != nil {
 		response.DepartmentType = responses.DepartmentType{
@@ -35,18 +36,19 @@ func ToDepartment(department departmentModels.Department, expand bool) Departmen
 			Title: department.DepartmentType.Title,
 		}
 	} else {
-		response.DepartmentType = department.DepartmentTypeId
+		//response.DepartmentType = department.DepartmentTypeId
 	}
 
 	if expand && department.Parent != nil {
-		response.Parent = &Parent{
+		response.Parent = &Department{
 			ID:             department.Parent.ID,
 			Title:          department.Parent.Title,
 			DepartmentType: department.Parent.DepartmentTypeId,
 			Parent:         department.Parent.ParentID,
 		}
 	} else if department.Parent != nil {
-		response.Parent = &Department{ID: department.Parent.ID}
+		//response.Parent = &Department{ID: department.Parent.ID}
+		//response.Parent = department.ParentID
 	}
 
 	return response

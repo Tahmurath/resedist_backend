@@ -19,9 +19,9 @@ func New() *DepartmentService {
 	}
 }
 
-func (DepartmentService *DepartmentService) Search(title string, limit int, expand bool) DepResponse.Departments {
+func (DepartmentService *DepartmentService) Search(title string, page int, pageSize int, expand bool) DepResponse.Departments {
 
-	departments := DepartmentService.depRepository.FindAllByTitle(title, limit, expand)
+	departments := DepartmentService.depRepository.FindAllByTitle(title, page, pageSize, expand)
 
 	return DepResponse.ToDepartments(departments, expand)
 }

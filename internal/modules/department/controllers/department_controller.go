@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	"resedist/pkg/errors"
+	"strconv"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -27,10 +28,11 @@ func New() *Controller {
 func (controller *Controller) Search(c *gin.Context) {
 
 	title := c.DefaultQuery("query", "")
-	//limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
 	expand := c.Query("expand") == "true"
 
-	departments := controller.departmentService.Search(title, 10, expand)
+	departments := controller.departmentService.Search(title, page, pageSize, expand)
 
 	c.JSON(http.StatusOK, departments.Data)
 }

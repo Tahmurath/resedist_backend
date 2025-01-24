@@ -10,5 +10,5 @@ type DepartmentServiceInterface interface {
 	//Find(id int) (DepResponse.Department, error)
 	//List() DepResponse.Departments
 	StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
-	Search(title string, limit int, expand bool) DepResponse.Departments
+	Search(title string, page int, pageSize int, expand bool) DepResponse.Departments
 }

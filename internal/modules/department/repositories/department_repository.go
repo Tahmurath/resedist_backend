@@ -3,6 +3,7 @@ package repositories
 import (
 	DepartmentModels "resedist/internal/modules/department/models"
 	"resedist/pkg/database"
+	"resedist/pkg/pagination"
 
 	"gorm.io/gorm"
 )
@@ -17,21 +18,22 @@ func New() *DepartmentRepository {
 	}
 }
 
-func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, limit int, expand bool) []DepartmentModels.Department {
+func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, page int, pageSize int, expand bool) []DepartmentModels.Department {
 	var departments []DepartmentModels.Department
+
 	db := DepartmentRepository.DB
-	if limit > 0 {
-		db = db.Limit(limit)
-	}
+	//if limit > 0 {
+	//	db = db.Limit(limit)
+	//}
 	if title != "" {
 		query := "%" + title + "%"
 		db = db.Where("title LIKE ?", query)
 	}
 	if expand {
-		db = db.Preload("DepartmentType")
-		db = db.Preload("Parent")
+		db = db.Preload("DepartmentType").Preload("Parent")
 	}
-	result := db.Find(&departments)
+	//result := db.Find(&departments)
+	result := db.Scopes(pagination.Paginate(page, pageSize)).Find(&departments)
 	if result.Error != nil {
 		// Log the error or handle it as needed
 		return nil
