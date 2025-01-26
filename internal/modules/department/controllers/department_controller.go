@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	DepScopes "resedist/internal/modules/department/scopes"
@@ -10,6 +9,9 @@ import (
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+
 	//articleRepository "resedist/internal/modules/article/repositories"
 
 	DepRequest "resedist/internal/modules/department/requests/department"
@@ -34,6 +36,17 @@ func (controller *Controller) Search2(c *gin.Context) {
 	expand := c.Query(cfg.URLKeys.Expand) == "true"
 	sort := c.Query(cfg.URLKeys.Sort)
 	order := c.DefaultQuery(cfg.URLKeys.Order, "asc")
+
+	var request DepRequest.ListDepartmentRequest
+	// This will infer what binder to use depending on the content-type header.
+	if err := c.ShouldBindQuery(&request); err != nil {
+
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"message": "Opps, there is an error with ShouldBind",
+			"request": request,
+		})
+		return
+	}
 
 	page := pagination.New(c)
 
