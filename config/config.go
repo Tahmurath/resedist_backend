@@ -3,14 +3,15 @@ package config
 import "time"
 
 type Config struct {
-	App    App
-	Server Server
-	DB     DB
-	Dblog  Dblog
-	Redis  Redis
-	Log    Log
-	Jwt    JWT
-	Cors   CORS
+	App     App
+	Server  Server
+	DB      DB
+	URLKeys Urlkeys
+	Dblog   Dblog
+	Redis   Redis
+	Log     Log
+	Jwt     JWT
+	Cors    CORS
 }
 
 type App struct {
@@ -28,6 +29,14 @@ type DB struct {
 	Host     string
 	Port     string
 	Name     string
+}
+
+type Urlkeys struct {
+	Expand   string
+	Sort     string
+	Order    string
+	Page     string
+	Pagesize string
 }
 
 type Dblog struct {

@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	DepScopes "resedist/internal/modules/department/scopes"
+	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
 	"strconv"
-
 	//articleRepository "resedist/internal/modules/article/repositories"
 
 	DepRequest "resedist/internal/modules/department/requests/department"
@@ -29,17 +29,27 @@ func New() *Controller {
 
 func (controller *Controller) Search2(c *gin.Context) {
 
-	expand := c.Query("expand") == "true"
+	cfg := config.Get()
+
+	expand := c.Query(cfg.URLKeys.Expand) == "true"
+	sort := c.Query(cfg.URLKeys.Sort)
+	order := c.DefaultQuery(cfg.URLKeys.Order, "asc")
 
 	page := pagination.New(c)
 
-	departments := controller.departmentService.SearchScope(expand, page, DepScopes.TitleLike(c), DepScopes.ParentID(c))
+	departments := controller.departmentService.SearchScope(
+		expand,
+		page,
+		DepScopes.TitleLike(c),
+		DepScopes.ParentID(c),
+		DepScopes.Sort(sort, order),
+	)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":        "",
 		"error_message": "",
 		"error_code":    "",
-		"_metadata":     page,
+		"pagination":    page,
 		"data":          departments.Data,
 	})
 }

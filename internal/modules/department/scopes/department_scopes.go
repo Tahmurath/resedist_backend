@@ -29,3 +29,30 @@ func ParentID(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 		return db
 	}
 }
+
+func Sort(column string, order string) func(db *gorm.DB) *gorm.DB {
+
+	var allowedSortColumns = map[string]bool{
+		"id":                 true,
+		"title":              true,
+		"department_type_id": true,
+		"parent_id ":         true,
+		"created_at":         true,
+	}
+
+	if order != "desc" {
+		order = "asc"
+	}
+
+	if column != "" && allowedSortColumns[column] {
+		return func(db *gorm.DB) *gorm.DB {
+
+			return db.Order(column + " " + order)
+		}
+	}
+
+	return func(db *gorm.DB) *gorm.DB {
+
+		return db
+	}
+}

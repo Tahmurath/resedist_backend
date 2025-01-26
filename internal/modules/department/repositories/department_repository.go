@@ -60,9 +60,6 @@ func (DepartmentRepository *DepartmentRepository) FindAllScope(expand bool, pack
 	for _, scope := range scopes {
 		db = db.Scopes(scope)
 	}
-	//if err := db.Scopes(scopes...).Error; err != nil {
-	//	return nil
-	//}
 
 	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
 	pack.SetRows(totalRows)

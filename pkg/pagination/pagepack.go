@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"math"
+	"resedist/pkg/config"
 	"strconv"
 )
 
@@ -16,7 +17,9 @@ type PagePack struct {
 }
 
 func New(c *gin.Context) *PagePack {
-	pp := NewConfig(c, "page", "page_size")
+	cfg := config.Get()
+
+	pp := NewConfig(c, cfg.URLKeys.Page, cfg.URLKeys.Pagesize)
 	return pp
 }
 func NewConfig(c *gin.Context, pageKey, pageSizeKey string) *PagePack {
@@ -37,12 +40,10 @@ func (p *PagePack) SetRows(rows int64) {
 func (p *PagePack) Paginate() func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 
-		//page, _ := strconv.Atoi(c.Query("page"))
 		if p.Page <= 0 {
 			p.Page = 1
 		}
 
-		//pageSize, _ := strconv.Atoi(c.Query("page_size"))
 		switch {
 		case p.PageSize > 30:
 			p.PageSize = 30
@@ -54,34 +55,3 @@ func (p *PagePack) Paginate() func(db *gorm.DB) *gorm.DB {
 		return db.Offset(offset).Limit(p.PageSize)
 	}
 }
-
-//func (p *PagePack) GetOffset() int {
-//	return (p.GetPage() - 1) * p.GetLimit()
-//}
-//
-//func (p *PagePack) GetLimit() int {
-//	if p.Limit <= 0 {
-//		p.Limit = 10
-//	}
-//	if p.Limit > 30 {
-//		p.Limit = 30
-//	}
-//	return p.Limit
-//}
-//
-//func (p *PagePack) GetPage() int {
-//	if p.Page <= 0 {
-//		p.Page = 1
-//	}
-//	return p.Page
-//}
-//
-//func (p *PagePack) GetSort() string {
-//	if p.Sort == "" {
-//		p.Sort = "Id desc"
-//	}
-//	return p.Sort
-//}
-//func (p *PagePack) Pageddd(offset, limit int) (int, int) {
-//
-//}
