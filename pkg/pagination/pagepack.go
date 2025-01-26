@@ -8,29 +8,23 @@ import (
 )
 
 type PagePack struct {
-	Page       int    `json:"page,omitempty;query:page"`
-	PageSize   int    `json:"page_size,omitempty;query:page_size"`
-	Expand     bool   `json:"expand,query:limit"`
-	Search     string `json:"search,query:search"`
-	TotalRows  int64  `json:"total_rows"`
-	TotalPages int    `json:"total_pages"`
+	Page       int   `json:"page,omitempty;query:page"`
+	PageSize   int   `json:"page_size,omitempty;query:page_size"`
+	TotalRows  int64 `json:"total_rows"`
+	TotalPages int   `json:"total_pages"`
 	//Rows       interface{} `json:"rows"`
 }
 
 func New(c *gin.Context) *PagePack {
-	pp := NewConfig(c, "page", "page_size", "expand", "search")
+	pp := NewConfig(c, "page", "page_size")
 	return pp
 }
-func NewConfig(c *gin.Context, pageKey, pageSizeKey, expandKey, searchKey string) *PagePack {
+func NewConfig(c *gin.Context, pageKey, pageSizeKey string) *PagePack {
 	page, _ := strconv.Atoi(c.DefaultQuery(pageKey, "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery(pageSizeKey, "10"))
-	expand := c.Query(expandKey) == "true"
-	search := c.DefaultQuery(searchKey, "")
 	pp := PagePack{
 		Page:     page,
 		PageSize: pageSize,
-		Expand:   expand,
-		Search:   search,
 	}
 	return &pp
 }

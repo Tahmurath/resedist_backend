@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
+	DepScopes "resedist/internal/modules/department/scopes"
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
 	"strconv"
@@ -28,19 +29,21 @@ func New() *Controller {
 
 func (controller *Controller) Search2(c *gin.Context) {
 
-	//pp := pagination.NewConfig(c, "page", "page_size", "expand", "search")
-	pp := pagination.New(c)
+	expand := c.Query("expand") == "true"
 
-	departments := controller.departmentService.SearchP(pp)
+	page := pagination.New(c)
+
+	departments := controller.departmentService.SearchScope(expand, page, DepScopes.TitleLike(c), DepScopes.ParentID(c))
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":        "",
 		"error_message": "",
 		"error_code":    "",
-		"_metadata":     pp,
+		"_metadata":     page,
 		"data":          departments.Data,
 	})
 }
+
 func (controller *Controller) Search(c *gin.Context) {
 
 	title := c.DefaultQuery("query", "")

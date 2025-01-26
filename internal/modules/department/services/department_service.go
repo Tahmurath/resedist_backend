@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	DepartmentModel "resedist/internal/modules/department/models"
 	DepRepository "resedist/internal/modules/department/repositories"
 	DepRequest "resedist/internal/modules/department/requests/department"
@@ -24,7 +25,13 @@ func (DepartmentService *DepartmentService) SearchP(pack *pagination.PagePack) D
 
 	departments := DepartmentService.depRepository.FindAllByTitleP(pack)
 
-	return DepResponse.ToDepartments(departments, pack.Expand)
+	return DepResponse.ToDepartments(departments, false)
+}
+func (DepartmentService *DepartmentService) SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments {
+
+	departments := DepartmentService.depRepository.FindAllScope(expand, pack, scopes...)
+
+	return DepResponse.ToDepartments(departments, expand)
 }
 func (DepartmentService *DepartmentService) Search(title string, page int, pageSize int, expand bool) DepResponse.Departments {
 

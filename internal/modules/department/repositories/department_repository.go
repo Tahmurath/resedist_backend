@@ -23,15 +23,51 @@ func (DepartmentRepository *DepartmentRepository) FindAllByTitleP(pack *paginati
 	var totalRows int64
 	db := DepartmentRepository.DB
 
-	if pack.Search != "" {
-		query := "%" + pack.Search + "%"
-		db = db.Where("title LIKE ?", query)
-	}
+	//if pack.Search != "" {
+	//	query := "%" + pack.Search + "%"
+	//	db = db.Where("title LIKE ?", query)
+	//}
 
 	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
 	pack.SetRows(totalRows)
 
-	if pack.Expand {
+	//if pack.Expand {
+	//	db = db.Preload("DepartmentType").Preload("Parent")
+	//}
+
+	result := db.Scopes(pack.Paginate()).Find(&departments)
+	if result.Error != nil {
+		// Log the error or handle it as needed
+		return nil
+	}
+
+	return departments
+}
+
+//func (DepartmentRepository *DepartmentRepository) ApplyScopes(scopes ...func(*gorm.DB) *gorm.DB) *gorm.DB {
+//	db := DepartmentRepository.DB
+//	for _, scope := range scopes {
+//		db = db.Scopes(scope)
+//	}
+//	return db
+//}
+
+func (DepartmentRepository *DepartmentRepository) FindAllScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) []DepartmentModels.Department {
+	var departments []DepartmentModels.Department
+	var totalRows int64
+	db := DepartmentRepository.DB
+
+	for _, scope := range scopes {
+		db = db.Scopes(scope)
+	}
+	//if err := db.Scopes(scopes...).Error; err != nil {
+	//	return nil
+	//}
+
+	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
+	pack.SetRows(totalRows)
+
+	if expand {
 		db = db.Preload("DepartmentType").Preload("Parent")
 	}
 
