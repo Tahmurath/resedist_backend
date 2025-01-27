@@ -1,8 +1,9 @@
 package pagination
 
 import (
-	"gorm.io/gorm"
 	"math"
+
+	"gorm.io/gorm"
 )
 
 type PagePack struct {
@@ -15,6 +16,17 @@ type PagePack struct {
 
 func New(page, pageSize int) *PagePack {
 
+	if page <= 0 {
+		page = 1
+	}
+
+	switch {
+	case pageSize > 30:
+		pageSize = 30
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
 	pp := PagePack{
 		Page:     page,
 		PageSize: pageSize,
@@ -25,26 +37,22 @@ func New(page, pageSize int) *PagePack {
 func (p *PagePack) SetRows(rows int64) {
 	p.TotalRows = rows
 
-	if p.PageSize <= 0 {
-		p.PageSize = 30
-	}
-
 	p.TotalPages = int(math.Ceil(float64(p.TotalRows) / float64(p.PageSize)))
 }
 
 func (p *PagePack) Paginate() func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 
-		if p.Page <= 0 {
-			p.Page = 1
-		}
+		// if p.Page <= 0 {
+		// 	p.Page = 1
+		// }
 
-		switch {
-		case p.PageSize > 30:
-			p.PageSize = 30
-		case p.PageSize <= 0:
-			p.PageSize = 10
-		}
+		// switch {
+		// case p.PageSize > 30:
+		// 	p.PageSize = 30
+		// case p.PageSize <= 0:
+		// 	p.PageSize = 10
+		// }
 
 		offset := (p.Page - 1) * p.PageSize
 		return db.Offset(offset).Limit(p.PageSize)

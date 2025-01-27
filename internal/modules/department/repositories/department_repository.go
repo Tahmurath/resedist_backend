@@ -62,6 +62,7 @@ func (DepartmentRepository *DepartmentRepository) FindAllScope(expand bool, pack
 	}
 
 	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
+	// fmt.Println(totalRows)
 	pack.SetRows(totalRows)
 
 	//fmt.Println(expand)

@@ -48,7 +48,7 @@ func (controller *Controller) Search2(c *gin.Context) {
 
 	departments := controller.departmentService.SearchScope(
 		request.Expand,
-		pagination.New(request.Page, request.PageSize),
+		page,
 		DepScopes.TitleLike(request.Title),
 		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
 		DepScopes.ParentID(request.ParentID),
