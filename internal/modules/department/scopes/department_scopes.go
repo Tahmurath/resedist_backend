@@ -1,12 +1,11 @@
 package scopes
 
 import (
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func TitleLike(c *gin.Context) func(db *gorm.DB) *gorm.DB {
-	if title := c.Query("title"); title != "" {
+func TitleLike(title string) func(db *gorm.DB) *gorm.DB {
+	if title != "" {
 		return func(db *gorm.DB) *gorm.DB {
 
 			query := "%" + title + "%"
@@ -18,11 +17,26 @@ func TitleLike(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func ParentID(c *gin.Context) func(db *gorm.DB) *gorm.DB {
-	if parentid := c.Query("parentid"); parentid != "" {
+func Preload(Expand bool, preloades ...string) func(db *gorm.DB) *gorm.DB {
+	if Expand && len(preloades) > 0 {
 		return func(db *gorm.DB) *gorm.DB {
 
-			return db.Where("parent_id = ?", parentid)
+			for _, scope := range preloades {
+				db = db.Preload(scope)
+			}
+			return db
+		}
+	}
+	return func(db *gorm.DB) *gorm.DB {
+		return db
+	}
+}
+
+func ParentID(parentId int) func(db *gorm.DB) *gorm.DB {
+	if parentId > 0 {
+		return func(db *gorm.DB) *gorm.DB {
+
+			return db.Where("parent_id = ?", parentId)
 		}
 	}
 	return func(db *gorm.DB) *gorm.DB {

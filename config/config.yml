@@ -29,12 +29,12 @@ jwt:
     secret: "fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c"
     duration: "0h30m0s"
 
-Urlkeys:
-    expand: "expand"
-    sort: "sort"
-    order: "order"
-    page: "page"
-    pagesize: "page_size"
+JSKeys:
+    _status: "_status"
+    _error_message: "_error_message"
+    _error_code: "_error_code"
+    _pagination: "_pagination"
+    data: "data"
 
 
 cors:

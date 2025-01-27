@@ -1,10 +1,9 @@
 package models
 
 import (
+	"gorm.io/gorm"
 	depTypeModel "resedist/internal/modules/department/department_type/models"
 	userModels "resedist/internal/modules/user/models"
-
-	"gorm.io/gorm"
 	//orderModels "resedist/internal/modules/order/models"
 )
 
@@ -18,4 +17,12 @@ type Department struct {
 	Children         []Department                 `gorm:"foreignKey:ParentID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	AddedByUserID    uint
 	AddedByUser      userModels.User
+	//ModelHelper      ref.ModelHelper `gorm:"-"`
+	//GetFieldName     ref.ModelHelper `gorm:"embedded"`
 }
+
+//DepartmentModel.Department{}.GetFieldName()
+//departmentModel := DepartmentModel.Department{}
+
+// استفاده از متد GetFieldName که از ModelHelper به ارث رسیده
+//fmt.Println(departmentModel.ModelHelper.GetFieldName(departmentModel, "Title"))

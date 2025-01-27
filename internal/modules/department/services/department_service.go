@@ -57,3 +57,19 @@ func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDe
 
 	return DepResponse.ToDepartment(newDepartment, true), nil
 }
+
+//func (DepartmentService *DepartmentService) SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments {
+//
+//	var updatedValues []func(*gorm.DB) *gorm.DB
+//
+//	if expand {
+//		depModel := DepartmentModel.Department{}
+//		updatedValues = append(scopes, DepScopes.Preload(expand, refl.GetFieldName(depModel, "DepartmentType"), refl.GetFieldName(depModel, "Parent")))
+//	} else {
+//		updatedValues = scopes
+//	}
+//
+//	departments := DepartmentService.depRepository.FindAllScope(expand, pack, updatedValues...)
+//
+//	return DepResponse.ToDepartments(departments, expand)
+//}

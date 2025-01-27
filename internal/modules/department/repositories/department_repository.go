@@ -64,9 +64,10 @@ func (DepartmentRepository *DepartmentRepository) FindAllScope(expand bool, pack
 	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
 	pack.SetRows(totalRows)
 
-	if expand {
-		db = db.Preload("DepartmentType").Preload("Parent")
-	}
+	//fmt.Println(expand)
+	//if expand {
+	//	db = db.Preload("DepartmentType").Preload("Parent")
+	//}
 
 	result := db.Scopes(pack.Paginate()).Find(&departments)
 	if result.Error != nil {

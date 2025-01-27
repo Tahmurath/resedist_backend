@@ -30,40 +30,37 @@ func New() *Controller {
 }
 
 func (controller *Controller) Search2(c *gin.Context) {
-
-	cfg := config.Get()
-
-	expand := c.Query(cfg.URLKeys.Expand) == "true"
-	sort := c.Query(cfg.URLKeys.Sort)
-	order := c.DefaultQuery(cfg.URLKeys.Order, "asc")
-
 	var request DepRequest.ListDepartmentRequest
-	// This will infer what binder to use depending on the content-type header.
-	if err := c.ShouldBindQuery(&request); err != nil {
 
+	cfg := config.Get().JSKeys
+
+	if err := c.ShouldBindQuery(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "Opps, there is an error with ShouldBind",
-			"request": request,
+			"request":         request,
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error with Query bind",
+			cfg.Error_code:    "",
 		})
 		return
 	}
 
-	page := pagination.New(c)
+	page := pagination.New(request.Page, request.PageSize)
 
 	departments := controller.departmentService.SearchScope(
-		expand,
-		page,
-		DepScopes.TitleLike(c),
-		DepScopes.ParentID(c),
-		DepScopes.Sort(sort, order),
+		request.Expand,
+		pagination.New(request.Page, request.PageSize),
+		DepScopes.TitleLike(request.Title),
+		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
+		DepScopes.ParentID(request.ParentID),
+		DepScopes.Sort(request.Sort, request.Order),
 	)
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":        "",
-		"error_message": "",
-		"error_code":    "",
-		"pagination":    page,
-		"data":          departments.Data,
+		cfg.Status:        "",
+		cfg.Error_message: "",
+		cfg.Error_code:    "",
+		cfg.Pagination:    page,
+		cfg.Data:          departments.Data,
 	})
 }
 
