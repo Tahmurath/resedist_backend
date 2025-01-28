@@ -70,7 +70,7 @@ add department:
 
 
 
-
+//go build -ldflags="-s -w" -o myapp
 
 // CompileDaemon -log-prefix=false -command="go run . serve"
 //

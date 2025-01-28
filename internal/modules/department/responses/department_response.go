@@ -1,6 +1,7 @@
 package responses
 
 import (
+	depaTypeModels "resedist/internal/modules/department/department_type/models"
 	"resedist/internal/modules/department/department_type/responses"
 	departmentModels "resedist/internal/modules/department/models"
 )
@@ -8,58 +9,64 @@ import (
 type Department struct {
 	ID             uint        `json:"id"`
 	Title          string      `json:"title"`
-	DepartmentType interface{} `json:"departmentType"`
-	Parent         interface{} `json:"parent"`
+	DepartmentType interface{} `json:"departmentType,omitempty"`
+	Parent         interface{} `json:"parent,omitempty"`
 }
 
 type Departments struct {
 	Data []Department `json:"data"`
 }
 
-type Parent struct {
-	ID             uint   `json:"id"`
-	Title          string `json:"title"`
-	DepartmentType uint   `json:"departmentType"`
-	Parent         uint   `json:"parent"`
+// Helper function to convert department type
+func mapDepartmentType(departmentType *depaTypeModels.DepartmentType) interface{} {
+	if departmentType == nil {
+		return nil
+	}
+	return responses.DepartmentType{
+		ID:    departmentType.ID,
+		Title: departmentType.Title,
+	}
+}
+
+// Helper function to convert parent
+func mapParent(parent *departmentModels.Department) interface{} {
+	if parent == nil {
+		return nil
+	}
+	return Department{
+		ID:             parent.ID,
+		Title:          parent.Title,
+		DepartmentType: parent.DepartmentTypeId,
+		Parent:         parent.ParentID,
+	}
 }
 
 func ToDepartment(department departmentModels.Department, expand bool) Department {
-	response := Department{
+	var departmentType interface{}
+	var parent interface{}
+
+	if expand {
+		departmentType = mapDepartmentType(department.DepartmentType)
+		parent = mapParent(department.Parent)
+	} else {
+		departmentType = department.DepartmentTypeId
+		parent = department.ParentID
+	}
+
+	return Department{
 		ID:             department.ID,
 		Title:          department.Title,
-		Parent:         department.ParentID,
-		DepartmentType: department.DepartmentTypeId,
+		DepartmentType: departmentType,
+		Parent:         parent,
 	}
-	if expand && department.DepartmentType != nil {
-		response.DepartmentType = responses.DepartmentType{
-			ID:    department.DepartmentType.ID,
-			Title: department.DepartmentType.Title,
-		}
-	} else {
-		//response.DepartmentType = department.DepartmentTypeId
-	}
-
-	if expand && department.Parent != nil {
-		response.Parent = &Department{
-			ID:             department.Parent.ID,
-			Title:          department.Parent.Title,
-			DepartmentType: department.Parent.DepartmentTypeId,
-			Parent:         department.Parent.ParentID,
-		}
-	} else if department.Parent != nil {
-		//response.Parent = &Department{ID: department.Parent.ID}
-		//response.Parent = department.ParentID
-	}
-
-	return response
 }
 
 func ToDepartments(departments []departmentModels.Department, expand bool) Departments {
-	var response Departments
+	response := make([]Department, len(departments))
 
-	for _, department := range departments {
-		response.Data = append(response.Data, ToDepartment(department, expand))
+	for i, department := range departments {
+		response[i] = ToDepartment(department, expand)
 	}
 
-	return response
+	return Departments{Data: response}
 }
