@@ -40,6 +40,8 @@ JSKeys:
 cors:
   AllowOrigins:
     - "http://localhost:3000"
+    - "http://localhost:5175"
+    - "http://localhost:5173"
     - "http://localhost:80"
 
   AllowMethods: ["GET", "POST", "PUT", "DELETE"]
