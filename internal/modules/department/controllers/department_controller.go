@@ -32,7 +32,7 @@ func New() *Controller {
 func (controller *Controller) Search2(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
 
-	cfg := config.Get().JSKeys
+	cfg := config.Get().Jsonkey
 
 	if err := c.ShouldBindQuery(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{

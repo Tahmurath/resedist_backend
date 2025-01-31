@@ -3,15 +3,15 @@ package config
 import "time"
 
 type Config struct {
-	App    App
-	Server Server
-	DB     DB
-	JSKeys JSKeys
-	Dblog  Dblog
-	Redis  Redis
-	Log    Log
-	Jwt    JWT
-	Cors   CORS
+	App     App
+	Server  Server
+	DB      DB
+	Jsonkey Jsonkey
+	Dblog   Dblog
+	Redis   Redis
+	Log     Log
+	Jwt     JWT
+	Cors    CORS
 }
 
 type App struct {
@@ -31,7 +31,7 @@ type DB struct {
 	Name     string
 }
 
-type JSKeys struct {
+type Jsonkey struct {
 	Status        string
 	Error_message string
 	Error_code    string

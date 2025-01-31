@@ -80,14 +80,18 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 
 func (controller *Controller) HandleLogin(c *gin.Context) {
 	var request auth.LoginRequest
+	cfg := config.Get().Jsonkey
 
 	if err := c.ShouldBind(&request); err != nil {
 		errors.Init()
 		errors.SetFromError(err)
 
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "Opps, there is an error with ShouldBind",
-			"errors":  errors.Get(),
+			//"message": "Opps, there is an error with ShouldBind",
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error with ShouldBind", //errors.Get(),
+			cfg.Error_code:    "",
+			cfg.Data:          "",
 		})
 		return
 	}
@@ -98,8 +102,11 @@ func (controller *Controller) HandleLogin(c *gin.Context) {
 		errors.Add("email", err.Error())
 
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "Opps, there is an error to find user",
-			"errors":  errors.Get(),
+			//"message":         "Opps, there is an error to find user",
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error to find user", //errors.Get(),
+			cfg.Error_code:    "",
+			cfg.Data:          "",
 		})
 		return
 	}
@@ -107,15 +114,27 @@ func (controller *Controller) HandleLogin(c *gin.Context) {
 	token, err := createJwt(user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "Opps, there is an error",
+			//"message": "Opps, there is an error",
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error", //errors.Get(),
+			cfg.Error_code:    "",
+			cfg.Data:          "",
 		})
 		return
 	}
 
 	log.Printf("The user logged in successfully with a name %s \n", user.Name)
 	c.JSON(http.StatusOK, gin.H{
-		"token":   token,
-		"message": "User logged in successfully",
+		//"message": "User logged in successfully",
+		cfg.Status:        "success",
+		cfg.Error_message: "User logged in successfully", //errors.Get(),
+		cfg.Error_code:    "",
+		//"user":            user,
+		"token": token,
+		"user": map[string]interface{}{
+			"info":  user,
+			"token": token,
+		},
 	})
 }
 
