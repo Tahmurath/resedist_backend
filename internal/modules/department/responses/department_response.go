@@ -11,6 +11,7 @@ type Department struct {
 	Title          string      `json:"title"`
 	DepartmentType interface{} `json:"departmentType,omitempty"`
 	Parent         interface{} `json:"parent,omitempty"`
+	Label          string      `json:"label"`
 }
 
 type Departments struct {
@@ -38,6 +39,7 @@ func mapParent(parent *departmentModels.Department) interface{} {
 		Title:          parent.Title,
 		DepartmentType: parent.DepartmentTypeId,
 		Parent:         parent.ParentID,
+		Label:          "Bug",
 	}
 }
 
@@ -58,6 +60,7 @@ func ToDepartment(department departmentModels.Department, expand bool) Departmen
 		Title:          department.Title,
 		DepartmentType: departmentType,
 		Parent:         parent,
+		Label:          "Bug",
 	}
 }
 
