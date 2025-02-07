@@ -2,7 +2,7 @@ app:
   name: "onereseve"
 
 server:
-  host: "192.168.1.164"
+  host: "localhost"
   port: "4000"
 
 db:
@@ -41,6 +41,7 @@ cors:
   AllowOrigins:
     - "http://localhost:3000"
     - "http://localhost:5175"
+    - "http://localhost:4173"
     - "http://localhost:5173"
     - "http://localhost:80"
     - "http://192.168.1.164:3000"

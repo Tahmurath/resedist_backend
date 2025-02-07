@@ -21,8 +21,8 @@ func New(page, pageSize int) *PagePack {
 	}
 
 	switch {
-	case pageSize > 30:
-		pageSize = 30
+	case pageSize > 50:
+		pageSize = 50
 	case pageSize <= 0:
 		pageSize = 10
 	}
