@@ -3,7 +3,7 @@ package routes
 import (
 	articleRoutes "resedist/internal/modules/article/routes"
 	authRoutes "resedist/internal/modules/auth/routes"
-	depRoutes "resedist/internal/modules/department/routes"
+	depRoutes "resedist/internal/modules/department/department/routes"
 	homeRoutes "resedist/internal/modules/home/routes"
 	userRoutes "resedist/internal/modules/user/routes"
 

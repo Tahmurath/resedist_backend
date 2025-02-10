@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	DepartmentModels "resedist/internal/modules/department/models"
+	DepartmentModels "resedist/internal/modules/department/department/models"
 	"resedist/pkg/database"
 	"resedist/pkg/pagination"
 

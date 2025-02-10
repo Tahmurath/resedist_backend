@@ -3,10 +3,10 @@ package services
 import (
 	"errors"
 	"gorm.io/gorm"
-	DepartmentModel "resedist/internal/modules/department/models"
-	DepRepository "resedist/internal/modules/department/repositories"
-	DepRequest "resedist/internal/modules/department/requests/department"
-	DepResponse "resedist/internal/modules/department/responses"
+	DepartmentModel "resedist/internal/modules/department/department/models"
+	DepRepository "resedist/internal/modules/department/department/repositories"
+	DepRequest "resedist/internal/modules/department/department/requests/department"
+	DepResponse "resedist/internal/modules/department/department/responses"
 	UserResponse "resedist/internal/modules/user/responses"
 	"resedist/pkg/pagination"
 )

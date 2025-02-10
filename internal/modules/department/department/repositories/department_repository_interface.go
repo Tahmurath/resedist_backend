@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"gorm.io/gorm"
-	DepartmentModels "resedist/internal/modules/department/models"
+	DepartmentModels "resedist/internal/modules/department/department/models"
 	"resedist/pkg/pagination"
 )
 

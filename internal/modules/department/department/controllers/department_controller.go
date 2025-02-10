@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
-	DepScopes "resedist/internal/modules/department/scopes"
+	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
@@ -14,8 +14,8 @@ import (
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
-	DepRequest "resedist/internal/modules/department/requests/department"
-	DepartmentService "resedist/internal/modules/department/services"
+	DepRequest "resedist/internal/modules/department/department/requests/department"
+	DepartmentService "resedist/internal/modules/department/department/services"
 )
 
 type Controller struct {

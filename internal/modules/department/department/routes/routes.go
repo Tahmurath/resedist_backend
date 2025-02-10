@@ -2,7 +2,7 @@ package routes
 
 import (
 	"resedist/internal/middlewares"
-	depCtrl "resedist/internal/modules/department/controllers"
+	depCtrl "resedist/internal/modules/department/department/controllers"
 	depTypeCtrl "resedist/internal/modules/department/department_type/controllers"
 
 	"github.com/gin-gonic/gin"

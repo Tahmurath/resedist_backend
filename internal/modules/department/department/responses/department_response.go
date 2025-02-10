@@ -1,9 +1,9 @@
 package responses
 
 import (
+	departmentModels "resedist/internal/modules/department/department/models"
 	depaTypeModels "resedist/internal/modules/department/department_type/models"
 	"resedist/internal/modules/department/department_type/responses"
-	departmentModels "resedist/internal/modules/department/models"
 )
 
 type Department struct {

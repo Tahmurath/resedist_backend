@@ -2,8 +2,8 @@ package services
 
 import (
 	"gorm.io/gorm"
-	DepRequest "resedist/internal/modules/department/requests/department"
-	DepResponse "resedist/internal/modules/department/responses"
+	DepRequest "resedist/internal/modules/department/department/requests/department"
+	DepResponse "resedist/internal/modules/department/department/responses"
 	UserResponse "resedist/internal/modules/user/responses"
 	"resedist/pkg/pagination"
 )
