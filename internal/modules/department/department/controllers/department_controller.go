@@ -2,15 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
-	"strconv"
-
-	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -29,7 +27,7 @@ func New() *Controller {
 	}
 }
 
-func (controller *Controller) Search2(c *gin.Context) {
+func (controller *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
 
 	cfg := config.Get().Jsonkey
@@ -64,17 +62,17 @@ func (controller *Controller) Search2(c *gin.Context) {
 	})
 }
 
-func (controller *Controller) Search(c *gin.Context) {
-
-	title := c.DefaultQuery("query", "")
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
-	expand := c.Query("expand") == "true"
-
-	departments := controller.departmentService.Search(title, page, pageSize, expand)
-
-	c.JSON(http.StatusOK, departments.Data)
-}
+//func (controller *Controller) Search(c *gin.Context) {
+//
+//	title := c.DefaultQuery("query", "")
+//	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+//	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+//	expand := c.Query("expand") == "true"
+//
+//	departments := controller.departmentService.Search(title, page, pageSize, expand)
+//
+//	c.JSON(http.StatusOK, departments.Data)
+//}
 
 func (controller *Controller) Store(c *gin.Context) {
 

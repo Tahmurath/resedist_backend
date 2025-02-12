@@ -78,6 +78,7 @@ func (DepartmentRepository *DepartmentRepository) FindAllScope(expand bool, pack
 
 	return departments
 }
+
 func (DepartmentRepository *DepartmentRepository) FindAllByTitle(title string, page int, pageSize int, expand bool) []DepartmentModels.Department {
 	var departments []DepartmentModels.Department
 
