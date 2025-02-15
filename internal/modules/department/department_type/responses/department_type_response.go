@@ -10,7 +10,7 @@ type DepartmentType struct {
 }
 
 type DepartmentTypes struct {
-	Data []DepartmentType
+	Data []DepartmentType `json:"data"`
 }
 
 func ToDepartmentType(depType DepTypeModels.DepartmentType) DepartmentType {
@@ -21,11 +21,11 @@ func ToDepartmentType(depType DepTypeModels.DepartmentType) DepartmentType {
 }
 
 func ToDepartmentTypes(depTypes []DepTypeModels.DepartmentType) DepartmentTypes {
-	var response DepartmentTypes
+	response := make([]DepartmentType, len(depTypes))
 
-	for _, depType := range depTypes {
-		response.Data = append(response.Data, ToDepartmentType(depType))
+	for i, depType := range depTypes {
+		response[i] = ToDepartmentType(depType)
 	}
 
-	return response
+	return DepartmentTypes{Data: response}
 }
