@@ -5,8 +5,8 @@ import (
 )
 
 type DepartmentType struct {
-	ID    uint
-	Title string
+	ID    uint   `json:"id"`
+	Title string `json:"title"`
 }
 
 type DepartmentTypes struct {

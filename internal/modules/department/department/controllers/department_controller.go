@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
+
+	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -50,6 +51,8 @@ func (controller *Controller) Search(c *gin.Context) {
 		DepScopes.TitleLike(request.Title),
 		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
 		DepScopes.ParentID(request.ParentID),
+		DepScopes.ParentIDS(request.Parent),
+		DepScopes.DepTypes(request.DepartmentType),
 		DepScopes.Sort(request.Sort, request.Order),
 	)
 

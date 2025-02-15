@@ -1,6 +1,9 @@
 package scopes
 
 import (
+	"fmt"
+	"strings"
+
 	"gorm.io/gorm"
 )
 
@@ -37,6 +40,50 @@ func ParentID(parentId int) func(db *gorm.DB) *gorm.DB {
 		return func(db *gorm.DB) *gorm.DB {
 
 			return db.Where("parent_id = ?", parentId)
+		}
+	}
+	return func(db *gorm.DB) *gorm.DB {
+		return db
+	}
+}
+
+func ParentIDS(parentIdParams string) func(db *gorm.DB) *gorm.DB {
+	if parentIdParams != "" {
+
+		parentIdStr := strings.Split(parentIdParams, ",")
+		var parents []int
+
+		for _, str := range parentIdStr {
+			var parent int
+			fmt.Sscanf(str, "%d", &parent)
+			parents = append(parents, parent)
+		}
+
+		return func(db *gorm.DB) *gorm.DB {
+
+			return db.Where("parent_id IN ?", parents)
+		}
+	}
+	return func(db *gorm.DB) *gorm.DB {
+		return db
+	}
+}
+
+func DepTypes(deptypeParams string) func(db *gorm.DB) *gorm.DB {
+	if deptypeParams != "" {
+
+		parentIdStr := strings.Split(deptypeParams, ",")
+		var deptypes []int
+
+		for _, str := range parentIdStr {
+			var deptype int
+			fmt.Sscanf(str, "%d", &deptype)
+			deptypes = append(deptypes, deptype)
+		}
+
+		return func(db *gorm.DB) *gorm.DB {
+
+			return db.Where("department_type_id IN ?", deptypes)
 		}
 	}
 	return func(db *gorm.DB) *gorm.DB {
