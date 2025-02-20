@@ -43,14 +43,13 @@ func (controller *Controller) Search(c *gin.Context) {
 		return
 	}
 
-	page := pagination.New(request.Page, request.PageSize)
+	paginate := pagination.New(request.Page, request.PageSize)
 
 	departments := controller.departmentService.SearchScope(
 		request.Expand,
-		page,
+		paginate,
 		DepScopes.TitleLike(request.Title),
 		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
-		DepScopes.ParentID(request.ParentID),
 		DepScopes.ParentIDS(request.Parent),
 		DepScopes.DepTypes(request.DepartmentType),
 		DepScopes.Sort(request.Sort, request.Order),
@@ -60,7 +59,7 @@ func (controller *Controller) Search(c *gin.Context) {
 		cfg.Status:        "",
 		cfg.Error_message: "",
 		cfg.Error_code:    "",
-		cfg.Pagination:    page,
+		cfg.Pagination:    paginate,
 		cfg.Data:          departments.Data,
 	})
 }

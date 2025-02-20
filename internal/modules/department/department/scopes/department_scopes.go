@@ -94,11 +94,11 @@ func DepTypes(deptypeParams string) func(db *gorm.DB) *gorm.DB {
 func Sort(column string, order string) func(db *gorm.DB) *gorm.DB {
 
 	var allowedSortColumns = map[string]bool{
-		"id":                 true,
-		"title":              true,
-		"department_type_id": true,
-		"parent_id ":         true,
-		"created_at":         true,
+		"id":    true,
+		"title": true,
+		//"department_type_id": true,
+		//"parent_id ":         true,
+		"created_at": true,
 	}
 
 	if order != "desc" {
