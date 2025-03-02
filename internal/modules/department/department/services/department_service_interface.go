@@ -9,10 +9,7 @@ import (
 )
 
 type DepartmentServiceInterface interface {
-	//Find(id int) (DepResponse.Department, error)
-	//List() DepResponse.Departments
+	Find(id int, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error)
 	StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
-	Search(title string, page int, pageSize int, expand bool) DepResponse.Departments
-	SearchP(pack *pagination.PagePack) DepResponse.Departments
 	SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments
 }

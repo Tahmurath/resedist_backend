@@ -21,24 +21,31 @@ func New() *DepartmentService {
 	}
 }
 
-func (DepartmentService *DepartmentService) SearchP(pack *pagination.PagePack) DepResponse.Departments {
-
-	departments := DepartmentService.depRepository.FindAllByTitleP(pack)
-
-	return DepResponse.ToDepartments(departments, false)
-}
 func (DepartmentService *DepartmentService) SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments {
 
-	departments := DepartmentService.depRepository.FindAllScope(expand, pack, scopes...)
+	departments := DepartmentService.depRepository.FindAllScope(pack, scopes...)
 
 	return DepResponse.ToDepartments(departments, expand)
 }
-func (DepartmentService *DepartmentService) Search(title string, page int, pageSize int, expand bool) DepResponse.Departments {
 
-	departments := DepartmentService.depRepository.FindAllByTitle(title, page, pageSize, expand)
+func (DepartmentService *DepartmentService) Find(id int, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {
+	var response DepResponse.Department
 
-	return DepResponse.ToDepartments(departments, expand)
+	department := DepartmentService.depRepository.Find(id, scopes...)
+
+	if department.ID == 0 {
+		return response, errors.New("error in find Department")
+	}
+
+	return DepResponse.ToDepartment(department, expand), nil
 }
+
+//func (DepartmentService *DepartmentService) Search(title string, page int, pageSize int, expand bool) DepResponse.Departments {
+//
+//	departments := DepartmentService.depRepository.FindAllByTitle(title, page, pageSize, expand)
+//
+//	return DepResponse.ToDepartments(departments, expand)
+//}
 
 func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 	var department DepartmentModel.Department
@@ -57,19 +64,3 @@ func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDe
 
 	return DepResponse.ToDepartment(newDepartment, true), nil
 }
-
-//func (DepartmentService *DepartmentService) SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments {
-//
-//	var updatedValues []func(*gorm.DB) *gorm.DB
-//
-//	if expand {
-//		depModel := DepartmentModel.Department{}
-//		updatedValues = append(scopes, DepScopes.Preload(expand, refl.GetFieldName(depModel, "DepartmentType"), refl.GetFieldName(depModel, "Parent")))
-//	} else {
-//		updatedValues = scopes
-//	}
-//
-//	departments := DepartmentService.depRepository.FindAllScope(expand, pack, updatedValues...)
-//
-//	return DepResponse.ToDepartments(departments, expand)
-//}

@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"resedist/internal/modules/auth/helpers"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
-
-	"github.com/gin-gonic/gin"
+	"strconv"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -26,6 +26,46 @@ func New() *Controller {
 	return &Controller{
 		departmentService: DepartmentService.New(),
 	}
+}
+
+func (controller *Controller) Show(c *gin.Context) {
+	var request DepRequest.OneDepartmentRequest
+
+	fmt.Println(strconv.Atoi(c.Param("expand")))
+
+	cfg := config.Get().Jsonkey
+
+	if err := c.ShouldBindUri(&request); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"request":         request,
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error with Query bind",
+			cfg.Error_code:    "",
+		})
+		return
+	}
+	if err := c.ShouldBindQuery(&request); err != nil { // گرفتن expand از JSON body
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	department, err := controller.departmentService.Find(request.DepartmentId, request.Expand, DepScopes.Preload(request.Expand, "DepartmentType", "Parent"))
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"request":         request,
+			cfg.Status:        "failed",
+			cfg.Error_message: "Department not found",
+			cfg.Error_code:    "",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		cfg.Status:        "",
+		cfg.Error_message: "",
+		cfg.Error_code:    "",
+		cfg.Data:          department,
+	})
 }
 
 func (controller *Controller) Search(c *gin.Context) {
