@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"resedist/internal/modules/auth/helpers"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
-	"resedist/pkg/errors"
 	"resedist/pkg/pagination"
 	"strconv"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
+	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
 	DepartmentService "resedist/internal/modules/department/department/services"
 )
@@ -104,51 +103,38 @@ func (controller *Controller) Search(c *gin.Context) {
 	})
 }
 
-//func (controller *Controller) Search(c *gin.Context) {
-//
-//	title := c.DefaultQuery("query", "")
-//	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-//	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
-//	expand := c.Query("expand") == "true"
-//
-//	departments := controller.departmentService.Search(title, page, pageSize, expand)
-//
-//	c.JSON(http.StatusOK, departments.Data)
-//}
-
 func (controller *Controller) Store(c *gin.Context) {
-
 	var request DepRequest.AddDepartmentRequest
-	// This will infer what binder to use depending on the content-type header.
+
+	cfg := config.Get().Jsonkey
+
 	if err := c.ShouldBind(&request); err != nil {
-
-		fmt.Println(err)
-		errors.Init()
-		errors.SetFromError(err)
-
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "Opps, there is an error with ShouldBind",
-			"errors":  errors.Get(),
-			"request": request,
+			"request":         request,
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error with Query bind",
+			cfg.Error_code:    "",
 		})
 		return
 	}
 
-	user := helpers.AuthJWT(c)
+	user := authHelpers.AuthJWT(c)
 
-	// create article
 	department, err := controller.departmentService.StoreAsUser(request, user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"message": "Opps, there is an error with ShouldBind",
-			"errors":  errors.Get(),
-			"request": request,
+			"request":         request,
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error with store department",
+			cfg.Error_code:    "",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":    "Department createdd in successfully",
-		"department": department,
+		cfg.Status:        "",
+		cfg.Error_message: "",
+		cfg.Error_code:    "",
+		cfg.Data:          department,
 	})
 }
