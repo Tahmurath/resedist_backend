@@ -2,13 +2,14 @@ package services
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	DepartmentModel "resedist/internal/modules/department/department/models"
 	DepRepository "resedist/internal/modules/department/department/repositories"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
 	DepResponse "resedist/internal/modules/department/department/responses"
 	UserResponse "resedist/internal/modules/user/responses"
 	"resedist/pkg/pagination"
+
+	"gorm.io/gorm"
 )
 
 type DepartmentService struct {

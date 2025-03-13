@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/pagination"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -43,11 +44,15 @@ func (controller *Controller) Show(c *gin.Context) {
 		})
 		return
 	}
-	if err := c.ShouldBindQuery(&request); err != nil { // گرفتن expand از JSON body
+	if err := c.ShouldBindQuery(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	department, err := controller.departmentService.Find(request.DepartmentId, request.Expand, DepScopes.Preload(request.Expand, "DepartmentType", "Parent"))
+	department, err := controller.departmentService.Find(
+		request.DepartmentId,
+		request.Expand,
+		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
+	)
 
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
