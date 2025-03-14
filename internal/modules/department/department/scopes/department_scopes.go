@@ -91,6 +91,28 @@ func DepTypes(deptypeParams string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
+func Ids(idParams string) func(db *gorm.DB) *gorm.DB {
+	if idParams != "" {
+
+		idStr := strings.Split(idParams, ",")
+		var ids []int
+
+		for _, str := range idStr {
+			var id int
+			fmt.Sscanf(str, "%d", &id)
+			ids = append(ids, id)
+		}
+
+		return func(db *gorm.DB) *gorm.DB {
+
+			return db.Where("id IN ?", ids)
+		}
+	}
+	return func(db *gorm.DB) *gorm.DB {
+		return db
+	}
+}
+
 func Sort(column string, order string) func(db *gorm.DB) *gorm.DB {
 
 	var allowedSortColumns = map[string]bool{
