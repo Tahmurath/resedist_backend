@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"net/http"
+	DepScopes "resedist/internal/modules/department/department/scopes"
+
 	//DepScopes "resedist/internal/modules/department/department/scopes"
 	DepTypeRequest "resedist/internal/modules/department/department_type/requests/department_type"
 	DepTypeScopes "resedist/internal/modules/department/department_type/scopes"
@@ -46,6 +48,7 @@ func (controller *Controller) Search(c *gin.Context) {
 	depTypes := controller.departmentTypeService.SearchScope(
 		page,
 		DepTypeScopes.TitleLike(request.Title),
+		DepScopes.IdsOr(request.DepartmentType),
 		DepTypeScopes.Sort(request.Sort, request.Order),
 	)
 

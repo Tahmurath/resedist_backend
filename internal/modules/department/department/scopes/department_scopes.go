@@ -91,7 +91,7 @@ func DepTypes(deptypeParams string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func Ids(idParams string) func(db *gorm.DB) *gorm.DB {
+func IdsOr(idParams string) func(db *gorm.DB) *gorm.DB {
 	if idParams != "" {
 
 		idStr := strings.Split(idParams, ",")
@@ -105,7 +105,7 @@ func Ids(idParams string) func(db *gorm.DB) *gorm.DB {
 
 		return func(db *gorm.DB) *gorm.DB {
 
-			return db.Where("id IN ?", ids)
+			return db.Or("id IN ?", ids)
 		}
 	}
 	return func(db *gorm.DB) *gorm.DB {
