@@ -1,10 +1,11 @@
 package services
 
 import (
-	"gorm.io/gorm"
 	DepTypeRepository "resedist/internal/modules/department/department_type/repositories"
 	DepTypeResponse "resedist/internal/modules/department/department_type/responses"
 	"resedist/pkg/pagination"
+
+	"gorm.io/gorm"
 )
 
 type DepartmentTypeService struct {
@@ -24,7 +25,7 @@ func (DepartmentTypeService *DepartmentTypeService) Search(title string) DepType
 	return DepTypeResponse.ToDepartmentTypes(depTypes)
 }
 
-func (DepartmentTypeService *DepartmentTypeService) SearchScope(pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepTypeResponse.DepartmentTypes {
+func (DepartmentTypeService *DepartmentTypeService) SearchScope(pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) DepTypeResponse.DepartmentTypes {
 
 	depTypes := DepartmentTypeService.depTypeRepository.FindAllScope(pack, scopes...)
 

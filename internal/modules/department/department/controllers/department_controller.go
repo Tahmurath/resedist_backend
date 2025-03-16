@@ -104,7 +104,6 @@ func (controller *Controller) Search2(c *gin.Context) {
 
 func (controller *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
-
 	cfg := config.Get().Jsonkey
 
 	if err := c.ShouldBindQuery(&request); err != nil {
@@ -116,8 +115,7 @@ func (controller *Controller) Search(c *gin.Context) {
 		})
 		return
 	}
-
-	paginate := pagination.New(request.Page, request.PageSize)
+	paginate := pagination.NewPagePack(request.Page, request.PageSize)
 
 	departments, err := controller.departmentService.SearchDepartmentsWithScopes(
 		request.Expand,

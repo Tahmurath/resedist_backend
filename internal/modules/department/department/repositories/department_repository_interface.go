@@ -10,5 +10,5 @@ import (
 type DepartmentRepositoryInterface interface {
 	Find(id int, scopes ...func(*gorm.DB) *gorm.DB) DepartmentModels.Department
 	Create(department DepartmentModels.Department) DepartmentModels.Department
-	FindAllScope(pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) ([]DepartmentModels.Department, error)
+	FindAllScope(pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) ([]DepartmentModels.Department, error)
 }

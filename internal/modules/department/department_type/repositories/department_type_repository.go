@@ -25,7 +25,7 @@ func (DepartmentTypeRepository *DepartmentTypeRepository) FindAll(title string, 
 
 	return depType
 }
-func (DepartmentTypeRepository *DepartmentTypeRepository) FindAllScope(pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) []DepTypeModels.DepartmentType {
+func (DepartmentTypeRepository *DepartmentTypeRepository) FindAllScope(pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) []DepTypeModels.DepartmentType {
 	var depTypes []DepTypeModels.DepartmentType
 	var totalRows int64
 	db := DepartmentTypeRepository.DB
@@ -43,7 +43,7 @@ func (DepartmentTypeRepository *DepartmentTypeRepository) FindAllScope(pack *pag
 	//	db = db.Preload("DepartmentType").Preload("Parent")
 	//}
 
-	result := db.Scopes(pack.Paginate()).Find(&depTypes)
+	result := db.Scopes(pack.ApplyToDB).Find(&depTypes)
 	if result.Error != nil {
 		// Log the error or handle it as needed
 		return nil

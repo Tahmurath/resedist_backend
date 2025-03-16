@@ -23,7 +23,7 @@ func New() *DepartmentService {
 	}
 }
 
-func (DepartmentService *DepartmentService) SearchDepartmentsWithScopes(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error) {
+func (DepartmentService *DepartmentService) SearchDepartmentsWithScopes(expand bool, pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error) {
 	departments, err := DepartmentService.depRepository.FindAllScope(pack, scopes...)
 	if err != nil {
 		return DepResponse.Departments{}, err
@@ -33,7 +33,7 @@ func (DepartmentService *DepartmentService) SearchDepartmentsWithScopes(expand b
 
 func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request DepRequest.ListDepartmentRequest) (DepResponse.Departments, pagination.PagePack, error) {
 
-	paginate := pagination.New(request.Page, request.PageSize)
+	paginate := pagination.NewPagePack(request.Page, request.PageSize)
 
 	scopes := []func(*gorm.DB) *gorm.DB{
 		DepScopes.TitleLike(request.Title),

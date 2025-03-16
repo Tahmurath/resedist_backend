@@ -43,7 +43,7 @@ func (controller *Controller) Search(c *gin.Context) {
 		return
 	}
 
-	page := pagination.New(request.Page, request.PageSize)
+	page := pagination.NewPagePack(request.Page, request.PageSize)
 
 	depTypes := controller.departmentTypeService.SearchScope(
 		page,

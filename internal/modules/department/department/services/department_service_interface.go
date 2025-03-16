@@ -15,6 +15,6 @@ type DepartmentServiceInterface interface {
 
 	//UpdateAsUser(id int, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
 
-	SearchDepartmentsWithScopes(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error)
+	SearchDepartmentsWithScopes(expand bool, pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error)
 	SearchDepartmentsPaginated(request DepRequest.ListDepartmentRequest) (DepResponse.Departments, pagination.PagePack, error)
 }
