@@ -46,7 +46,7 @@ func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request D
 
 	departments, err := DepartmentService.depRepository.FindAllScope(paginate, scopes...)
 	if err != nil {
-		return DepResponse.Departments{}, pagination.PagePack{}, err
+		return DepResponse.Departments{}, *paginate, err
 	}
 	return DepResponse.ToDepartments(departments, request.Expand), *paginate, nil
 }
