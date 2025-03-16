@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/pagination"
+
+	"github.com/gin-gonic/gin"
 
 	//articleRepository "resedist/internal/modules/article/repositories"
 
@@ -67,6 +68,40 @@ func (controller *Controller) Show(c *gin.Context) {
 	})
 }
 
+func (controller *Controller) Search2(c *gin.Context) {
+	var request DepRequest.ListDepartmentRequest
+	cfg := config.Get().Jsonkey
+
+	if err := c.ShouldBindQuery(&request); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"request":         request,
+			cfg.Status:        "failed",
+			cfg.Error_message: "Opps, there is an error with Query bind",
+			cfg.Error_code:    "",
+		})
+		return
+	}
+
+	departments, paginate, err := controller.departmentService.SearchDepartmentsPaginated(request)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			cfg.Status:        "failed",
+			cfg.Error_message: "Error fetching departments",
+			cfg.Error_code:    err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		cfg.Status:        "success",
+		cfg.Error_message: "",
+		cfg.Error_code:    "",
+		cfg.Pagination:    paginate,
+		cfg.Data:          departments.Data,
+	})
+}
+
 func (controller *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
 
@@ -84,7 +119,7 @@ func (controller *Controller) Search(c *gin.Context) {
 
 	paginate := pagination.New(request.Page, request.PageSize)
 
-	departments := controller.departmentService.SearchScope(
+	departments, err := controller.departmentService.SearchDepartmentsWithScopes(
 		request.Expand,
 		paginate,
 		DepScopes.TitleLike(request.Title),
@@ -95,8 +130,17 @@ func (controller *Controller) Search(c *gin.Context) {
 		DepScopes.Sort(request.Sort, request.Order),
 	)
 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			cfg.Status:        "failed",
+			cfg.Error_message: "Error fetching departments",
+			cfg.Error_code:    err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		cfg.Status:        "",
+		cfg.Status:        "success",
 		cfg.Error_message: "",
 		cfg.Error_code:    "",
 		cfg.Pagination:    paginate,

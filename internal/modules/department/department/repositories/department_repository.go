@@ -38,7 +38,9 @@ func (DepartmentRepository *DepartmentRepository) Create(department DepartmentMo
 	return newDepartment
 }
 
-func (DepartmentRepository *DepartmentRepository) FindAllScope(pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) []DepartmentModels.Department {
+// FindAllScope retrieves all departments with pagination and custom filtering scopes.
+// Scopes are applied sequentially to filter the query before pagination.
+func (DepartmentRepository *DepartmentRepository) FindAllScope(pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) ([]DepartmentModels.Department, error) {
 	var departments []DepartmentModels.Department
 	var totalRows int64
 	db := DepartmentRepository.DB
@@ -53,8 +55,8 @@ func (DepartmentRepository *DepartmentRepository) FindAllScope(pack *pagination.
 	result := db.Scopes(pack.Paginate()).Find(&departments)
 	if result.Error != nil {
 		// Log the error or handle it as needed
-		return nil
+		return nil, result.Error
 	}
 
-	return departments
+	return departments, nil
 }

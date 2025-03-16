@@ -51,11 +51,14 @@ func ParentIDS(parentIdParams string) func(db *gorm.DB) *gorm.DB {
 	if parentIdParams != "" {
 
 		parentIdStr := strings.Split(parentIdParams, ",")
-		var parents []int
+		var parents []uint
 
 		for _, str := range parentIdStr {
-			var parent int
-			fmt.Sscanf(str, "%d", &parent)
+			var parent uint
+			//fmt.Sscanf(str, "%d", &parent)
+			if _, err := fmt.Sscanf(str, "%d", &parent); err != nil {
+				continue
+			}
 			parents = append(parents, parent)
 		}
 
@@ -95,13 +98,21 @@ func IdsOr(idParams string) func(db *gorm.DB) *gorm.DB {
 	if idParams != "" {
 
 		idStr := strings.Split(idParams, ",")
-		var ids []int
+		var ids []uint
 
 		for _, str := range idStr {
-			var id int
+			var id uint
 			fmt.Sscanf(str, "%d", &id)
 			ids = append(ids, id)
 		}
+
+		// for _, str := range idStr {
+		// 	id, err := strconv.Atoi(strings.TrimSpace(str))
+		// 	if err != nil {
+		// 		continue // یا خطا رو برگردون
+		// 	}
+		// 	ids = append(ids, id)
+		// }
 
 		return func(db *gorm.DB) *gorm.DB {
 

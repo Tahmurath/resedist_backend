@@ -6,6 +6,7 @@ import (
 	DepRepository "resedist/internal/modules/department/department/repositories"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
 	DepResponse "resedist/internal/modules/department/department/responses"
+	DepScopes "resedist/internal/modules/department/department/scopes"
 	UserResponse "resedist/internal/modules/user/responses"
 	"resedist/pkg/pagination"
 
@@ -22,11 +23,32 @@ func New() *DepartmentService {
 	}
 }
 
-func (DepartmentService *DepartmentService) SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments {
+func (DepartmentService *DepartmentService) SearchDepartmentsWithScopes(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error) {
+	departments, err := DepartmentService.depRepository.FindAllScope(pack, scopes...)
+	if err != nil {
+		return DepResponse.Departments{}, err
+	}
+	return DepResponse.ToDepartments(departments, expand), nil
+}
 
-	departments := DepartmentService.depRepository.FindAllScope(pack, scopes...)
+func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request DepRequest.ListDepartmentRequest) (DepResponse.Departments, pagination.PagePack, error) {
 
-	return DepResponse.ToDepartments(departments, expand)
+	paginate := pagination.New(request.Page, request.PageSize)
+
+	scopes := []func(*gorm.DB) *gorm.DB{
+		DepScopes.TitleLike(request.Title),
+		DepScopes.IdsOr(request.Department),
+		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
+		DepScopes.ParentIDS(request.Parent),
+		DepScopes.DepTypes(request.DepartmentType),
+		DepScopes.Sort(request.Sort, request.Order),
+	}
+
+	departments, err := DepartmentService.depRepository.FindAllScope(paginate, scopes...)
+	if err != nil {
+		return DepResponse.Departments{}, pagination.PagePack{}, err
+	}
+	return DepResponse.ToDepartments(departments, request.Expand), *paginate, nil
 }
 
 func (DepartmentService *DepartmentService) Find(id int, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {

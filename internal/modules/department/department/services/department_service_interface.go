@@ -1,11 +1,12 @@
 package services
 
 import (
-	"gorm.io/gorm"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
 	DepResponse "resedist/internal/modules/department/department/responses"
 	UserResponse "resedist/internal/modules/user/responses"
 	"resedist/pkg/pagination"
+
+	"gorm.io/gorm"
 )
 
 type DepartmentServiceInterface interface {
@@ -14,5 +15,6 @@ type DepartmentServiceInterface interface {
 
 	//UpdateAsUser(id int, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
 
-	SearchScope(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) DepResponse.Departments
+	SearchDepartmentsWithScopes(expand bool, pack *pagination.PagePack, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error)
+	SearchDepartmentsPaginated(request DepRequest.ListDepartmentRequest) (DepResponse.Departments, pagination.PagePack, error)
 }
