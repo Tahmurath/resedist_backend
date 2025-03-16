@@ -52,7 +52,7 @@ func (DepartmentRepository *DepartmentRepository) FindAllScope(pack pagination.P
 	db.Model(&DepartmentModels.Department{}).Count(&totalRows)
 	pack.SetRows(totalRows)
 
-	result := db.Scopes(pack.ApplyToDB).Find(&departments)
+	result := db.Scopes(pack.ApplyToDB()).Find(&departments)
 	if result.Error != nil {
 		// Log the error or handle it as needed
 		return nil, result.Error

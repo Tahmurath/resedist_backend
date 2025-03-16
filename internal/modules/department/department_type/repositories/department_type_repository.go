@@ -43,7 +43,7 @@ func (DepartmentTypeRepository *DepartmentTypeRepository) FindAllScope(pack pagi
 	//	db = db.Preload("DepartmentType").Preload("Parent")
 	//}
 
-	result := db.Scopes(pack.ApplyToDB).Find(&depTypes)
+	result := db.Scopes(pack.ApplyToDB()).Find(&depTypes)
 	if result.Error != nil {
 		// Log the error or handle it as needed
 		return nil
