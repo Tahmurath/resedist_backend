@@ -44,6 +44,9 @@ func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request D
 		DepScopes.Sort(request.Sort, request.Order),
 	}
 
+	// departments, err := DepartmentService.SearchDepartmentsWithScopes(request.Expand, paginate, scopes...)
+	// return departments, *paginate, err
+
 	departments, err := DepartmentService.depRepository.FindAllScope(paginate, scopes...)
 	if err != nil {
 		return DepResponse.Departments{}, *paginate, err
@@ -62,13 +65,6 @@ func (DepartmentService *DepartmentService) Find(id int, expand bool, scopes ...
 
 	return DepResponse.ToDepartment(department, expand), nil
 }
-
-//func (DepartmentService *DepartmentService) Search(title string, page int, pageSize int, expand bool) DepResponse.Departments {
-//
-//	departments := DepartmentService.depRepository.FindAllByTitle(title, page, pageSize, expand)
-//
-//	return DepResponse.ToDepartments(departments, expand)
-//}
 
 func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 	var department DepartmentModel.Department
