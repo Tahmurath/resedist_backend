@@ -11,17 +11,15 @@ type JsonCtl struct {
 	Error_code    string
 	Pagination    string
 	Data          string
-	c             *gin.Context
 }
 
-func New(c *gin.Context) *JsonCtl {
+func New() *JsonCtl {
 	cfg := config.Get().Jsonkey
 
 	ctl := NewJson(JsonCtl{
 		Status:        cfg.Status,
 		Error_message: cfg.Error_message,
 		Error_code:    cfg.Error_code,
-		c:             c,
 	})
 	return ctl
 }
@@ -31,16 +29,19 @@ func NewJson(cfg JsonCtl) *JsonCtl {
 		Status:        cfg.Status,
 		Error_message: cfg.Error_message,
 		Error_code:    cfg.Error_code,
-		c:             cfg.c,
 	}
 }
 
-func (jc *JsonCtl) Json(http int) {
-	jc.c.JSON(http, gin.H{
-		jc.Status:        "failed",
-		jc.Error_message: "Opps, there is an error with Query bind",
-		jc.Error_code:    "",
+func (jc *JsonCtl) Json(c *gin.Context, http int, status string, error_message string, error_code string) {
+	c.JSON(http, gin.H{
+		jc.Status:        status,
+		jc.Error_message: error_message,
+		jc.Error_code:    error_code,
 	})
+}
+
+func (jc *JsonCtl) JsonData(c *gin.Context, options ...[]string) {
+
 }
 
 //

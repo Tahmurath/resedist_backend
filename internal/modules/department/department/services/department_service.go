@@ -54,7 +54,7 @@ func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request D
 	return DepResponse.ToDepartments(departments, request.Expand), *paginate, nil
 }
 
-func (DepartmentService *DepartmentService) Find(id int, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {
+func (DepartmentService *DepartmentService) Find(id uint, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {
 	var response DepResponse.Department
 
 	department := DepartmentService.depRepository.Find(id, scopes...)
@@ -64,6 +64,17 @@ func (DepartmentService *DepartmentService) Find(id int, expand bool, scopes ...
 	}
 
 	return DepResponse.ToDepartment(department, expand), nil
+}
+
+func (DepartmentService *DepartmentService) UpdateAsUser(id uint, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
+	var response DepResponse.Department
+
+	response.ID = request.DepartmentId
+	response.Title = request.Title
+	response.Parent = request.ParentID
+	response.DepartmentType = request.DepartmentTypeId
+
+	return response, nil
 }
 
 func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {

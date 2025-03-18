@@ -1,14 +1,12 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
+	configStruct "resedist/config"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
-	"resedist/pkg/pagination"
-
-	"github.com/gin-gonic/gin"
-
-	//articleRepository "resedist/internal/modules/article/repositories"
+	"resedist/pkg/errors"
 
 	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
@@ -17,26 +15,28 @@ import (
 
 type Controller struct {
 	departmentService DepartmentService.DepartmentServiceInterface
+	cfg               configStruct.Jsonkey
+	error2            *errors.Error2
 }
 
 func New() *Controller {
 
 	return &Controller{
 		departmentService: DepartmentService.New(),
+		cfg:               config.Get().Jsonkey,
+		error2:            errors.New(),
 	}
 }
 
-func (controller *Controller) Show(c *gin.Context) {
+func (ctl *Controller) Show(c *gin.Context) {
 	var request DepRequest.OneDepartmentRequest
-
-	cfg := config.Get().Jsonkey
 
 	if err := c.ShouldBindUri(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: "Opps, there is an error with Query bind",
-			cfg.Error_code:    "",
+			"request":             request,
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: err.Error(),
+			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
@@ -44,7 +44,7 @@ func (controller *Controller) Show(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	department, err := controller.departmentService.Find(
+	department, err := ctl.departmentService.Find(
 		request.DepartmentId,
 		request.Expand,
 		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
@@ -52,167 +52,122 @@ func (controller *Controller) Show(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: "Department not found",
-			cfg.Error_code:    "",
+			"request":             request,
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: "Department not found",
+			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		cfg.Status:        "",
-		cfg.Error_message: "",
-		cfg.Error_code:    "",
-		cfg.Data:          department,
+		ctl.cfg.Status:        "",
+		ctl.cfg.Error_message: "",
+		ctl.cfg.Error_code:    "",
+		ctl.cfg.Data:          department,
 	})
 }
 
-func (controller *Controller) Search2(c *gin.Context) {
+func (ctl *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
-	cfg := config.Get().Jsonkey
 
 	if err := c.ShouldBindQuery(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: "Opps, there is an error with Query bind",
-			cfg.Error_code:    "",
+			"request":             request,
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: "Opps, there is an error with Query bind",
+			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
 
-	departments, paginate, err := controller.departmentService.SearchDepartmentsPaginated(request)
+	departments, paginate, err := ctl.departmentService.SearchDepartmentsPaginated(request)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			cfg.Status:        "failed",
-			cfg.Error_message: "Error fetching departments",
-			cfg.Error_code:    err.Error(),
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: "Error fetching departments",
+			ctl.cfg.Error_code:    err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		cfg.Status:        "success",
-		cfg.Error_message: "",
-		cfg.Error_code:    "",
-		cfg.Pagination:    paginate,
-		cfg.Data:          departments.Data,
+		ctl.cfg.Status:        "success",
+		ctl.cfg.Error_message: "",
+		ctl.cfg.Error_code:    "",
+		ctl.cfg.Pagination:    paginate,
+		ctl.cfg.Data:          departments.Data,
 	})
 }
 
-func (controller *Controller) Search(c *gin.Context) {
-	var request DepRequest.ListDepartmentRequest
-	cfg := config.Get().Jsonkey
-
-	if err := c.ShouldBindQuery(&request); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: "Opps, there is an error with Query bind",
-			cfg.Error_code:    "",
-		})
-		return
-	}
-	paginate := pagination.NewPagePack(request.Page, request.PageSize)
-
-	departments, err := controller.departmentService.SearchDepartmentsWithScopes(
-		request.Expand,
-		paginate,
-		DepScopes.TitleLike(request.Title),
-		DepScopes.IdsOr(request.Department),
-		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
-		DepScopes.ParentIDS(request.Parent),
-		DepScopes.DepTypes(request.DepartmentType),
-		DepScopes.Sort(request.Sort, request.Order),
-	)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			cfg.Status:        "failed",
-			cfg.Error_message: "Error fetching departments",
-			cfg.Error_code:    err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		cfg.Status:        "success",
-		cfg.Error_message: "",
-		cfg.Error_code:    "",
-		cfg.Pagination:    paginate,
-		cfg.Data:          departments.Data,
-	})
-}
-
-func (controller *Controller) Store(c *gin.Context) {
+func (ctl *Controller) Store(c *gin.Context) {
 	var request DepRequest.AddDepartmentRequest
-
-	cfg := config.Get().Jsonkey
 
 	if err := c.ShouldBind(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: err.Error(),  // دقیق‌تر کردن پیام خطا
-			cfg.Error_code:    "BIND_ERROR", // یه کد خطای معنادار
+			"request":             request,
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: err.Error(),  // دقیق‌تر کردن پیام خطا
+			ctl.cfg.Error_code:    "BIND_ERROR", // یه کد خطای معنادار
 		})
 		return
 	}
 
 	user := authHelpers.AuthJWT(c)
 
-	department, err := controller.departmentService.StoreAsUser(request, user)
+	department, err := ctl.departmentService.StoreAsUser(request, user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: err.Error(),
-			cfg.Error_code:    "",
+			"request":             request,
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: err.Error(),
+			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		cfg.Status:        "success",
-		cfg.Error_message: "",
-		cfg.Error_code:    "",
-		cfg.Data:          department,
+		ctl.cfg.Status:        "success",
+		ctl.cfg.Error_message: "",
+		ctl.cfg.Error_code:    "",
+		ctl.cfg.Data:          department,
 	})
 }
 
-func (controller *Controller) Update(c *gin.Context) {
-	var request DepRequest.OneDepartmentRequest
-
-	cfg := config.Get().Jsonkey
+func (ctl *Controller) Update(c *gin.Context) {
+	var request DepRequest.EditDepartmentRequest
 
 	if err := c.ShouldBindUri(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: err.Error(),
-			cfg.Error_code:    "",
+			"request":             request,
+			ctl.cfg.Status:        "BIND_ERROR",
+			ctl.cfg.Error_message: ctl.error2.SetFromError(err),
+			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
 
-	department, err := controller.departmentService.Find(request.DepartmentId, false)
+	department, err := ctl.departmentService.Find(request.DepartmentId, false)
+
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":         request,
-			cfg.Status:        "failed",
-			cfg.Error_message: err.Error(),
-			cfg.Error_code:    "",
+			"request":             request,
+			ctl.cfg.Status:        "failed",
+			ctl.cfg.Error_message: err.Error(),
+			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
 
+	user := authHelpers.AuthJWT(c)
+	department, err = ctl.departmentService.UpdateAsUser(department.ID, request, user)
+
 	c.JSON(http.StatusOK, gin.H{
-		cfg.Status:        "success",
-		cfg.Error_message: "",
-		cfg.Error_code:    "",
-		cfg.Data:          department,
+		ctl.cfg.Status:        "success",
+		ctl.cfg.Error_message: "",
+		ctl.cfg.Error_code:    "",
+		ctl.cfg.Data:          department,
 	})
 
 }

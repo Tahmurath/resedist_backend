@@ -18,7 +18,7 @@ func New() *DepartmentRepository {
 	}
 }
 
-func (DepartmentRepository *DepartmentRepository) Find(id int, scopes ...func(*gorm.DB) *gorm.DB) DepartmentModels.Department {
+func (DepartmentRepository *DepartmentRepository) Find(id uint, scopes ...func(*gorm.DB) *gorm.DB) DepartmentModels.Department {
 	var department DepartmentModels.Department
 	db := DepartmentRepository.DB
 	for _, scope := range scopes {
@@ -27,6 +27,11 @@ func (DepartmentRepository *DepartmentRepository) Find(id int, scopes ...func(*g
 	//db.Find(&department)
 	db.First(&department, id)
 
+	return department
+}
+
+func (DepartmentRepository *DepartmentRepository) Update(department DepartmentModels.Department) DepartmentModels.Department {
+	DepartmentRepository.DB.Save(&department)
 	return department
 }
 

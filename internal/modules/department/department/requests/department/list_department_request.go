@@ -3,9 +3,9 @@ package department
 type ListDepartmentRequest struct {
 	Title            string `form:"title" json:"title"`
 	Department       string `form:"department" json:"department"`
-	DepartmentTypeId int    `form:"departmenttypeid" json:"departmenttypeid"`
+	DepartmentTypeId uint   `form:"departmenttypeid" json:"departmenttypeid"`
 	DepartmentType   string `form:"department_type" json:"department_type"`
-	ParentID         int    `form:"parentid" json:"parentid"`
+	ParentID         uint   `form:"parentid" json:"parentid"`
 	Parent           string `form:"parent" json:"parent"`
 	Expand           bool   `form:"expand" json:"expand"`
 	Sort             string `form:"sort" json:"sort"`
@@ -15,7 +15,7 @@ type ListDepartmentRequest struct {
 }
 
 type OneDepartmentRequest struct {
-	DepartmentId int    `uri:"id"`
+	DepartmentId uint   `uri:"id"`
 	Department   string `form:"department" json:"department"`
 	Expand       bool   `form:"expand"`
 }
