@@ -28,6 +28,13 @@ func New() *Controller {
 	}
 }
 
+// @Summary Get Department types
+// @Description Returns a list of Deaprtment types
+// @Tags department-type
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /api/v1/department-type/ [get]
 func (controller *Controller) Search(c *gin.Context) {
 	var request DepTypeRequest.ListDepartmentTypeRequest
 

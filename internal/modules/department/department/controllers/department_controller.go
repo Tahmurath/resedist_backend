@@ -69,6 +69,13 @@ func (ctl *Controller) Show(c *gin.Context) {
 	})
 }
 
+// @Summary Get Departments
+// @Description Returns a list ofDeaprtment
+// @Tags department
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /api/v1/department/ [get]
 func (ctl *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
 

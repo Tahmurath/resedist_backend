@@ -1,0 +1,38 @@
+info:
+  contact: {}
+paths:
+  /api/v1/department-type/:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of Deaprtment types
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Department types
+      tags:
+      - department-type
+  /api/v1/department/:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list ofDeaprtment
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Departments
+      tags:
+      - department
+swagger: "2.0"

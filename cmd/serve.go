@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"resedist/pkg/bootstrap"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
