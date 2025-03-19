@@ -12,7 +12,7 @@ import (
 type DepartmentServiceInterface interface {
 	Find(id uint, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error)
 	StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
-	UpdateAsUser(id uint, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
+	UpdateDepartment(request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
 
 	//UpdateAsUser(id int, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
 

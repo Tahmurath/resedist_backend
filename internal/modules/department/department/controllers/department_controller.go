@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	configStruct "resedist/config"
 	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
+
+	"github.com/gin-gonic/gin"
 
 	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
@@ -138,7 +139,7 @@ func (ctl *Controller) Store(c *gin.Context) {
 func (ctl *Controller) Update(c *gin.Context) {
 	var request DepRequest.EditDepartmentRequest
 
-	if err := c.ShouldBindUri(&request); err != nil {
+	if err := c.ShouldBind(&request); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"request":             request,
 			ctl.cfg.Status:        "BIND_ERROR",
@@ -148,20 +149,17 @@ func (ctl *Controller) Update(c *gin.Context) {
 		return
 	}
 
-	department, err := ctl.departmentService.Find(request.DepartmentId, false)
+	user := authHelpers.AuthJWT(c)
+	department, err := ctl.departmentService.UpdateDepartment(request, user)
 
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"request":             request,
-			ctl.cfg.Status:        "failed",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			ctl.cfg.Status:        "error",
 			ctl.cfg.Error_message: err.Error(),
 			ctl.cfg.Error_code:    "",
 		})
 		return
 	}
-
-	user := authHelpers.AuthJWT(c)
-	department, err = ctl.departmentService.UpdateAsUser(department.ID, request, user)
 
 	c.JSON(http.StatusOK, gin.H{
 		ctl.cfg.Status:        "success",
@@ -169,7 +167,6 @@ func (ctl *Controller) Update(c *gin.Context) {
 		ctl.cfg.Error_code:    "",
 		ctl.cfg.Data:          department,
 	})
-
 }
 
 //func (controller *Controller) Update(c *gin.Context) {

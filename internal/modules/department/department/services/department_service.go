@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	DepartmentModel "resedist/internal/modules/department/department/models"
 	DepRepository "resedist/internal/modules/department/department/repositories"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
@@ -14,24 +15,24 @@ import (
 )
 
 type DepartmentService struct {
-	depRepository DepRepository.DepartmentRepositoryInterface
+	depRepo DepRepository.DepartmentRepositoryInterface
 }
 
 func New() *DepartmentService {
 	return &DepartmentService{
-		depRepository: DepRepository.New(),
+		depRepo: DepRepository.New(),
 	}
 }
 
-func (DepartmentService *DepartmentService) SearchDepartmentsWithScopes(expand bool, pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error) {
-	departments, err := DepartmentService.depRepository.FindAllScope(pack, scopes...)
+func (s *DepartmentService) SearchDepartmentsWithScopes(expand bool, pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error) {
+	departments, err := s.depRepo.FindAllScope(pack, scopes...)
 	if err != nil {
 		return DepResponse.Departments{}, err
 	}
 	return DepResponse.ToDepartments(departments, expand), nil
 }
 
-func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request DepRequest.ListDepartmentRequest) (DepResponse.Departments, pagination.PagePack, error) {
+func (s *DepartmentService) SearchDepartmentsPaginated(request DepRequest.ListDepartmentRequest) (DepResponse.Departments, pagination.PagePack, error) {
 
 	paginate := pagination.NewPagePack(request.Page, request.PageSize)
 
@@ -47,17 +48,17 @@ func (DepartmentService *DepartmentService) SearchDepartmentsPaginated(request D
 	// departments, err := DepartmentService.SearchDepartmentsWithScopes(request.Expand, paginate, scopes...)
 	// return departments, *paginate, err
 
-	departments, err := DepartmentService.depRepository.FindAllScope(paginate, scopes...)
+	departments, err := s.depRepo.FindAllScope(paginate, scopes...)
 	if err != nil {
 		return DepResponse.Departments{}, *paginate, err
 	}
 	return DepResponse.ToDepartments(departments, request.Expand), *paginate, nil
 }
 
-func (DepartmentService *DepartmentService) Find(id uint, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {
+func (s *DepartmentService) Find(id uint, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {
 	var response DepResponse.Department
 
-	department := DepartmentService.depRepository.Find(id, scopes...)
+	department := s.depRepo.Find(id, scopes...)
 
 	if department.ID == 0 {
 		return response, errors.New("error in find Department")
@@ -66,7 +67,7 @@ func (DepartmentService *DepartmentService) Find(id uint, expand bool, scopes ..
 	return DepResponse.ToDepartment(department, expand), nil
 }
 
-func (DepartmentService *DepartmentService) UpdateAsUser(id uint, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
+func (s *DepartmentService) UpdateAsUser(id uint, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 	var response DepResponse.Department
 
 	response.ID = request.DepartmentId
@@ -77,7 +78,27 @@ func (DepartmentService *DepartmentService) UpdateAsUser(id uint, request DepReq
 	return response, nil
 }
 
-func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
+func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
+
+	department := s.depRepo.Find(request.DepartmentId)
+	if department.ID == 0 {
+		return DepResponse.Department{}, errors.New("department not found")
+	}
+
+	updates := map[string]interface{}{
+		"title":     request.Title,
+		"parent_id": request.ParentID,
+	}
+
+	updatedDepartment, err := s.depRepo.Update(department.ID, updates)
+	if err != nil {
+		return DepResponse.Department{}, fmt.Errorf("failed to update department: %v", err)
+	}
+
+	return DepResponse.ToDepartment(updatedDepartment, false), nil
+}
+
+func (s *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 	var department DepartmentModel.Department
 	var response DepResponse.Department
 
@@ -86,7 +107,7 @@ func (DepartmentService *DepartmentService) StoreAsUser(request DepRequest.AddDe
 	department.ParentID = request.ParentID
 	department.AddedByUserID = user.ID
 
-	newDepartment := DepartmentService.depRepository.Create(department)
+	newDepartment := s.depRepo.Create(department)
 
 	if newDepartment.ID == 0 {
 		return response, errors.New("error in creating newDepartment")
