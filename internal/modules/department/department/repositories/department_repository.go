@@ -32,47 +32,15 @@ func (DepartmentRepository *DepartmentRepository) Find(id uint, scopes ...func(*
 	return department
 }
 
-// func (r *departmentRepo) Update(department *Department) (*Department, error) {
-//     result := r.db.Model(&Department{}).Where("id = ?", department.ID).Updates(department)
-//     if result.Error != nil {
-//         return nil, fmt.Errorf("failed to update department: %v", result.Error)
-//     }
+func (r *DepartmentRepository) Delete(id uint) error {
 
-//     if result.RowsAffected == 0 {
-//         return nil, errors.New("no department updated, check if ID exists")
-//     }
+	result := r.DB.Model(&DepartmentModels.Department{}).Delete("id = ?", id)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
 
-//     updatedDepartment := &Department{}
-//     if err := r.db.First(updatedDepartment, department.ID).Error; err != nil {
-//         return nil, fmt.Errorf("failed to fetch updated department: %v", err)
-//     }
-
-//     return updatedDepartment, nil
-// }
-
-// func (r *DepartmentRepository) Update(department DepartmentModels.Department) (DepartmentModels.Department, error) {
-//     // چک کن که ID وجود داره
-//     if department.ID == 0 {
-//         return DepartmentModels.Department{}, errors.New("invalid department ID")
-//     }
-
-//     // به‌روزرسانی فقط فیلدهای مشخص‌شده
-//     result := r.DB.Model(&DepartmentModels.Department{}).Where("id = ?", department.ID).Updates(department)
-//     if result.Error != nil {
-//         return DepartmentModels.Department{}, fmt.Errorf("failed to update department: %v", result.Error)
-//     }
-//     if result.RowsAffected == 0 {
-//         return DepartmentModels.Department{}, errors.New("department not found or no changes applied")
-//     }
-
-//     // خوندن دپارتمان به‌روزشده از دیتابیس
-//     var updatedDepartment DepartmentModels.Department
-//     if err := r.DB.First(&updatedDepartment, department.ID).Error; err != nil {
-//         return DepartmentModels.Department{}, fmt.Errorf("failed to fetch updated department: %v", err)
-//     }
-
-//	    return updatedDepartment, nil
-//	}
 func (r *DepartmentRepository) Update(id uint, updates map[string]interface{}) (DepartmentModels.Department, error) {
 	result := r.DB.Model(&DepartmentModels.Department{}).Where("id = ?", id).Updates(updates)
 	if result.Error != nil {
@@ -89,20 +57,6 @@ func (r *DepartmentRepository) Update(id uint, updates map[string]interface{}) (
 
 	return updatedDepartment, nil
 }
-
-// func (r *DepartmentRepository) Update(department DepartmentModels.Department) (DepartmentModels.Department, error) {
-
-// 	result := r.DB.Save(&department)
-// 	if result.Error != nil {
-// 		return DepartmentModels.Department{}, fmt.Errorf("failed to update department: %v", result.Error)
-// 	}
-
-// 	if result.RowsAffected == 0 {
-// 		return DepartmentModels.Department{}, errors.New("no department updated, possibly not found")
-// 	}
-
-// 	return department, nil
-// }
 
 func (DepartmentRepository *DepartmentRepository) Create(department DepartmentModels.Department) DepartmentModels.Department {
 	var newDepartment DepartmentModels.Department

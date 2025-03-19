@@ -67,17 +67,6 @@ func (s *DepartmentService) Find(id uint, expand bool, scopes ...func(*gorm.DB) 
 	return DepResponse.ToDepartment(department, expand), nil
 }
 
-func (s *DepartmentService) UpdateAsUser(id uint, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
-	var response DepResponse.Department
-
-	response.ID = request.DepartmentId
-	response.Title = request.Title
-	response.Parent = request.ParentID
-	response.DepartmentType = request.DepartmentTypeId
-
-	return response, nil
-}
-
 func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 
 	department := s.depRepo.Find(request.DepartmentId)
@@ -98,6 +87,14 @@ func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRe
 	return DepResponse.ToDepartment(updatedDepartment, false), nil
 }
 
+func (s *DepartmentService) Delete(request DepRequest.RemoveDepartmentRequest) error {
+	department := s.depRepo.Find(request.DepartmentId)
+	if department.ID == 0 {
+		return errors.New("department not found")
+	}
+
+	return s.depRepo.Delete(department.ID)
+}
 func (s *DepartmentService) StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 	var department DepartmentModel.Department
 	var response DepResponse.Department

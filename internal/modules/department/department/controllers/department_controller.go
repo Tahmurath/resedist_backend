@@ -109,8 +109,8 @@ func (ctl *Controller) Store(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"request":             request,
 			ctl.cfg.Status:        "failed",
-			ctl.cfg.Error_message: err.Error(),  // دقیق‌تر کردن پیام خطا
-			ctl.cfg.Error_code:    "BIND_ERROR", // یه کد خطای معنادار
+			ctl.cfg.Error_message: err.Error(),
+			ctl.cfg.Error_code:    "BIND_ERROR",
 		})
 		return
 	}
@@ -166,6 +166,37 @@ func (ctl *Controller) Update(c *gin.Context) {
 		ctl.cfg.Error_message: "",
 		ctl.cfg.Error_code:    "",
 		ctl.cfg.Data:          department,
+	})
+}
+
+func (ctl *Controller) Remove(c *gin.Context) {
+	var request DepRequest.RemoveDepartmentRequest
+
+	if err := c.ShouldBindUri(&request); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"request":             request,
+			ctl.cfg.Status:        "BIND_ERROR",
+			ctl.cfg.Error_message: ctl.error2.SetFromError(err),
+			ctl.cfg.Error_code:    "",
+		})
+		return
+	}
+
+	err := ctl.departmentService.Delete(request)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			ctl.cfg.Status:        "error",
+			ctl.cfg.Error_message: err.Error(),
+			ctl.cfg.Error_code:    "",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		ctl.cfg.Status:        "success",
+		ctl.cfg.Error_message: "",
+		ctl.cfg.Error_code:    "",
 	})
 }
 

@@ -13,7 +13,7 @@ type DepartmentServiceInterface interface {
 	Find(id uint, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error)
 	StoreAsUser(request DepRequest.AddDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
 	UpdateDepartment(request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
-
+	Delete(request DepRequest.RemoveDepartmentRequest) error
 	//UpdateAsUser(id int, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error)
 
 	SearchDepartmentsWithScopes(expand bool, pack pagination.Paginator, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Departments, error)
