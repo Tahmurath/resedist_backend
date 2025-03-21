@@ -115,7 +115,62 @@ const docTemplate = `{
                     "200": {
                         "description": "Response object",
                         "schema": {
-                            "$ref": "#/definitions/department.ListDepartmentRequest"
+                            "$ref": "#/definitions/responses.DepartmentsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/department/{id}": {
+            "get": {
+                "description": "Returns a Deaprtment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Get Department",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "department",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "path"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "name": "department",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "departmentId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DepartmentResponse"
                         }
                     }
                 }
@@ -123,41 +178,82 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "department.ListDepartmentRequest": {
+        "pagination.PagePack": {
             "type": "object",
             "properties": {
-                "department": {
-                    "type": "string"
-                },
-                "department_type": {
-                    "type": "string"
-                },
-                "departmenttypeid": {
-                    "type": "integer"
-                },
-                "expand": {
-                    "type": "boolean"
-                },
-                "order": {
-                    "type": "string"
-                },
                 "page": {
                     "type": "integer"
                 },
                 "page_size": {
                     "type": "integer"
                 },
-                "parent": {
-                    "type": "string"
-                },
-                "parentid": {
+                "total_pages": {
                     "type": "integer"
                 },
-                "sort": {
+                "total_rows": {
+                    "type": "integer"
+                }
+            }
+        },
+        "responses.Department": {
+            "type": "object",
+            "properties": {
+                "departmentType": {},
+                "id": {
+                    "type": "integer"
+                },
+                "label": {
                     "type": "string"
                 },
+                "parent": {},
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "responses.DepartmentResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
+                },
+                "data": {
+                    "$ref": "#/definitions/responses.Department"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "null"
+                }
+            }
+        },
+        "responses.DepartmentsResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_pagination": {
+                    "$ref": "#/definitions/pagination.PagePack"
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.Department"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "null"
                 }
             }
         }

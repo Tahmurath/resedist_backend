@@ -1,27 +1,56 @@
 definitions:
-  department.ListDepartmentRequest:
+  pagination.PagePack:
     properties:
-      department:
-        type: string
-      department_type:
-        type: string
-      departmenttypeid:
-        type: integer
-      expand:
-        type: boolean
-      order:
-        type: string
       page:
         type: integer
       page_size:
         type: integer
-      parent:
-        type: string
-      parentid:
+      total_pages:
         type: integer
-      sort:
+      total_rows:
+        type: integer
+    type: object
+  responses.Department:
+    properties:
+      departmentType: {}
+      id:
+        type: integer
+      label:
         type: string
+      parent: {}
       title:
+        type: string
+    type: object
+  responses.DepartmentResponse:
+    properties:
+      _error_code:
+        example: ""
+        type: string
+      _status:
+        example: success
+        type: string
+      data:
+        $ref: '#/definitions/responses.Department'
+      message:
+        example: "null"
+        type: string
+    type: object
+  responses.DepartmentsResponse:
+    properties:
+      _error_code:
+        example: ""
+        type: string
+      _pagination:
+        $ref: '#/definitions/pagination.PagePack'
+      _status:
+        example: success
+        type: string
+      data:
+        items:
+          $ref: '#/definitions/responses.Department'
+        type: array
+      message:
+        example: "null"
         type: string
     type: object
 info:
@@ -89,8 +118,42 @@ paths:
         "200":
           description: Response object
           schema:
-            $ref: '#/definitions/department.ListDepartmentRequest'
+            $ref: '#/definitions/responses.DepartmentsResponse'
       summary: Get Departments
+      tags:
+      - department
+  /api/v1/department/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a Deaprtment
+      parameters:
+      - in: path
+        name: department
+        type: string
+      - in: path
+        name: id
+        type: integer
+      - in: path
+        name: expand
+        type: boolean
+      - in: query
+        name: department
+        type: string
+      - in: query
+        name: departmentId
+        type: integer
+      - in: query
+        name: expand
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.DepartmentResponse'
+      summary: Get Department
       tags:
       - department
 swagger: "2.0"

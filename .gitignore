@@ -5,6 +5,7 @@
 *.DS_Store
 profile.out
 *.exe
+*.rdb
 build-errors.log
 /front/
 /tmp/

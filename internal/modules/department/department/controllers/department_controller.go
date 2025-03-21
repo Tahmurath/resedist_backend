@@ -2,9 +2,7 @@ package controllers
 
 import (
 	"net/http"
-	configStruct "resedist/config"
 	DepScopes "resedist/internal/modules/department/department/scopes"
-	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/rest"
 
@@ -12,12 +10,12 @@ import (
 
 	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
+	_ "resedist/internal/modules/department/department/responses"
 	DepartmentService "resedist/internal/modules/department/department/services"
 )
 
 type Controller struct {
 	departmentService DepartmentService.DepartmentServiceInterface
-	rest              configStruct.Rest
 	errFmt            *errors.ErrorFormat
 	json              *rest.Jsonresponse
 }
@@ -26,28 +24,32 @@ func New() *Controller {
 
 	return &Controller{
 		departmentService: DepartmentService.New(),
-		rest:              config.Get().Rest,
 		errFmt:            errors.New(),
 		json:              rest.New(),
 	}
 }
 
+// @Summary Get Department
+// @Description Returns a Deaprtment
+// @Tags department
+// @Accept json
+// @Produce json
+// @Param request path DepRequest.OneDepartmentRequest true "Department request data"
+// @Param request query DepRequest.OneDepartmentRequest true "Department request data"
+// @Success 200 {object} _.DepartmentResponse "Response object"
+// @Router /api/v1/department/{id} [get]
 func (ctl *Controller) Show(c *gin.Context) {
 	var request DepRequest.OneDepartmentRequest
 
 	if err := c.ShouldBindUri(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: ctl.errFmt.SetFromError(err),
-			ctl.rest.Error_code:    ctl.rest.Bind_error,
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
 	if err := c.ShouldBindQuery(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: ctl.errFmt.SetFromError(err),
-			ctl.rest.Error_code:    ctl.rest.Bind_error,
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
@@ -58,20 +60,16 @@ func (ctl *Controller) Show(c *gin.Context) {
 	)
 
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: err.Error(),
-			ctl.rest.Error_code:    ctl.rest.Not_found,
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		ctl.rest.Status:        ctl.rest.Success,
-		ctl.rest.Error_message: "",
-		ctl.rest.Error_code:    "",
-		ctl.rest.Data:          department,
+	ctl.json.Success(c, rest.RestConfig{
+		Data: department,
 	})
+
 }
 
 // @Summary Get Departments
@@ -80,16 +78,14 @@ func (ctl *Controller) Show(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user query DepRequest.ListDepartmentRequest true "User data"
-// @Success 200 {object} DepRequest.ListDepartmentRequest "Response object"
+// @Success 200 {object} _.DepartmentsResponse "Response object"
 // @Router /api/v1/department/ [get]
 func (ctl *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
 
 	if err := c.ShouldBindQuery(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: ctl.errFmt.SetFromError(err),
-			ctl.rest.Error_code:    ctl.rest.Bind_error,
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
@@ -97,38 +93,26 @@ func (ctl *Controller) Search(c *gin.Context) {
 	departments, paginate, err := ctl.departmentService.SearchDepartmentsPaginated(request)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: err.Error(),
-			ctl.rest.Error_code:    ctl.rest.Not_found,
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		ctl.rest.Status:        ctl.rest.Success,
-		ctl.rest.Error_message: "",
-		ctl.rest.Error_code:    "",
-		ctl.rest.Pagination:    paginate,
-		ctl.rest.Data:          departments.Data,
+	ctl.json.Success(c, rest.RestConfig{
+		Data:       departments.Data,
+		Paged:      true,
+		Pagination: paginate,
 	})
 }
 
 func (ctl *Controller) Store(c *gin.Context) {
 	var request DepRequest.AddDepartmentRequest
 
-	if err := c.ShouldBindUri(&request); err != nil {
-
-		ctl.json.Badrequest(c, rest.BadrequestConfig{
-			Error_code:    "custome",
+	if err := c.ShouldBind(&request); err != nil {
+		ctl.json.Badrequest(c, rest.RestConfig{
 			Error_message: ctl.errFmt.SetFromError(err),
 		})
-
-		// c.JSON(http.StatusBadRequest, gin.H{
-		// 	ctl.rest.Status:        ctl.rest.Failed,
-		// 	ctl.rest.Error_message: ctl.errFmt.SetFromError(err),
-		// 	ctl.rest.Error_code:    ctl.rest.Bind_error,
-		// })
 		return
 	}
 
@@ -136,19 +120,15 @@ func (ctl *Controller) Store(c *gin.Context) {
 
 	department, err := ctl.departmentService.StoreAsUser(request, user)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: err.Error(),
-			ctl.rest.Error_code:    ctl.rest.Not_found,
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		ctl.rest.Status:        ctl.rest.Success,
-		ctl.rest.Error_message: "",
-		ctl.rest.Error_code:    "",
-		ctl.rest.Data:          department,
+	ctl.json.Success(c, rest.RestConfig{
+		Data: department,
+		Http: http.StatusCreated,
 	})
 }
 
@@ -156,10 +136,8 @@ func (ctl *Controller) Update(c *gin.Context) {
 	var request DepRequest.EditDepartmentRequest
 
 	if err := c.ShouldBind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: ctl.errFmt.SetFromError(err),
-			ctl.rest.Error_code:    ctl.rest.Bind_error,
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
@@ -168,19 +146,14 @@ func (ctl *Controller) Update(c *gin.Context) {
 	department, err := ctl.departmentService.UpdateDepartment(request, user)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: err.Error(),
-			ctl.rest.Error_code:    ctl.rest.Not_found,
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		ctl.rest.Status:        ctl.rest.Success,
-		ctl.rest.Error_message: "",
-		ctl.rest.Error_code:    "",
-		ctl.rest.Data:          department,
+	ctl.json.Success(c, rest.RestConfig{
+		Data: department,
 	})
 }
 
@@ -188,10 +161,8 @@ func (ctl *Controller) Remove(c *gin.Context) {
 	var request DepRequest.RemoveDepartmentRequest
 
 	if err := c.ShouldBindUri(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: ctl.errFmt.SetFromError(err),
-			ctl.rest.Error_code:    ctl.rest.Bind_error,
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
@@ -199,17 +170,14 @@ func (ctl *Controller) Remove(c *gin.Context) {
 	err := ctl.departmentService.Delete(request)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			ctl.rest.Status:        ctl.rest.Failed,
-			ctl.rest.Error_message: err.Error(),
-			ctl.rest.Error_code:    ctl.rest.Not_found,
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		ctl.rest.Status:        ctl.rest.Success,
-		ctl.rest.Error_message: "",
-		ctl.rest.Error_code:    "",
+	ctl.json.Success(c, rest.RestConfig{
+		Http:      http.StatusNoContent,
+		NoContent: true,
 	})
 }
