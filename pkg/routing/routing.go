@@ -14,6 +14,7 @@ import (
 	_ "resedist/docs"
 
 	swaggerFiles "github.com/swaggo/files"
+	//swaggerFiles "github.com/swaggo/gin-swagger/swaggerFiles"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
@@ -28,6 +29,10 @@ func GetRouter() *gin.Engine {
 func RegisterRoutes() {
 	routes.RegisterRoutes(GetRouter())
 }
+
+// @SecurityDefinitions.apikey BearerAuth
+// @In header
+// @Name Authorization
 
 func ConfigureCorsConfig() {
 	router = gin.Default()

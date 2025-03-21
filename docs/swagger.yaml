@@ -26,22 +26,23 @@ definitions:
       _error_code:
         example: ""
         type: string
+      _message:
+        example: "null"
+        type: string
       _status:
         example: success
         type: string
       data:
         $ref: '#/definitions/responses.Department'
-      message:
-        example: "null"
-        type: string
     type: object
   responses.DepartmentsResponse:
     properties:
       _error_code:
         example: ""
         type: string
-      _pagination:
-        $ref: '#/definitions/pagination.PagePack'
+      _message:
+        example: "null"
+        type: string
       _status:
         example: success
         type: string
@@ -49,13 +50,42 @@ definitions:
         items:
           $ref: '#/definitions/responses.Department'
         type: array
-      message:
-        example: "null"
-        type: string
+      pagination:
+        $ref: '#/definitions/pagination.PagePack'
     type: object
 info:
   contact: {}
 paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return a JWT token
+      parameters:
+      - in: query
+        maxLength: 100
+        minLength: 3
+        name: email
+        required: true
+        type: string
+      - in: query
+        maxLength: 100
+        minLength: 8
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login and get JWT token
+      tags:
+      - auth
   /api/v1/department-type/:
     get:
       consumes:
@@ -122,6 +152,37 @@ paths:
       summary: Get Departments
       tags:
       - department
+    post:
+      consumes:
+      - application/json
+      description: Returns a Department (requires JWT)
+      parameters:
+      - in: query
+        name: departmenttypeid
+        required: true
+        type: integer
+      - in: query
+        name: parentid
+        required: true
+        type: integer
+      - in: query
+        maxLength: 100
+        minLength: 3
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.DepartmentResponse'
+      security:
+      - BearerAuth: []
+      summary: Get Department
+      tags:
+      - department
   /api/v1/department/{id}:
     get:
       consumes:
@@ -156,4 +217,9 @@ paths:
       summary: Get Department
       tags:
       - department
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

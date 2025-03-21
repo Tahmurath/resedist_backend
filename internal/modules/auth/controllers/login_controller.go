@@ -6,8 +6,12 @@ import (
 	"resedist/internal/modules/user/requests/auth"
 	UserResponse "resedist/internal/modules/user/responses"
 	UserService "resedist/internal/modules/user/services"
+	"resedist/pkg/applog"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
+	"resedist/pkg/rest"
+
+	configStruct "resedist/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -18,12 +22,18 @@ import (
 
 type Controller struct {
 	userService UserService.UserServiceInterface
+	errFmt      *errors.ErrorFormat
+	json        *rest.Jsonresponse
+	rest        configStruct.Rest
 }
 
 func New() *Controller {
 
 	return &Controller{
 		userService: UserService.New(),
+		rest:        config.Get().Rest,
+		errFmt:      errors.New(),
+		json:        rest.New(),
 	}
 }
 
@@ -78,52 +88,44 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 	})
 }
 
-func (controller *Controller) HandleLogin(c *gin.Context) {
+// @Summary Login and get JWT token
+// @Description Authenticate user and return a JWT token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param user query auth.LoginRequest true "User data"
+// @Success 200 {object} map[string]string "Token"
+// @Router /api/v1/auth/login [post]
+func (ctl *Controller) HandleLogin(c *gin.Context) {
 	var request auth.LoginRequest
 	cfg := config.Get().Rest
 
 	if err := c.ShouldBind(&request); err != nil {
-		errors.Init()
-		errors.SetFromError(err)
-
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			//"message": "Opps, there is an error with ShouldBind",
-			cfg.Status:        "failed",
-			cfg.Error_message: "Opps, there is an error with ShouldBind", //errors.Get(),
-			cfg.Error_code:    "",
-			cfg.Data:          "",
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
 
-	user, err := controller.userService.HandleUserLogin(request)
+	user, err := ctl.userService.HandleUserLogin(request)
 	if err != nil {
-		errors.Init()
-		errors.Add("email", err.Error())
-
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			//"message":         "Opps, there is an error to find user",
-			cfg.Status:        "failed",
-			cfg.Error_message: "Opps, there is an error to find user", //errors.Get(),
-			cfg.Error_code:    "",
-			cfg.Data:          "",
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
 		})
 		return
 	}
 
 	token, err := createJwt(user)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			//"message": "Opps, there is an error",
-			cfg.Status:        "failed",
-			cfg.Error_message: "Opps, there is an error", //errors.Get(),
-			cfg.Error_code:    "",
-			cfg.Data:          "",
+		ctl.json.NotFound(c, rest.RestConfig{
+			Error_message: err.Error(),
+			Http:          http.StatusInternalServerError,
 		})
 		return
 	}
 
-	log.Printf("The user logged in successfully with a name %s \n", user.Name)
+	applog.Info("The user logged in successfully")
+
 	c.JSON(http.StatusOK, gin.H{
 		//"message": "User logged in successfully",
 		cfg.Status:        "success",
@@ -138,7 +140,7 @@ func (controller *Controller) HandleLogin(c *gin.Context) {
 	})
 }
 
-func (controller *Controller) User(c *gin.Context) {
+func (ctl *Controller) User(c *gin.Context) {
 	user, _ := c.Get("auth")
 	c.JSON(http.StatusOK, gin.H{"message": "Authenticated", "user": user})
 }

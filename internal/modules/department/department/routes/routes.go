@@ -17,13 +17,12 @@ func Routes(router *gin.Engine) {
 
 	authGroup.GET("/department", DepartmentController.Search)
 	authGroup.GET("/department/:id", DepartmentController.Show)
+	authGroup.POST("/department", DepartmentController.Store)
+	authGroup.PUT("/department/:id", DepartmentController.Update)
+	authGroup.DELETE("/department/:id", DepartmentController.Remove)
 
 	authGroup.Use(middlewares.IsAuthJwt())
 	{
-
-		authGroup.POST("/department", DepartmentController.Store)
-		authGroup.PUT("/department/:id", DepartmentController.Update)
-		authGroup.DELETE("/department/:id", DepartmentController.Remove)
 
 		authGroup.GET("/department-type", DepartmentTypeController.Search)
 

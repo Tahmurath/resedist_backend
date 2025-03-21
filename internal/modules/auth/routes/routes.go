@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"resedist/internal/middlewares"
 	authCtrl "resedist/internal/modules/auth/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Routes(router *gin.Engine) {

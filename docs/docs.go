@@ -15,6 +15,50 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "description": "Authenticate user and return a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login and get JWT token",
+                "parameters": [
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 8,
+                        "type": "string",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/department-type/": {
             "get": {
                 "description": "Returns a list of Deaprtment types",
@@ -119,6 +163,54 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a Department (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Get Department",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "departmenttypeid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "parentid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DepartmentResponse"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/department/{id}": {
@@ -218,16 +310,16 @@ const docTemplate = `{
                     "type": "string",
                     "example": ""
                 },
+                "_message": {
+                    "type": "string",
+                    "example": "null"
+                },
                 "_status": {
                     "type": "string",
                     "example": "success"
                 },
                 "data": {
                     "$ref": "#/definitions/responses.Department"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "null"
                 }
             }
         },
@@ -238,8 +330,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": ""
                 },
-                "_pagination": {
-                    "$ref": "#/definitions/pagination.PagePack"
+                "_message": {
+                    "type": "string",
+                    "example": "null"
                 },
                 "_status": {
                     "type": "string",
@@ -251,11 +344,17 @@ const docTemplate = `{
                         "$ref": "#/definitions/responses.Department"
                     }
                 },
-                "message": {
-                    "type": "string",
-                    "example": "null"
+                "pagination": {
+                    "$ref": "#/definitions/pagination.PagePack"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

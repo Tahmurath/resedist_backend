@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"net/http"
+	configStruct "resedist/config"
 	DepScopes "resedist/internal/modules/department/department/scopes"
+	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/rest"
 
@@ -10,7 +12,9 @@ import (
 
 	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
-	_ "resedist/internal/modules/department/department/responses"
+	DepResponse "resedist/internal/modules/department/department/responses"
+
+	// _ "resedist/internal/modules/department/department/responses"
 	DepartmentService "resedist/internal/modules/department/department/services"
 )
 
@@ -18,12 +22,14 @@ type Controller struct {
 	departmentService DepartmentService.DepartmentServiceInterface
 	errFmt            *errors.ErrorFormat
 	json              *rest.Jsonresponse
+	rest              configStruct.Rest
 }
 
 func New() *Controller {
 
 	return &Controller{
 		departmentService: DepartmentService.New(),
+		rest:              config.Get().Rest,
 		errFmt:            errors.New(),
 		json:              rest.New(),
 	}
@@ -36,7 +42,7 @@ func New() *Controller {
 // @Produce json
 // @Param request path DepRequest.OneDepartmentRequest true "Department request data"
 // @Param request query DepRequest.OneDepartmentRequest true "Department request data"
-// @Success 200 {object} _.DepartmentResponse "Response object"
+// @Success 200 {object} DepResponse.DepartmentResponse "Response object"
 // @Router /api/v1/department/{id} [get]
 func (ctl *Controller) Show(c *gin.Context) {
 	var request DepRequest.OneDepartmentRequest
@@ -66,8 +72,15 @@ func (ctl *Controller) Show(c *gin.Context) {
 		return
 	}
 
-	ctl.json.Success(c, rest.RestConfig{
-		Data: department,
+	// ctl.json.Success(c, rest.RestConfig{
+	// 	Data: department,
+	// })
+
+	c.JSON(http.StatusOK, DepResponse.DepartmentResponse{
+		ErrorCode: "",
+		Status:    ctl.rest.Success,
+		Data:      department,
+		Message:   "",
 	})
 
 }
@@ -78,7 +91,7 @@ func (ctl *Controller) Show(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user query DepRequest.ListDepartmentRequest true "User data"
-// @Success 200 {object} _.DepartmentsResponse "Response object"
+// @Success 200 {object} DepResponse.DepartmentsResponse "Response object"
 // @Router /api/v1/department/ [get]
 func (ctl *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
@@ -99,13 +112,30 @@ func (ctl *Controller) Search(c *gin.Context) {
 		return
 	}
 
-	ctl.json.Success(c, rest.RestConfig{
+	// ctl.json.Success(c, rest.RestConfig{
+	// 	Data:       departments.Data,
+	// 	Paged:      true,
+	// 	Pagination: paginate,
+	// })
+
+	c.JSON(http.StatusOK, DepResponse.DepartmentsResponse{
+		ErrorCode:  "",
+		Status:     ctl.rest.Success,
 		Data:       departments.Data,
-		Paged:      true,
+		Message:    "",
 		Pagination: paginate,
 	})
 }
 
+// @Summary Get Department
+// @Description Returns a Department (requires JWT)
+// @Security BearerAuth
+// @Tags department
+// @Accept json
+// @Produce json
+// @Param request query DepRequest.AddDepartmentRequest true "Department request data"
+// @Success 200 {object} DepResponse.DepartmentResponse "Response object"
+// @Router /api/v1/department/ [post]
 func (ctl *Controller) Store(c *gin.Context) {
 	var request DepRequest.AddDepartmentRequest
 
@@ -152,8 +182,15 @@ func (ctl *Controller) Update(c *gin.Context) {
 		return
 	}
 
-	ctl.json.Success(c, rest.RestConfig{
-		Data: department,
+	// ctl.json.Success(c, rest.RestConfig{
+	// 	Data: department,
+	// })
+
+	c.JSON(http.StatusOK, DepResponse.DepartmentResponse{
+		ErrorCode: "",
+		Status:    ctl.rest.Success,
+		Data:      department,
+		Message:   "",
 	})
 }
 

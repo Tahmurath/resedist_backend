@@ -31,9 +31,9 @@ jwt:
 
 rest:
   status: "_status"
-  error_message: "message"
+  error_message: "_message"
   error_code: "_error_code"
-  pagination: "_pagination"
+  pagination: "pagination"
   data: "data"
   request: "request"
   success: "success"
