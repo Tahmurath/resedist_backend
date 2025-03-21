@@ -80,7 +80,7 @@ func (controller *Controller) HandleRegister(c *gin.Context) {
 
 func (controller *Controller) HandleLogin(c *gin.Context) {
 	var request auth.LoginRequest
-	cfg := config.Get().Jsonkey
+	cfg := config.Get().Rest
 
 	if err := c.ShouldBind(&request); err != nil {
 		errors.Init()

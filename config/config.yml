@@ -29,12 +29,17 @@ jwt:
     secret: "fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c"
     duration: "0h30m0s"
 
-jsonkey:
+rest:
   status: "_status"
   error_message: "message"
   error_code: "_error_code"
   pagination: "_pagination"
   data: "data"
+  request: "request"
+  success: "success"
+  failed: "failed"
+  bind_error: "bind_error"
+  not_found: "not_found"
 
 
 cors:

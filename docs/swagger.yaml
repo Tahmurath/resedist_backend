@@ -1,3 +1,29 @@
+definitions:
+  department.ListDepartmentRequest:
+    properties:
+      department:
+        type: string
+      department_type:
+        type: string
+      departmenttypeid:
+        type: integer
+      expand:
+        type: boolean
+      order:
+        type: string
+      page:
+        type: integer
+      page_size:
+        type: integer
+      parent:
+        type: string
+      parentid:
+        type: integer
+      sort:
+        type: string
+      title:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -23,15 +49,47 @@ paths:
       consumes:
       - application/json
       description: Returns a list ofDeaprtment
+      parameters:
+      - in: query
+        name: department
+        type: string
+      - in: query
+        name: department_type
+        type: string
+      - in: query
+        name: departmenttypeid
+        type: integer
+      - in: query
+        name: expand
+        type: boolean
+      - in: query
+        name: order
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: parent
+        type: string
+      - in: query
+        name: parentid
+        type: integer
+      - in: query
+        name: sort
+        type: string
+      - in: query
+        name: title
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Response object
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/department.ListDepartmentRequest'
       summary: Get Departments
       tags:
       - department

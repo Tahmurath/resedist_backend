@@ -54,16 +54,110 @@ const docTemplate = `{
                     "department"
                 ],
                 "summary": "Get Departments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "department",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "department_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "departmenttypeid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "parent",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "parentid",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Response object",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/department.ListDepartmentRequest"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "department.ListDepartmentRequest": {
+            "type": "object",
+            "properties": {
+                "department": {
+                    "type": "string"
+                },
+                "department_type": {
+                    "type": "string"
+                },
+                "departmenttypeid": {
+                    "type": "integer"
+                },
+                "expand": {
+                    "type": "boolean"
+                },
+                "order": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "parent": {
+                    "type": "string"
+                },
+                "parentid": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         }

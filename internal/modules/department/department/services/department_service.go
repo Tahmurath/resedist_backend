@@ -75,8 +75,9 @@ func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRe
 	}
 
 	updates := map[string]interface{}{
-		"title":     request.Title,
-		"parent_id": request.ParentID,
+		"title":              request.Title,
+		"parent_id":          request.ParentID,
+		"department_type_id": request.DepartmentTypeId,
 	}
 
 	updatedDepartment, err := s.depRepo.Update(department.ID, updates)
