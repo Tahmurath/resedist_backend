@@ -42,13 +42,14 @@ func New() *Controller {
 // @Accept json
 // @Produce json
 // @Param request path DepRequest.OneDepartmentRequest true "Department request data"
-// @Param request query DepRequest.OneDepartmentRequest true "Department request data"
+// @Param request query DepRequest.ShowDepartmentRequest true "Department request data"
 // @Success 200 {object} _.DepartmentResponse "Response object"
 // @Router /api/v1/department/{id} [get]
 func (ctl *Controller) Show(c *gin.Context) {
-	var request DepRequest.OneDepartmentRequest
+	var uri DepRequest.OneDepartmentRequest
+	var request DepRequest.ShowDepartmentRequest
 
-	if err := c.ShouldBindUri(&request); err != nil {
+	if err := c.ShouldBindUri(&uri); err != nil {
 		ctl.json.Badrequest(c, rest.RestConfig{
 			Error_message: ctl.errFmt.SetFromError(err),
 		})
@@ -61,7 +62,7 @@ func (ctl *Controller) Show(c *gin.Context) {
 		return
 	}
 	department, err := ctl.departmentService.Find(
-		request.DepartmentId,
+		uri.DepartmentId,
 		request.Expand,
 		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
 	)
@@ -196,9 +197,8 @@ func (ctl *Controller) Update(c *gin.Context) {
 	}
 
 	user := authHelpers.AuthJWT(c)
-	request.DepartmentId = uri.DepartmentId
 
-	department, err := ctl.departmentService.UpdateDepartment(request, user)
+	department, err := ctl.departmentService.UpdateDepartment(uri.DepartmentId, request, user)
 
 	if err != nil {
 		ctl.json.NotFound(c, rest.RestConfig{
@@ -225,20 +225,20 @@ func (ctl *Controller) Update(c *gin.Context) {
 // @Tags department
 // @Accept json
 // @Produce json
-// @Param request path DepRequest.RemoveDepartmentRequest true "Department request data"
-// @Success 200 {object} _.NoContentResponse "Response object"
+// @Param request path DepRequest.OneDepartmentRequest true "Department request data"
+// @Success 204 {object} _.NoContentResponse "Response object"
 // @Router /api/v1/department/{id} [delete]
 func (ctl *Controller) Remove(c *gin.Context) {
-	var request DepRequest.RemoveDepartmentRequest
+	var uri DepRequest.OneDepartmentRequest
 
-	if err := c.ShouldBindUri(&request); err != nil {
+	if err := c.ShouldBindUri(&uri); err != nil {
 		ctl.json.Badrequest(c, rest.RestConfig{
 			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
 
-	err := ctl.departmentService.Delete(request)
+	err := ctl.departmentService.Delete(uri.DepartmentId)
 
 	if err != nil {
 		ctl.json.NotFound(c, rest.RestConfig{

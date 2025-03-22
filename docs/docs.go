@@ -238,29 +238,10 @@ const docTemplate = `{
                 "summary": "Get Department",
                 "parameters": [
                     {
-                        "type": "string",
-                        "name": "department",
-                        "in": "path"
-                    },
-                    {
                         "type": "integer",
                         "name": "id",
-                        "in": "path"
-                    },
-                    {
-                        "type": "boolean",
-                        "name": "expand",
-                        "in": "path"
-                    },
-                    {
-                        "type": "string",
-                        "name": "department",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "departmentId",
-                        "in": "query"
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "type": "boolean",
@@ -296,24 +277,10 @@ const docTemplate = `{
                 "summary": "Update Department",
                 "parameters": [
                     {
-                        "type": "string",
-                        "name": "department",
-                        "in": "path"
-                    },
-                    {
                         "type": "integer",
                         "name": "id",
-                        "in": "path"
-                    },
-                    {
-                        "type": "boolean",
-                        "name": "expand",
-                        "in": "path"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "departmentId",
-                        "in": "query"
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "type": "integer",

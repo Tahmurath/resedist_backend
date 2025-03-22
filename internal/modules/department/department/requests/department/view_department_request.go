@@ -14,8 +14,6 @@ type ListDepartmentRequest struct {
 	PageSize         int    `form:"page_size" json:"page_size"`
 }
 
-type OneDepartmentRequest struct {
-	DepartmentId uint   `uri:"id"`
-	Department   string `form:"department" json:"department"`
-	Expand       bool   `form:"expand"`
+type ShowDepartmentRequest struct {
+	Expand bool `form:"expand"`
 }

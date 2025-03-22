@@ -225,19 +225,8 @@ paths:
       description: Returns a Deaprtment
       parameters:
       - in: path
-        name: department
-        type: string
-      - in: path
         name: id
-        type: integer
-      - in: path
-        name: expand
-        type: boolean
-      - in: query
-        name: department
-        type: string
-      - in: query
-        name: departmentId
+        required: true
         type: integer
       - in: query
         name: expand
@@ -260,16 +249,8 @@ paths:
       description: Returns a Department (requires JWT)
       parameters:
       - in: path
-        name: department
-        type: string
-      - in: path
         name: id
-        type: integer
-      - in: path
-        name: expand
-        type: boolean
-      - in: query
-        name: departmentId
+        required: true
         type: integer
       - in: query
         name: departmenttypeid

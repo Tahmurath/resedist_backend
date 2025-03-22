@@ -67,9 +67,9 @@ func (s *DepartmentService) Find(id uint, expand bool, scopes ...func(*gorm.DB) 
 	return DepResponse.ToDepartment(department, expand), nil
 }
 
-func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
+func (s *DepartmentService) UpdateDepartment(id uint, request DepRequest.EditDepartmentRequest, user UserResponse.User) (DepResponse.Department, error) {
 
-	department := s.depRepo.Find(request.DepartmentId)
+	department := s.depRepo.Find(id)
 	if department.ID == 0 {
 		return DepResponse.Department{}, errors.New("department not found")
 	}
@@ -80,7 +80,7 @@ func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRe
 		"department_type_id": request.DepartmentTypeId,
 	}
 
-	updatedDepartment, err := s.depRepo.Update(department.ID, updates)
+	updatedDepartment, err := s.depRepo.Update(id, updates)
 	if err != nil {
 		return DepResponse.Department{}, fmt.Errorf("failed to update department: %v", err)
 	}
@@ -88,8 +88,8 @@ func (s *DepartmentService) UpdateDepartment(request DepRequest.EditDepartmentRe
 	return DepResponse.ToDepartment(updatedDepartment, false), nil
 }
 
-func (s *DepartmentService) Delete(request DepRequest.RemoveDepartmentRequest) error {
-	department := s.depRepo.Find(request.DepartmentId)
+func (s *DepartmentService) Delete(id uint) error {
+	department := s.depRepo.Find(id)
 	if department.ID == 0 {
 		return errors.New("department not found")
 	}

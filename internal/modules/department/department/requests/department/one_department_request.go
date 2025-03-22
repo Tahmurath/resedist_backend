@@ -1,5 +1,5 @@
 package department
 
-type RemoveDepartmentRequest struct {
+type OneDepartmentRequest struct {
 	DepartmentId uint `uri:"id" binding:"required"`
 }
