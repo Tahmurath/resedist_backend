@@ -76,6 +76,11 @@
         },
         "/api/v1/department/": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a list ofDeaprtment",
                 "consumes": [
                     "application/json"
@@ -204,6 +209,11 @@
         },
         "/api/v1/department/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a Deaprtment",
                 "consumes": [
                     "application/json"
@@ -252,6 +262,108 @@
                         "description": "Response object",
                         "schema": {
                             "$ref": "#/definitions/responses.DepartmentResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a Department (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Update Department",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "department",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "path"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "departmentId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "departmenttypeid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "parentid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DepartmentResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns No content (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "department"
+                ],
+                "summary": "Delete Department",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.NoContentResponse"
                         }
                     }
                 }
@@ -335,6 +447,23 @@
                 },
                 "pagination": {
                     "$ref": "#/definitions/pagination.PagePack"
+                }
+            }
+        },
+        "responses.NoContentResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_message": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
                 }
             }
         }

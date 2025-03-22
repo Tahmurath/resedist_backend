@@ -1,20 +1,20 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
 	configStruct "resedist/config"
-	DepScopes "resedist/internal/modules/department/department/scopes"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/rest"
 
-	"github.com/gin-gonic/gin"
-
 	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
-	DepResponse "resedist/internal/modules/department/department/responses"
-
-	// _ "resedist/internal/modules/department/department/responses"
+	_ "resedist/internal/modules/department/department/responses"
+	DepScopes "resedist/internal/modules/department/department/scopes"
 	DepartmentService "resedist/internal/modules/department/department/services"
 )
 
@@ -37,12 +37,13 @@ func New() *Controller {
 
 // @Summary Get Department
 // @Description Returns a Deaprtment
+// @Security BearerAuth
 // @Tags department
 // @Accept json
 // @Produce json
 // @Param request path DepRequest.OneDepartmentRequest true "Department request data"
 // @Param request query DepRequest.OneDepartmentRequest true "Department request data"
-// @Success 200 {object} DepResponse.DepartmentResponse "Response object"
+// @Success 200 {object} _.DepartmentResponse "Response object"
 // @Router /api/v1/department/{id} [get]
 func (ctl *Controller) Show(c *gin.Context) {
 	var request DepRequest.OneDepartmentRequest
@@ -72,26 +73,27 @@ func (ctl *Controller) Show(c *gin.Context) {
 		return
 	}
 
-	// ctl.json.Success(c, rest.RestConfig{
-	// 	Data: department,
-	// })
-
-	c.JSON(http.StatusOK, DepResponse.DepartmentResponse{
-		ErrorCode: "",
-		Status:    ctl.rest.Success,
-		Data:      department,
-		Message:   "",
+	ctl.json.Success(c, rest.RestConfig{
+		Data: department,
 	})
+
+	// c.JSON(http.StatusOK, DepResponse.DepartmentResponse{
+	// 	ErrorCode: "",
+	// 	Status:    ctl.rest.Success,
+	// 	Data:      department,
+	// 	Message:   "",
+	// })
 
 }
 
 // @Summary Get Departments
 // @Description Returns a list ofDeaprtment
+// @Security BearerAuth
 // @Tags department
 // @Accept json
 // @Produce json
 // @Param user query DepRequest.ListDepartmentRequest true "User data"
-// @Success 200 {object} DepResponse.DepartmentsResponse "Response object"
+// @Success 200 {object} _.DepartmentsResponse "Response object"
 // @Router /api/v1/department/ [get]
 func (ctl *Controller) Search(c *gin.Context) {
 	var request DepRequest.ListDepartmentRequest
@@ -112,19 +114,19 @@ func (ctl *Controller) Search(c *gin.Context) {
 		return
 	}
 
-	// ctl.json.Success(c, rest.RestConfig{
-	// 	Data:       departments.Data,
-	// 	Paged:      true,
-	// 	Pagination: paginate,
-	// })
-
-	c.JSON(http.StatusOK, DepResponse.DepartmentsResponse{
-		ErrorCode:  "",
-		Status:     ctl.rest.Success,
+	ctl.json.Success(c, rest.RestConfig{
 		Data:       departments.Data,
-		Message:    "",
+		Paged:      true,
 		Pagination: paginate,
 	})
+
+	// c.JSON(http.StatusOK, DepResponse.DepartmentsResponse{
+	// 	ErrorCode:  "",
+	// 	Status:     ctl.rest.Success,
+	// 	Data:       departments.Data,
+	// 	Message:    "",
+	// 	Pagination: paginate,
+	// })
 }
 
 // @Summary Get Department
@@ -134,7 +136,7 @@ func (ctl *Controller) Search(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param request query DepRequest.AddDepartmentRequest true "Department request data"
-// @Success 200 {object} DepResponse.DepartmentResponse "Response object"
+// @Success 200 {object} _.DepartmentResponse "Response object"
 // @Router /api/v1/department/ [post]
 func (ctl *Controller) Store(c *gin.Context) {
 	var request DepRequest.AddDepartmentRequest
@@ -162,10 +164,31 @@ func (ctl *Controller) Store(c *gin.Context) {
 	})
 }
 
+// @Summary Update Department
+// @Description Returns a Department (requires JWT)
+// @Security BearerAuth
+// @Tags department
+// @Accept json
+// @Produce json
+// @Param request path DepRequest.OneDepartmentRequest true "Department request data"
+// @Param request query DepRequest.EditDepartmentRequest true "Department request data"
+// @Success 200 {object} _.DepartmentResponse "Response object"
+// @Router /api/v1/department/{id} [put]
 func (ctl *Controller) Update(c *gin.Context) {
 	var request DepRequest.EditDepartmentRequest
+	var uri DepRequest.OneDepartmentRequest
+
+	if err := c.ShouldBindUri(&uri); err != nil {
+
+		log.Printf("ShouldBindUri: %+v\n", err)
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
+		})
+		return
+	}
 
 	if err := c.ShouldBind(&request); err != nil {
+		log.Printf("ShouldBind: %+v\n", request)
 		ctl.json.Badrequest(c, rest.RestConfig{
 			Error_message: ctl.errFmt.SetFromError(err),
 		})
@@ -173,6 +196,8 @@ func (ctl *Controller) Update(c *gin.Context) {
 	}
 
 	user := authHelpers.AuthJWT(c)
+	request.DepartmentId = uri.DepartmentId
+
 	department, err := ctl.departmentService.UpdateDepartment(request, user)
 
 	if err != nil {
@@ -182,18 +207,27 @@ func (ctl *Controller) Update(c *gin.Context) {
 		return
 	}
 
-	// ctl.json.Success(c, rest.RestConfig{
-	// 	Data: department,
-	// })
-
-	c.JSON(http.StatusOK, DepResponse.DepartmentResponse{
-		ErrorCode: "",
-		Status:    ctl.rest.Success,
-		Data:      department,
-		Message:   "",
+	ctl.json.Success(c, rest.RestConfig{
+		Data: department,
 	})
+
+	// c.JSON(http.StatusOK, DepResponse.DepartmentResponse{
+	// 	ErrorCode: "",
+	// 	Status:    ctl.rest.Success,
+	// 	Data:      department,
+	// 	Message:   "",
+	// })
 }
 
+// @Summary Delete Department
+// @Description Returns No content (requires JWT)
+// @Security BearerAuth
+// @Tags department
+// @Accept json
+// @Produce json
+// @Param request path DepRequest.RemoveDepartmentRequest true "Department request data"
+// @Success 200 {object} _.NoContentResponse "Response object"
+// @Router /api/v1/department/{id} [delete]
 func (ctl *Controller) Remove(c *gin.Context) {
 	var request DepRequest.RemoveDepartmentRequest
 
