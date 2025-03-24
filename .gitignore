@@ -6,6 +6,9 @@
 profile.out
 *.exe
 *.rdb
+localhost.crt
+localhost.csr
+localhost.key
 build-errors.log
 /front/
 /tmp/

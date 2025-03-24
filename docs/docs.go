@@ -77,7 +77,25 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Refresh access token",
-                "responses": {}
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "refresh_token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/department-type/": {

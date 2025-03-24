@@ -138,23 +138,24 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie(
-		"refresh_token",
-		refresh_token,
-		int(time.Now().Add(config.Get().Jwt.RefreshDuration).Unix()),
-		"/",
-		"localhost:5173",
-		true,
-		true,
-	)
+	// c.SetSameSite(http.SameSiteNoneMode)
+	// c.SetCookie(
+	// 	"refresh_token",
+	// 	refresh_token,
+	// 	int(time.Now().Add(config.Get().Jwt.RefreshDuration).Unix()),
+	// 	"/",
+	// 	"localhost:5173",
+	// 	true,
+	// 	true,
+	// )
 
 	applog.Info("The user logged in successfully")
 
 	ctl.json.Success(c, rest.RestConfig{
 		Data: map[string]interface{}{
-			"access_token": access_token,
-			"user":         user,
+			"access_token":  access_token,
+			"refresh_token": refresh_token,
+			"user":          user,
 		},
 	})
 }
@@ -165,18 +166,29 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Router /api/v1/auth/refresh [get]
+// @Param user query auth.RefreshRequest true "User data"
+// @Success 200 {object} map[string]string "Token"
+// @Router /api/v1/auth/refresh [post]
 func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
-	refresh, err := c.Cookie("refresh_token")
-	if err != nil {
-		ctl.json.NotFound(c, rest.RestConfig{
-			Error_message: err.Error(),
+	var request auth.RefreshRequest
+
+	// refresh, err := c.Cookie("refresh_token")
+	// if err != nil {
+	// 	ctl.json.NotFound(c, rest.RestConfig{
+	// 		Error_message: err.Error(),
+	// 	})
+	// 	return
+	// }
+
+	if err := c.ShouldBind(&request); err != nil {
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
 	}
 
 	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(refresh, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(request.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
 	if err != nil || !token.Valid || claims.Type != "refresh" {
@@ -187,8 +199,16 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
+	access_token, err := generateAccessToken(claims.UserID)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "خطا در تولید توکن"})
+		return
+	}
+
 	ctl.json.Success(c, rest.RestConfig{
-		Data: claims,
+		Data: map[string]interface{}{
+			"access_token": access_token,
+		},
 	})
 
 }

@@ -103,9 +103,20 @@ paths:
       consumes:
       - application/json
       description: Refresh an access token using a refresh token
+      parameters:
+      - in: query
+        name: refresh_token
+        required: true
+        type: string
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       security:
       - BearerAuth: []
       summary: Refresh access token

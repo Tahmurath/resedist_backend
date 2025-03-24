@@ -2,12 +2,12 @@ app:
   name: "onereseve"
 
 server:
-  host: "127.0.0.1"
+  host: "localhost"
   port: "4000"
   ginmode: "debug" # "debug" "release" "test"
   trustedProxies:
     # - "127.0.0.1"
-    - "92.168.1.118"
+    #- "92.168.1.118"
 
 db:
   username: "root"
