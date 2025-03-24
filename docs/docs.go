@@ -59,6 +59,27 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/auth/refresh": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Refresh an access token using a refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh access token",
+                "responses": {}
+            }
+        },
         "/api/v1/department-type/": {
             "get": {
                 "description": "Returns a list of Deaprtment types",
@@ -338,7 +359,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "Response object",
                         "schema": {
                             "$ref": "#/definitions/responses.NoContentResponse"

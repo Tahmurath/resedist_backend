@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"resedist/pkg/config"
+
+	"github.com/gin-gonic/gin"
 )
 
 const Reset = "\033[0m"
@@ -18,6 +20,9 @@ const White = "\033[97m"
 
 func Info(msg string) {
 	cfg := config.Get()
+	if cfg.Server.Ginmode == gin.ReleaseMode {
+		return
+	}
 
 	switch cfg.Log.LogLevel {
 	case 0:

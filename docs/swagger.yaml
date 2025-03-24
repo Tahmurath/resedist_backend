@@ -98,6 +98,19 @@ paths:
       summary: Login and get JWT token
       tags:
       - auth
+  /api/v1/auth/refresh:
+    get:
+      consumes:
+      - application/json
+      description: Refresh an access token using a refresh token
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Refresh access token
+      tags:
+      - auth
   /api/v1/department-type/:
     get:
       consumes:
@@ -210,7 +223,7 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "204":
           description: Response object
           schema:
             $ref: '#/definitions/responses.NoContentResponse'

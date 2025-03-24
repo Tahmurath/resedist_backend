@@ -14,34 +14,38 @@ import (
 	// _ "resedist/docs"
 	// swaggerFiles "github.com/swaggo/files"
 	// ginSwagger "github.com/swaggo/gin-swagger"
+	"resedist/pkg/config"
 )
 
 func Init() {
+	SetGinMode()
 	router = gin.Default()
+	SetTrustedProxies(router)
 }
 
 func GetRouter() *gin.Engine {
 	return router
 }
 
+func SetTrustedProxies(router *gin.Engine) {
+	router.SetTrustedProxies(config.Get().Server.TrustedProxies)
+}
+
+func SetGinMode() {
+	// configs :=
+	if gin.Mode() != gin.ReleaseMode {
+		gin.SetMode(config.Get().Server.Ginmode)
+	}
+}
+
 func RegisterRoutes() {
 	routes.RegisterRoutes(GetRouter())
 }
 
-// @SecurityDefinitions.apikey BearerAuth
-// @In header
-// @Name Authorization
-
 func ConfigureCorsConfig() {
-	router = gin.Default()
-	// cfg := config.Get()
-	// corsConfig := cors.Config{
-	// 	AllowOrigins:     cfg.Cors.AllowOrigins,
-	// 	AllowMethods:     cfg.Cors.AllowMethods,
-	// 	AllowHeaders:     cfg.Cors.AllowHeaders,
-	// 	ExposeHeaders:    cfg.Cors.ExposeHeaders,
-	// 	AllowCredentials: cfg.Cors.AllowCredentials,
-	// }
-	// router.Use(cors.New(corsConfig))
-	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	routes.ConfigureCorsConfig(GetRouter())
+}
+
+func RegisterSwaggerRoute() {
+	routes.RegisterSwaggerRoute(GetRouter())
 }

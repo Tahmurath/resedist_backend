@@ -51,6 +51,20 @@ fetch("http://localhost:8080/api/v1/auth/login", {
   .then((response) => response.json())
   .then((json) => console.log(json));
 
+ 
+ refresh:
+ fetch("http://localhost:4000/api/v1/auth/refresh", {
+  method: "GET",
+  credentials: 'include',
+  headers: {
+    "Content-type": "application/json; charset=UTF-8",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJ0eXBlIjoiYWNjZXNzIiwiUGFjayI6bnVsbCwiZXhwIjoxNzQzNDA5OTcyLCJpYXQiOjE3NDI4MDUxNzJ9.DKbuQuOxc4g4_HoXVWnj9wRpf8bz01sPUxLxr58r2Cg"
+  }
+})
+.then((response) => response.json())
+.then((json) => console.log(json));
+  
+
 
 add department:
   fetch("http://localhost:8080/api/v1/department/new", {

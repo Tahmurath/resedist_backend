@@ -39,6 +39,9 @@ func Serve() {
 	applog.Info("route register")
 	routing.RegisterRoutes()
 
+	applog.Info("route register")
+	routing.RegisterSwaggerRoute()
+
 	applog.Info("start serve")
 	routing.Serve()
 }

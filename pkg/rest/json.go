@@ -30,6 +30,8 @@ type RestConfig struct {
 	Paged         bool
 	NoContent     bool
 	Http          int
+	// AccessToken string
+	// RefreshToken string
 }
 
 func New() *Jsonresponse {

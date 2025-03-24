@@ -19,8 +19,10 @@ type App struct {
 }
 
 type Server struct {
-	Host string
-	Port string
+	Host           string
+	Port           string
+	Ginmode        string
+	TrustedProxies []string
 }
 
 type DB struct {
@@ -61,8 +63,10 @@ type Redis struct {
 }
 
 type JWT struct {
-	Secret   string
-	Duration time.Duration
+	Secret          string
+	Duration        time.Duration
+	RefreshDuration time.Duration
+	AccessDuration  time.Duration
 }
 
 type CORS struct {

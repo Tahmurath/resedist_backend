@@ -24,6 +24,7 @@ func Routes(router *gin.Engine) {
 	authGroup.Use(middlewares.IsAuthJwt())
 	{
 		authGroup.GET("/user", AuthController.User)
+		authGroup.GET("/refresh", AuthController.RefreshAccessToken)
 	}
 
 }

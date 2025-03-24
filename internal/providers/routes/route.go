@@ -22,8 +22,6 @@ import (
 
 func RegisterRoutes(router *gin.Engine) {
 
-	ConfRoutes(router)
-
 	homeRoutes.Routes(router)
 	articleRoutes.Routes(router)
 	userRoutes.Routes(router)
@@ -32,8 +30,13 @@ func RegisterRoutes(router *gin.Engine) {
 
 }
 
-func ConfRoutes(router *gin.Engine) {
+func RegisterSwaggerRoute(router *gin.Engine) {
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+}
 
+func ConfigureCorsConfig(router *gin.Engine) {
+
+	//gin.SetMode(gin.ReleaseMode)
 	cfg := config.Get()
 	corsConfig := cors.Config{
 		AllowOrigins:     cfg.Cors.AllowOrigins,
@@ -43,6 +46,4 @@ func ConfRoutes(router *gin.Engine) {
 		AllowCredentials: cfg.Cors.AllowCredentials,
 	}
 	router.Use(cors.New(corsConfig))
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 }

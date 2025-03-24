@@ -14,7 +14,6 @@ import (
 	authHelpers "resedist/internal/modules/auth/helpers"
 	DepRequest "resedist/internal/modules/department/department/requests/department"
 	_ "resedist/internal/modules/department/department/responses"
-	DepScopes "resedist/internal/modules/department/department/scopes"
 	DepartmentService "resedist/internal/modules/department/department/services"
 )
 
@@ -64,7 +63,6 @@ func (ctl *Controller) Show(c *gin.Context) {
 	department, err := ctl.departmentService.Find(
 		uri.DepartmentId,
 		request.Expand,
-		DepScopes.Preload(request.Expand, "DepartmentType", "Parent"),
 	)
 
 	if err != nil {
@@ -180,7 +178,6 @@ func (ctl *Controller) Update(c *gin.Context) {
 	var uri DepRequest.OneDepartmentRequest
 
 	if err := c.ShouldBindUri(&uri); err != nil {
-
 		log.Printf("ShouldBindUri: %+v\n", err)
 		ctl.json.Badrequest(c, rest.RestConfig{
 			Error_message: ctl.errFmt.SetFromError(err),

@@ -55,10 +55,13 @@ func (s *DepartmentService) SearchDepartmentsPaginated(request DepRequest.ListDe
 	return DepResponse.ToDepartments(departments, request.Expand), *paginate, nil
 }
 
-func (s *DepartmentService) Find(id uint, expand bool, scopes ...func(*gorm.DB) *gorm.DB) (DepResponse.Department, error) {
+func (s *DepartmentService) Find(id uint, expand bool) (DepResponse.Department, error) {
 	var response DepResponse.Department
 
-	department := s.depRepo.Find(id, scopes...)
+	department := s.depRepo.Find(
+		id,
+		DepScopes.Preload(expand, "DepartmentType", "Parent"),
+	)
 
 	if department.ID == 0 {
 		return response, errors.New("error in find Department")
