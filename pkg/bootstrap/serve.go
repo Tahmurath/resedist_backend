@@ -13,7 +13,7 @@ import (
 
 func Serve() {
 	applog.Info("config set")
-	config.Set()
+	config.Set("./config")
 
 	applog.Info("database connect")
 	database.Connect()

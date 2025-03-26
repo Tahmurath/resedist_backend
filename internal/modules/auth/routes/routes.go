@@ -11,7 +11,7 @@ func Routes(router *gin.Engine) {
 
 	AuthController := authCtrl.New()
 
-	router.GET("/auth/login", AuthController.Login)
+	//router.GET("/auth/login", AuthController.Login)
 
 	guestGroup := router.Group("/api/v1/auth")
 	guestGroup.Use(middlewares.IsGuestJwt())

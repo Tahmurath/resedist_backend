@@ -20,6 +20,8 @@ import (
 	"time"
 )
 
+var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
+
 type Claims struct {
 	UserID uint   `json:"user_id"`
 	Type   string `json:"type"` // "access" یا "refresh"
@@ -107,6 +109,7 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 
 	if err := c.ShouldBind(&request); err != nil {
 		ctl.json.Badrequest(c, rest.RestConfig{
+			//Error_message: ctl.errFmt.SetFromError(err),
 			Error_message: ctl.errFmt.SetFromError(err),
 		})
 		return
@@ -120,7 +123,7 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	access_token, err := ctl.generateAccessToken(user)
+	access_token, err := ctl.generateAccessToken(user.ID)
 	if err != nil {
 		ctl.json.NotFound(c, rest.RestConfig{
 			Error_message: err.Error(),
@@ -199,7 +202,7 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	access_token, err := generateAccessToken(claims.UserID)
+	access_token, err := ctl.generateAccessToken(claims.UserID)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "خطا در تولید توکن"})
 		return
@@ -218,10 +221,10 @@ func (ctl *Controller) User(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Authenticated", "user": user})
 }
 
-func (ctl *Controller) generateAccessToken(user UserResponse.User) (string, error) {
+func (ctl *Controller) generateAccessToken(user_id uint) (string, error) {
 
 	claims := &Claims{
-		UserID: user.ID,
+		UserID: user_id,
 		Type:   "access",
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Get().Jwt.AccessDuration)),
@@ -233,6 +236,7 @@ func (ctl *Controller) generateAccessToken(user UserResponse.User) (string, erro
 
 	return token.SignedString([]byte(config.Get().Jwt.Secret))
 }
+
 func (ctl *Controller) generateRefreshToken(user UserResponse.User) (string, error) {
 
 	claims := &Claims{
