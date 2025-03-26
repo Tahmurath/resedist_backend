@@ -1,44 +1,55 @@
 package controllers_test
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"strings"
-
-	//depRoutes "resedist/internal/modules/department/department/routes"
-
 	authRoutes "resedist/internal/modules/auth/routes"
-
-	userModels "resedist/internal/modules/user/models"
-	// "resedist/pkg/database"
-
-	//"strings"
-	"testing"
-
-	//"github.com/gin-gonic/gin"
-
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
-
-	// articleModels "resedist/internal/modules/article/models"
-	// contactModels "resedist/internal/modules/contact/models"
-	// departmentModels "resedist/internal/modules/department/department/models"
-	// orderModels "resedist/internal/modules/order/models"
-	// tenantModels "resedist/internal/modules/tenant/models"
-	// userModels "resedist/internal/modules/user/models"
-	// "gorm.io/driver/sqlite"
-
+	"resedist/internal/modules/user/requests/auth"
 	"resedist/pkg/config"
 	"resedist/pkg/database"
 	"resedist/pkg/redis"
+	"strings"
+	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
 
-var user userModels.User
+func TestRegister(t *testing.T) {
 
-func TestLogin(t *testing.T) {
+	config.Set("./../../../../config", "config")
+	database.Connect()
+	redis.Connect()
 
-	config.Set("./../../../../config")
+	form := url.Values{}
+	form.Add("name", "hooman3@test.com")
+	form.Add("email", "hooman4@test.com")
+	form.Add("password", "hooman4@test.com")
+	formBody := form.Encode()
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/api/v1/auth/register", strings.NewReader(formBody))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	router := gin.Default()
+
+	authRoutes.Routes(router)
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code, "Expected status 200, got %d", w.Code)
+	assert.Contains(t, w.Body.String(), `User registered successfully`)
+
+	fmt.Println("Request Body:", formBody)
+	fmt.Println("Response Body:", w.Body.String())
+}
+func TestLoginForm(t *testing.T) {
+
+	config.Set("./../../../../config", "config")
 	database.Connect()
 	redis.Connect()
 
@@ -60,6 +71,34 @@ func TestLogin(t *testing.T) {
 	assert.Equal(t, 200, w.Code, "Expected status 200, got %d", w.Code)
 	assert.Contains(t, w.Body.String(), `access_token`)
 
-	// fmt.Println("Request Body:", formBody)
-	// fmt.Println("Response Body:", w.Body.String())
+	fmt.Println("Request Body:", formBody)
+	fmt.Println("Response Body:", w.Body.String())
+}
+func TestLoginJson(t *testing.T) {
+
+	config.Set("./../../../../config", "config")
+	database.Connect()
+	redis.Connect()
+
+	request := &auth.LoginRequest{
+		Email:    "hooman@test.com",
+		Password: "hooman@test.com",
+	}
+	requestJson, _ := json.Marshal(request)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/api/v1/auth/login", bytes.NewBuffer(requestJson))
+	req.Header.Set("Content-type", "application/json; charset=UTF-8")
+
+	router := gin.Default()
+
+	authRoutes.Routes(router)
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code, "Expected status 200, got %d", w.Code)
+	assert.Contains(t, w.Body.String(), `access_token`)
+
+	fmt.Println("Request Body:", req.Body)
+	fmt.Println("Response Body:", w.Body.String())
 }

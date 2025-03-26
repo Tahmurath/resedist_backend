@@ -7,7 +7,7 @@ import (
 )
 
 func Seed() {
-	config.Set("./config")
+	config.Set("./config", "config")
 
 	database.Connect()
 

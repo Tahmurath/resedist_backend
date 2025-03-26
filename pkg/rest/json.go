@@ -90,6 +90,26 @@ func (j *Jsonresponse) NotFound(c *gin.Context, config RestConfig) {
 	})
 }
 
+func (j *Jsonresponse) ServerError(c *gin.Context, config RestConfig) {
+
+	if config.Status == "" {
+		config.Status = j.rest.Failed
+	}
+
+	if config.Error_code == "" {
+		config.Error_code = j.rest.Not_found
+	}
+	if config.Http < 1 {
+		config.Http = http.StatusInternalServerError
+	}
+
+	c.JSON(config.Http, gin.H{
+		j.Status:        config.Status,
+		j.Error_message: config.Error_message,
+		j.Error_code:    config.Error_code,
+	})
+}
+
 func (j *Jsonresponse) Success(c *gin.Context, config RestConfig) {
 
 	if config.Status == "" {

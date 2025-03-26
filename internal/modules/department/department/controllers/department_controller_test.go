@@ -3,11 +3,20 @@ package controllers_test
 import (
 	//"encoding/json"
 	// "net/http"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 
 	//depRoutes "resedist/internal/modules/department/department/routes"
-	appRoutes "resedist/internal/providers/routes"
+
+	"resedist/pkg/config"
+	"resedist/pkg/database"
+	"resedist/pkg/redis"
+
+	Authctl "resedist/internal/modules/auth/controllers"
+	depRoutes "resedist/internal/modules/department/department/routes"
 
 	//"strings"
 	"testing"
@@ -19,29 +28,40 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// func Token(){
-// 	GenerateAccessToken()
-// }
+func TestListDepartments(t *testing.T) {
 
-func TestShow(t *testing.T) {
+	config.Set("./../../../../../config", "config")
+	database.Connect()
+	redis.Connect()
+
+	form := url.Values{}
+	form.Add("page", "1")
+	form.Add("page_size", "5")
+	form.Add("sort", "id")
+	form.Add("order", "asc")
+	formBody := form.Encode()
+
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/api/v1/department/1", nil)
+	req, _ := http.NewRequest("GET", "/api/v1/department", strings.NewReader(formBody))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	token, _ := Authctl.GenerateAccessToken(1)
+	b := "Bearer " + token
+	req.Header.Set("Authorization", b)
 
 	router := gin.Default()
 
-	// viper.SetConfigName("config") // name of config file (without extension)
-	// viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
-	// viper.AddConfigPath("./../../../../config")
-
-	//config.Set("./../../../../config")
-
-	// database.Connect()
-	appRoutes.RegisterRoutes(router)
+	depRoutes.Routes(router)
 
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, 401, w.Code)
-	assert.Equal(t, `{"error":"Authorization header missing"}`, w.Body.String())
+	assert.Equal(t, 200, w.Code, "Expected status 200, got %d", w.Code)
+	assert.Contains(t, w.Body.String(), `pagination`)
+	assert.Contains(t, w.Body.String(), `"data":[{"id":`)
+
+	fmt.Println("Request Body:", req.Header)
+	fmt.Println("Request Body:", formBody)
+	fmt.Println("Response Body:", w.Body.String())
 }
 
 // func TestGenerateAccessToken(t *testing.T) {

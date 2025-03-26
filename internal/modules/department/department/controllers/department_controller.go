@@ -151,7 +151,7 @@ func (ctl *Controller) Store(c *gin.Context) {
 
 	department, err := ctl.departmentService.StoreAsUser(request, user)
 	if err != nil {
-		ctl.json.NotFound(c, rest.RestConfig{
+		ctl.json.ServerError(c, rest.RestConfig{
 			Error_message: err.Error(),
 		})
 		return
@@ -198,7 +198,7 @@ func (ctl *Controller) Update(c *gin.Context) {
 	department, err := ctl.departmentService.UpdateDepartment(uri.DepartmentId, request, user)
 
 	if err != nil {
-		ctl.json.NotFound(c, rest.RestConfig{
+		ctl.json.ServerError(c, rest.RestConfig{
 			Error_message: err.Error(),
 		})
 		return
@@ -238,7 +238,7 @@ func (ctl *Controller) Remove(c *gin.Context) {
 	err := ctl.departmentService.Delete(uri.DepartmentId)
 
 	if err != nil {
-		ctl.json.NotFound(c, rest.RestConfig{
+		ctl.json.ServerError(c, rest.RestConfig{
 			Error_message: err.Error(),
 		})
 		return

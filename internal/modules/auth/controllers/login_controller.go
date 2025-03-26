@@ -123,7 +123,7 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	access_token, err := ctl.generateAccessToken(user.ID)
+	access_token, err := GenerateAccessToken(user.ID)
 	if err != nil {
 		ctl.json.NotFound(c, rest.RestConfig{
 			Error_message: err.Error(),
@@ -202,7 +202,7 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	access_token, err := ctl.generateAccessToken(claims.UserID)
+	access_token, err := GenerateAccessToken(claims.UserID)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "خطا در تولید توکن"})
 		return
@@ -221,7 +221,7 @@ func (ctl *Controller) User(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Authenticated", "user": user})
 }
 
-func (ctl *Controller) generateAccessToken(user_id uint) (string, error) {
+func GenerateAccessToken(user_id uint) (string, error) {
 
 	claims := &Claims{
 		UserID: user_id,

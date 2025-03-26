@@ -1,0 +1,65 @@
+app:
+  name: "onereseve"
+
+server:
+  host: "localhost"
+  port: "4000"
+  ginmode: "debug" # "debug" "release" "test"
+  trustedProxies:
+    # - "127.0.0.1"
+    #- "92.168.1.118"
+
+db:
+  username: "root"
+  password: ""
+  host: "127.0.0.1"
+  port: "3306"
+  name: "resedist_test"
+
+dblog:
+  LogLevel: 4 # 1 2 3 4
+  Colorful: true
+
+redis:
+  Addr: "localhost:6379"
+  Password: ""
+  DB: 0
+#  Protocol: 2
+
+log:
+  LogLevel: 1
+
+jwt:
+    secret: "fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c"
+    duration: "0h30m0s"
+    RefreshDuration: "168h0m0s"
+    AccessDuration:  "0h15m0s"
+
+rest:
+  status: "_status"
+  error_message: "_message"
+  error_code: "_error_code"
+  pagination: "pagination"
+  data: "data"
+  request: "request"
+  success: "success"
+  failed: "failed"
+  bind_error: "bind_error"
+  not_found: "not_found"
+
+
+cors:
+  AllowOrigins:
+    - "http://localhost:3000"
+    - "http://localhost:5175"
+    - "http://localhost:4173"
+    - "http://localhost:5173"
+    - "http://localhost:80"
+    - "http://192.168.1.164:3000"
+
+  AllowMethods: ["GET", "POST", "PUT", "DELETE"]
+  AllowHeaders: ["Origin", "Content-Type", "Authorization"]
+  ExposeHeaders: ["Content-Length"]
+  AllowCredentials: true
+
+
