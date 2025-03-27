@@ -112,18 +112,42 @@ func TestStore(t *testing.T) {
 	fmt.Println("Response Body:", w.Body.String())
 }
 
-// func TestGenerateAccessToken(t *testing.T) {
-// 	token, err := generateAccessToken(1)
-// 	assert.NoError(t, err)
-// 	assert.NotEmpty(t, token)
+func TestUpdate(t *testing.T) {
 
-// 	claims := &Claims{}
-// 	parsedToken, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
-// 		return jwtKey, nil
-// 	})
-// 	assert.NoError(t, err)
-// 	assert.True(t, parsedToken.Valid)
-// 	assert.Equal(t, uint(1), claims.UserID)
-// 	assert.Equal(t, "access", claims.Type)
-// 	assert.WithinDuration(t, time.Now().Add(15*time.Minute), claims.ExpiresAt.Time, time.Second)
-// }
+	request := &DepRequest.EditDepartmentRequest{
+		Title:            "Root",
+		DepartmentTypeId: 1,
+		ParentID:         1,
+	}
+	requestJson, _ := json.Marshal(request)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("PUT", "/api/v1/department/1", bytes.NewBuffer(requestJson))
+	req.Header.Set("Content-type", "application/json; charset=UTF-8")
+
+	req.Header.Set("Authorization", bearer)
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code, "Expected status 200, got %d", w.Code)
+	assert.Contains(t, w.Body.String(), `data":{"id"`)
+
+	fmt.Println("Request Body:", req.Body)
+	fmt.Println("Response Body:", w.Body.String())
+}
+
+func TestRemove(t *testing.T) {
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", "/api/v1/department/61", nil)
+	req.Header.Set("Content-type", "application/json; charset=UTF-8")
+
+	req.Header.Set("Authorization", bearer)
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNoContent, w.Code, "Expected status 200, got %d", w.Code)
+
+	fmt.Println("Request Body:", req.Body)
+	fmt.Println("Response Body:", w.Body.String())
+}
