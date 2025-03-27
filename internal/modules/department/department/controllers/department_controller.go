@@ -152,7 +152,7 @@ func (ctl *Controller) Store(c *gin.Context) {
 	department, err := ctl.departmentService.StoreAsUser(request, user)
 	if err != nil {
 		ctl.json.ServerError(c, rest.RestConfig{
-			Error_message: err.Error(),
+			Error_message: user,
 		})
 		return
 	}

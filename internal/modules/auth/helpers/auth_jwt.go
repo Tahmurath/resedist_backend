@@ -49,10 +49,12 @@ func AuthJWT(c *gin.Context) UserResponse.User {
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	user := claims["sub"]
+	user := claims
 
 	userModelBytes, _ := json.Marshal(user)
 	_ = json.Unmarshal(userModelBytes, &response)
+
+	//fmt.Println("auth_jwt->response:", response)
 
 	//Store the user in the context
 	c.Set("user", response)

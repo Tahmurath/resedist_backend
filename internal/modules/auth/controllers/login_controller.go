@@ -23,9 +23,8 @@ import (
 var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
 
 type Claims struct {
-	UserID uint   `json:"user_id"`
-	Type   string `json:"type"` // "access" یا "refresh"
-	Pack   interface{}
+	ID   uint
+	Type string
 	jwt.RegisteredClaims
 }
 type Controller struct {
@@ -202,7 +201,7 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	access_token, err := GenerateAccessToken(claims.UserID)
+	access_token, err := GenerateAccessToken(claims.ID)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "خطا در تولید توکن"})
 		return
@@ -224,8 +223,8 @@ func (ctl *Controller) User(c *gin.Context) {
 func GenerateAccessToken(user_id uint) (string, error) {
 
 	claims := &Claims{
-		UserID: user_id,
-		Type:   "access",
+		ID:   user_id,
+		Type: "access",
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Get().Jwt.AccessDuration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -240,8 +239,8 @@ func GenerateAccessToken(user_id uint) (string, error) {
 func (ctl *Controller) generateRefreshToken(user UserResponse.User) (string, error) {
 
 	claims := &Claims{
-		UserID: user.ID,
-		Type:   "refresh",
+		ID:   user.ID,
+		Type: "refresh",
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Get().Jwt.RefreshDuration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
