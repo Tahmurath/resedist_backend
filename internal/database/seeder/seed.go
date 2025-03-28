@@ -2,8 +2,10 @@ package seeder
 
 import (
 	//"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"log"
+
+	"gorm.io/gorm"
+
 	//userModels "resedist/internal/modules/user/models"
 	"resedist/pkg/database"
 )
@@ -15,8 +17,6 @@ func Seed() {
 	db = database.Connection()
 
 	user := UserSeed()
-
-	ArticleSeed(user)
 
 	OrderStatusSeed(user)
 

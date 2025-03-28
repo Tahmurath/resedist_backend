@@ -3,7 +3,6 @@ package migration
 import (
 	"fmt"
 	"log"
-	articleModels "resedist/internal/modules/article/models"
 	contactModels "resedist/internal/modules/contact/models"
 	departmentModels "resedist/internal/modules/department/department/models"
 	orderModels "resedist/internal/modules/order/models"
@@ -16,7 +15,6 @@ func Migrate() {
 	db := database.Connection()
 	err := db.AutoMigrate(
 		&userModels.User{},
-		&articleModels.Article{},
 		&orderModels.Order{},
 		&orderModels.OrderPassenger{},
 		&orderModels.OrderStatus{},

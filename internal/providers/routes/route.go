@@ -1,10 +1,8 @@
 package routes
 
 import (
-	articleRoutes "resedist/internal/modules/article/routes"
 	authRoutes "resedist/internal/modules/auth/routes"
 	depRoutes "resedist/internal/modules/department/department/routes"
-	homeRoutes "resedist/internal/modules/home/routes"
 	userRoutes "resedist/internal/modules/user/routes"
 
 	"github.com/gin-gonic/gin"
@@ -22,8 +20,6 @@ import (
 
 func RegisterRoutes(router *gin.Engine) {
 
-	homeRoutes.Routes(router)
-	articleRoutes.Routes(router)
 	userRoutes.Routes(router)
 	authRoutes.Routes(router)
 	depRoutes.Routes(router)
@@ -31,6 +27,10 @@ func RegisterRoutes(router *gin.Engine) {
 }
 
 func RegisterSwaggerRoute(router *gin.Engine) {
+	// Redirect از ریشه به Swagger
+	router.GET("/", func(c *gin.Context) {
+		c.Redirect(302, "/swagger/index.html")
+	})
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
