@@ -23,7 +23,7 @@ func mapDepartmentType(departmentType *depaTypeModels.DepartmentType) interface{
 	if departmentType == nil {
 		return nil
 	}
-	return responses.DepartmentType{
+	return responses.DepType{
 		ID:    departmentType.ID,
 		Title: departmentType.Title,
 	}

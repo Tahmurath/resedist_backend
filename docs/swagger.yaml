@@ -10,6 +10,71 @@ definitions:
       total_rows:
         type: integer
     type: object
+  resedist_internal_modules_department_department_responses.NoContentResponse:
+    properties:
+      _error_code:
+        example: ""
+        type: string
+      _message:
+        example: "null"
+        type: string
+      _status:
+        example: success
+        type: string
+    type: object
+  resedist_internal_modules_department_department_type_responses.NoContentResponse:
+    properties:
+      _error_code:
+        example: ""
+        type: string
+      _message:
+        example: "null"
+        type: string
+      _status:
+        example: success
+        type: string
+    type: object
+  responses.DepType:
+    properties:
+      activated:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+    type: object
+  responses.DepTypeResponse:
+    properties:
+      _error_code:
+        example: ""
+        type: string
+      _message:
+        example: "null"
+        type: string
+      _status:
+        example: success
+        type: string
+      data:
+        $ref: '#/definitions/responses.DepType'
+    type: object
+  responses.DepTypesResponse:
+    properties:
+      _error_code:
+        example: ""
+        type: string
+      _message:
+        example: "null"
+        type: string
+      _status:
+        example: success
+        type: string
+      data:
+        items:
+          $ref: '#/definitions/responses.DepType'
+        type: array
+      pagination:
+        $ref: '#/definitions/pagination.PagePack'
+    type: object
   responses.Department:
     properties:
       departmentType: {}
@@ -53,18 +118,6 @@ definitions:
       pagination:
         $ref: '#/definitions/pagination.PagePack'
     type: object
-  responses.NoContentResponse:
-    properties:
-      _error_code:
-        example: ""
-        type: string
-      _message:
-        example: "null"
-        type: string
-      _status:
-        example: success
-        type: string
-    type: object
 info:
   contact: {}
 paths:
@@ -99,7 +152,7 @@ paths:
       tags:
       - auth
   /api/v1/auth/refresh:
-    get:
+    post:
       consumes:
       - application/json
       description: Refresh an access token using a refresh token
@@ -127,29 +180,147 @@ paths:
       consumes:
       - application/json
       description: Returns a list of Deaprtment types
+      parameters:
+      - in: query
+        name: depType
+        type: string
+      - in: query
+        name: expand
+        type: boolean
+      - in: query
+        name: order
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: sort
+        type: string
+      - in: query
+        name: title
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Response object
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/responses.DepTypesResponse'
+      security:
+      - BearerAuth: []
       summary: Get Department types
       tags:
-      - department-type
+      - depType
+    post:
+      consumes:
+      - application/json
+      description: Returns a Department type (requires JWT)
+      parameters:
+      - in: query
+        maxLength: 100
+        minLength: 3
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.DepTypeResponse'
+      security:
+      - BearerAuth: []
+      summary: create Department type
+      tags:
+      - depType
+  /api/v1/department-type/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Returns No content (requires JWT)
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Response object
+          schema:
+            $ref: '#/definitions/resedist_internal_modules_department_department_type_responses.NoContentResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Department type
+      tags:
+      - depType
+    get:
+      consumes:
+      - application/json
+      description: Returns a Deaprtment type
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+      - in: query
+        name: expand
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.DepTypeResponse'
+      security:
+      - BearerAuth: []
+      summary: Get Department type
+      tags:
+      - depType
+    put:
+      consumes:
+      - application/json
+      description: Returns a Department type (requires JWT)
+      parameters:
+      - in: path
+        name: id
+        required: true
+        type: integer
+      - in: query
+        maxLength: 100
+        minLength: 3
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.DepTypeResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Department
+      tags:
+      - depType
   /api/v1/department/:
     get:
       consumes:
       - application/json
-      description: Returns a list ofDeaprtment
+      description: Returns a list of Deaprtment
       parameters:
       - in: query
-        name: department
+        name: depType
         type: string
       - in: query
-        name: department_type
+        name: department
         type: string
       - in: query
         name: departmenttypeid
@@ -218,7 +389,7 @@ paths:
             $ref: '#/definitions/responses.DepartmentResponse'
       security:
       - BearerAuth: []
-      summary: Get Department
+      summary: Create Department
       tags:
       - department
   /api/v1/department/{id}:
@@ -237,7 +408,7 @@ paths:
         "204":
           description: Response object
           schema:
-            $ref: '#/definitions/responses.NoContentResponse'
+            $ref: '#/definitions/resedist_internal_modules_department_department_responses.NoContentResponse'
       security:
       - BearerAuth: []
       summary: Delete Department

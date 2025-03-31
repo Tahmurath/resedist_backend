@@ -60,7 +60,7 @@ const docTemplate = `{
             }
         },
         "/api/v1/auth/refresh": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -100,6 +100,11 @@ const docTemplate = `{
         },
         "/api/v1/department-type/": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns a list of Deaprtment types",
                 "consumes": [
                     "application/json"
@@ -108,17 +113,204 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "department-type"
+                    "depType"
                 ],
                 "summary": "Get Department types",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "depType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Response object",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/responses.DepTypesResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a Department type (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "depType"
+                ],
+                "summary": "create Department type",
+                "parameters": [
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DepTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/department-type/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a Deaprtment type",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "depType"
+                ],
+                "summary": "Get Department type",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DepTypeResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a Department type (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "depType"
+                ],
+                "summary": "Update Department",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.DepTypeResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns No content (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "depType"
+                ],
+                "summary": "Delete Department type",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/resedist_internal_modules_department_department_type_responses.NoContentResponse"
                         }
                     }
                 }
@@ -131,7 +323,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Returns a list ofDeaprtment",
+                "description": "Returns a list of Deaprtment",
                 "consumes": [
                     "application/json"
                 ],
@@ -145,12 +337,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "name": "department",
+                        "name": "depType",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "name": "department_type",
+                        "name": "department",
                         "in": "query"
                     },
                     {
@@ -224,7 +416,7 @@ const docTemplate = `{
                 "tags": [
                     "department"
                 ],
-                "summary": "Get Department",
+                "summary": "Create Department",
                 "parameters": [
                     {
                         "type": "integer",
@@ -380,7 +572,7 @@ const docTemplate = `{
                     "204": {
                         "description": "Response object",
                         "schema": {
-                            "$ref": "#/definitions/responses.NoContentResponse"
+                            "$ref": "#/definitions/resedist_internal_modules_department_department_responses.NoContentResponse"
                         }
                     }
                 }
@@ -402,6 +594,100 @@ const docTemplate = `{
                 },
                 "total_rows": {
                     "type": "integer"
+                }
+            }
+        },
+        "resedist_internal_modules_department_department_responses.NoContentResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_message": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "resedist_internal_modules_department_department_type_responses.NoContentResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_message": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "responses.DepType": {
+            "type": "object",
+            "properties": {
+                "activated": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.DepTypeResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_message": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
+                },
+                "data": {
+                    "$ref": "#/definitions/responses.DepType"
+                }
+            }
+        },
+        "responses.DepTypesResponse": {
+            "type": "object",
+            "properties": {
+                "_error_code": {
+                    "type": "string",
+                    "example": ""
+                },
+                "_message": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "_status": {
+                    "type": "string",
+                    "example": "success"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.DepType"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/pagination.PagePack"
                 }
             }
         },
@@ -464,23 +750,6 @@ const docTemplate = `{
                 },
                 "pagination": {
                     "$ref": "#/definitions/pagination.PagePack"
-                }
-            }
-        },
-        "responses.NoContentResponse": {
-            "type": "object",
-            "properties": {
-                "_error_code": {
-                    "type": "string",
-                    "example": ""
-                },
-                "_message": {
-                    "type": "string",
-                    "example": "null"
-                },
-                "_status": {
-                    "type": "string",
-                    "example": "success"
                 }
             }
         }
