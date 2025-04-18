@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/outrigdev/outrig"
+	//"github.com/outrigdev/outrig"
 	"log"
 	"net/http"
 
@@ -114,7 +114,7 @@ func (ctl *Controller) Search(c *gin.Context) {
 		return
 	}
 
-	outrig.TrackValue("app.push1", departments)
+	//outrig.TrackValue("app.push1", departments)
 
 	ctl.json.Success(c, rest.RestConfig{
 		Data:       departments.Data,
