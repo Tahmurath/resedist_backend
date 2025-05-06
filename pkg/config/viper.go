@@ -1,10 +1,16 @@
 package config
 
 import (
-	"log"
-
 	"github.com/spf13/viper"
+	"log"
+	"resedist/config"
 )
+
+var configurations config.Config
+
+func Get() config.Config {
+	return configurations
+}
 
 func Set(path string, file string) {
 	viper.SetConfigName(file)   // name of config file (without extension)

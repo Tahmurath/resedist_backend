@@ -27,14 +27,10 @@ type Server struct {
 
 type DB struct {
 	Username string
-	User     string
 	Password string
 	Host     string
 	Port     string
 	Name     string
-	Dbname   string
-	Sslmode  string
-	Timezone string
 }
 
 type Rest struct {

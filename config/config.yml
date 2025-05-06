@@ -11,16 +11,10 @@ server:
 
 db:
   username: "root"
-  user: "postgres"
-#  password: ""
-  password: "111111"
+  password: ""
   host: "127.0.0.1"
-#  port: "3306"
-  port: "5432"
+  port: "3306"
   name: "resedist"
-  dbname: "first"
-  sslmode: "disable"
-  timezone: "Asia/Tehran"
 
 dblog:
   LogLevel: 4 # 1 2 3 4
