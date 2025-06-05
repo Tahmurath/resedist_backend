@@ -8,7 +8,6 @@ import (
 	"resedist/pkg/redis"
 	"resedist/pkg/routing"
 	"resedist/pkg/sessions"
-	"resedist/pkg/static"
 )
 
 func Serve() {
@@ -30,9 +29,9 @@ func Serve() {
 	applog.Info("session start")
 	sessions.Start(routing.GetRouter())
 
-	applog.Info("static load")
-	static.LoadStatic(routing.GetRouter())
-
+	//applog.Info("static load")
+	//static.LoadStatic(routing.GetRouter())
+	//
 	applog.Info("html load")
 	html.LoadHTML(routing.GetRouter())
 
