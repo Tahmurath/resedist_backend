@@ -39,6 +39,14 @@ func New(router *gin.Engine) *Controller {
 	}
 }
 
+// @Summary Login and get JWT token
+// @Description Authenticate user and return a JWT token
+// @Tags SSO
+// @Accept json
+// @Produce json
+// @Param user query auth.LoginRequest true "User data"
+// @Success 200 {object} map[string]string "Token"
+// @Router /sso/v1/auth/login [post]
 func (ctl *Controller) HandleLogin(c *gin.Context) {
 	var request auth.LoginRequest
 
@@ -85,6 +93,55 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 		},
 	})
 }
+
+// @Summary Refresh access token
+// @Description Refresh an access token using a refresh token
+// @Security BearerAuth
+// @Tags SSO
+// @Accept json
+// @Produce json
+// @Param user query auth.RefreshRequest true "User data"
+// @Success 200 {object} map[string]string "Token"
+// @Router /sso/v1/auth/refresh [post]
+func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
+	var request auth.RefreshRequest
+
+	if err := c.ShouldBind(&request); err != nil {
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
+		})
+		return
+	}
+
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(request.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil || !token.Valid || claims.Type != "refresh" {
+		ctl.json.NotFound(c, rest.RestConfig{
+			Http:          http.StatusUnauthorized,
+			Error_message: err.Error(),
+		})
+		return
+	}
+
+	access_token, err := GenerateAccessToken(claims.ID)
+
+	if err != nil {
+		ctl.json.ServerError(c, rest.RestConfig{
+			Error_message: err.Error(),
+			Http:          http.StatusInternalServerError,
+		})
+		return
+	}
+
+	ctl.json.Success(c, rest.RestConfig{
+		Data: map[string]interface{}{
+			"access_token": access_token,
+		},
+	})
+}
+
 func GenerateAccessToken(user_id uint) (string, error) {
 
 	claims := &Claims{
