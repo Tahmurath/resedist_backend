@@ -80,9 +80,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "client_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "grant_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "refresh_token",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -658,9 +667,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "client_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "grant_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "refresh_token",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {

@@ -85,6 +85,16 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 
 	applog.Info("The user logged in successfully")
 
+	c.SetCookie(
+		"refresh_token",
+		refresh_token,
+		int(time.Now().Add(config.Get().Jwt.RefreshDuration).Unix()),
+		"/",
+		"localhost:4000",
+		true,
+		true,
+	)
+
 	ctl.json.Success(c, rest.RestConfig{
 		Data: map[string]interface{}{
 			"access_token":  access_token,

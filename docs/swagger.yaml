@@ -158,8 +158,13 @@ paths:
       description: Refresh an access token using a refresh token
       parameters:
       - in: query
+        name: client_id
+        type: string
+      - in: query
+        name: grant_type
+        type: string
+      - in: query
         name: refresh_token
-        required: true
         type: string
       produces:
       - application/json
@@ -519,8 +524,13 @@ paths:
       description: Refresh an access token using a refresh token
       parameters:
       - in: query
+        name: client_id
+        type: string
+      - in: query
+        name: grant_type
+        type: string
+      - in: query
         name: refresh_token
-        required: true
         type: string
       produces:
       - application/json

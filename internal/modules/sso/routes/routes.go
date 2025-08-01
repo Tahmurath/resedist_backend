@@ -14,7 +14,9 @@ func Routes(router *gin.Engine) {
 	ssoController := ssoCtrl.New(router)
 	// DepartmentTypeController := depTypeCtrl.New()
 
-	//authGroup := router.Group("/sso")
+	staticGroup := router.Group("/sso")
+	staticGroup.GET("/about", ssoController.About)
+	staticGroup.GET("/home", ssoController.Home)
 
 	guestGroup := router.Group("/sso/v1/auth")
 	guestGroup.Use(middlewares.IsGuestJwt())
@@ -29,7 +31,5 @@ func Routes(router *gin.Engine) {
 		//authGroup.GET("/user", ssoController.User)
 		authGroup.POST("/refresh", ssoController.RefreshAccessToken)
 	}
-	//authGroup.GET("/about", ssoController.About)
-	//authGroup.GET("/home", ssoController.Home)
 
 }
