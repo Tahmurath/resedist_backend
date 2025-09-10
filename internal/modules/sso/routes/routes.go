@@ -18,6 +18,8 @@ func Routes(router *gin.Engine) {
 	staticGroup.GET("/about", ssoController.About)
 	staticGroup.GET("/home", ssoController.Home)
 
+	staticGroup.POST("/v1/auth/refresh", ssoController.RefreshAccessToken)
+
 	guestGroup := router.Group("/sso/v1/auth")
 	guestGroup.Use(middlewares.IsGuestJwt())
 	{
@@ -29,7 +31,7 @@ func Routes(router *gin.Engine) {
 	authGroup.Use(middlewares.IsAuthJwt())
 	{
 		//authGroup.GET("/user", ssoController.User)
-		authGroup.POST("/refresh", ssoController.RefreshAccessToken)
+		authGroup.POST("/refresh2", ssoController.RefreshAccessToken)
 	}
 
 }
