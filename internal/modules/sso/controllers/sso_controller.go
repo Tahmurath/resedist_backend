@@ -46,7 +46,7 @@ func New(router *gin.Engine) *Controller {
 // @Produce json
 // @Param user query auth.LoginRequest true "User data"
 // @Success 200 {object} map[string]string "Token"
-// @Router /sso/v1/auth/login [post]
+// @Router /api/v1/sso/auth/login [post]
 func (ctl *Controller) HandleLogin(c *gin.Context) {
 	var request auth.LoginRequest
 
@@ -112,7 +112,7 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 // @Produce json
 // @Param user query auth.RefreshRequest true "User data"
 // @Success 200 {object} map[string]string "Token"
-// @Router /sso/v1/auth/refresh [post]
+// @Router /api/v1/sso/auth/refresh [post]
 func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 	//var request auth.RefreshRequest
 	//

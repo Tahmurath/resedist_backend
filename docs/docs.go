@@ -602,7 +602,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sso/v1/auth/login": {
+        "/api/v1/sso/auth/login": {
             "post": {
                 "description": "Authenticate user and return a JWT token",
                 "consumes": [
@@ -646,7 +646,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sso/v1/auth/refresh": {
+        "/api/v1/sso/auth/refresh": {
             "post": {
                 "security": [
                     {
