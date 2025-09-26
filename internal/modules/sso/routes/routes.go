@@ -14,9 +14,9 @@ func Routes(router *gin.Engine) {
 	ssoController := ssoCtrl.New(router)
 	// DepartmentTypeController := depTypeCtrl.New()
 
-	staticGroup := router.Group("/api/v1/sso/")
+	staticGroup := router.Group("/sso/")
 	staticGroup.GET("/about", ssoController.About)
-	staticGroup.GET("/home", ssoController.Home)
+	staticGroup.GET("/login", ssoController.Home)
 
 	//staticGroup.POST("/v1/auth/refresh", ssoController.RefreshAccessToken)
 

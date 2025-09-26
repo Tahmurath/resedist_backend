@@ -191,6 +191,7 @@ func (ctl *Controller) generateRefreshToken(user UserResponse.User) (string, err
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtKey)
 }
+
 func (ctl *Controller) Home(c *gin.Context) {
 
 	html.Render(c, http.StatusOK, "modules/sso/html/home", gin.H{
