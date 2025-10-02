@@ -2,12 +2,16 @@ package database
 
 import (
 	"fmt"
+	"gorm.io/driver/mysql"
+
+	//"gorm.io/driver/mysql"
 	"log"
 	"resedist/pkg/config"
 
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+
+var DB *gorm.DB
 
 func Connect() {
 	cfg := config.Get()
@@ -28,4 +32,8 @@ func Connect() {
 		return
 	}
 	DB = db
+}
+
+func Connection() *gorm.DB {
+	return DB
 }

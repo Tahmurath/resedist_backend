@@ -4,6 +4,7 @@ import (
 	authRoutes "resedist/internal/modules/auth/routes"
 	depRoutes "resedist/internal/modules/department/department/routes"
 	depTypeRoutes "resedist/internal/modules/department/department_type/routes"
+	ssoRoutes "resedist/internal/modules/sso/routes"
 	userRoutes "resedist/internal/modules/user/routes"
 
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,7 @@ func RegisterRoutes(router *gin.Engine) {
 	authRoutes.Routes(router)
 	depRoutes.Routes(router)
 	depTypeRoutes.Routes(router)
+	ssoRoutes.Routes(router)
 
 }
 

@@ -80,9 +80,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "name": "client_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "grant_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "refresh_token",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -125,6 +134,11 @@ const docTemplate = `{
                     {
                         "type": "boolean",
                         "name": "expand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_active",
                         "in": "query"
                     },
                     {
@@ -180,6 +194,11 @@ const docTemplate = `{
                 ],
                 "summary": "create Department type",
                 "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "is_active",
+                        "in": "query"
+                    },
                     {
                         "maxLength": 100,
                         "minLength": 3,
@@ -262,6 +281,11 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_active",
+                        "in": "query"
                     },
                     {
                         "maxLength": 100,
@@ -577,6 +601,98 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/sso/auth/login": {
+            "post": {
+                "description": "Authenticate user and return a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SSO"
+                ],
+                "summary": "Login and get JWT token",
+                "parameters": [
+                    {
+                        "maxLength": 100,
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 100,
+                        "minLength": 8,
+                        "type": "string",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/sso/auth/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Refresh an access token using a refresh token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SSO"
+                ],
+                "summary": "Refresh access token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "client_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "grant_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "refresh_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -634,11 +750,11 @@ const docTemplate = `{
         "responses.DepType": {
             "type": "object",
             "properties": {
-                "activated": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean"
                 },
                 "title": {
                     "type": "string"

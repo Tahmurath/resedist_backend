@@ -21,6 +21,19 @@ func IsAuthJwt() gin.HandlerFunc {
 	}
 }
 
+func IsAuthJwtCookie() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := authHelpers.AuthJWT(c)
+
+		if user.ID == 0 {
+
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func IsAuth() gin.HandlerFunc {
 	//var userRepo = UserRepository.New()
 

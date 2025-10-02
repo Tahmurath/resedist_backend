@@ -32,7 +32,7 @@ func Serve() {
 
 	applog.Info("static load")
 	static.LoadStatic(routing.GetRouter())
-
+	//
 	applog.Info("html load")
 	html.LoadHTML(routing.GetRouter())
 
@@ -43,5 +43,6 @@ func Serve() {
 	routing.RegisterSwaggerRoute()
 
 	applog.Info("start serve")
+	applog.Info("http://localhost:4000/")
 	routing.Serve()
 }

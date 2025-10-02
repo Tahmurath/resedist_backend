@@ -36,10 +36,10 @@ definitions:
     type: object
   responses.DepType:
     properties:
-      activated:
-        type: string
       id:
         type: integer
+      is_active:
+        type: boolean
       title:
         type: string
     type: object
@@ -158,8 +158,13 @@ paths:
       description: Refresh an access token using a refresh token
       parameters:
       - in: query
+        name: client_id
+        type: string
+      - in: query
+        name: grant_type
+        type: string
+      - in: query
         name: refresh_token
-        required: true
         type: string
       produces:
       - application/json
@@ -186,6 +191,9 @@ paths:
         type: string
       - in: query
         name: expand
+        type: boolean
+      - in: query
+        name: is_active
         type: boolean
       - in: query
         name: order
@@ -219,6 +227,9 @@ paths:
       - application/json
       description: Returns a Department type (requires JWT)
       parameters:
+      - in: query
+        name: is_active
+        type: boolean
       - in: query
         maxLength: 100
         minLength: 3
@@ -292,6 +303,9 @@ paths:
         name: id
         required: true
         type: integer
+      - in: query
+        name: is_active
+        type: boolean
       - in: query
         maxLength: 100
         minLength: 3
@@ -473,6 +487,65 @@ paths:
       summary: Update Department
       tags:
       - department
+  /api/v1/sso/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return a JWT token
+      parameters:
+      - in: query
+        maxLength: 100
+        minLength: 3
+        name: email
+        required: true
+        type: string
+      - in: query
+        maxLength: 100
+        minLength: 8
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login and get JWT token
+      tags:
+      - SSO
+  /api/v1/sso/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh an access token using a refresh token
+      parameters:
+      - in: query
+        name: client_id
+        type: string
+      - in: query
+        name: grant_type
+        type: string
+      - in: query
+        name: refresh_token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Refresh access token
+      tags:
+      - SSO
 securityDefinitions:
   BearerAuth:
     in: header
