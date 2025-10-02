@@ -20,11 +20,6 @@ type PagePack struct {
 	PageSize   int   `json:"page_size,omitempty" query:"page_size"`
 	TotalRows  int64 `json:"total_rows"`
 	TotalPages int   `json:"total_pages"`
-
-	// 	Page       int   `json:"page,omitempty;query:page"`
-	// 	PageSize   int   `json:"page_size,omitempty;query:page_size"`
-	// 	TotalRows  int64 `json:"total_rows"`
-	// 	TotalPages int   `json:"total_pages"`
 }
 
 func NewPagePack(page, pageSize int) *PagePack {
