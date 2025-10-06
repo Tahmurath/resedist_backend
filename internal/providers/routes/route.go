@@ -1,13 +1,15 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	authRoutes "resedist/internal/modules/auth/routes"
 	depRoutes "resedist/internal/modules/department/department/routes"
 	depTypeRoutes "resedist/internal/modules/department/department_type/routes"
 	indexRoutes "resedist/internal/modules/index/routes"
 	ssoRoutes "resedist/internal/modules/sso/routes"
+	tgRoutes "resedist/internal/modules/tgminiapp/routes"
 	userRoutes "resedist/internal/modules/user/routes"
+
+	"github.com/gin-gonic/gin"
 
 	_ "resedist/docs"
 
@@ -28,6 +30,7 @@ func RegisterRoutes(router *gin.Engine) {
 	depRoutes.Routes(router)
 	depTypeRoutes.Routes(router)
 	ssoRoutes.Routes(router)
+	tgRoutes.Routes(router)
 
 }
 

@@ -1,12 +1,15 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-
+	"fmt"
+	"net/http"
 	configStruct "resedist/config"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
+	"resedist/pkg/html"
 	"resedist/pkg/rest"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
@@ -38,8 +41,27 @@ func New() *Controller {
 // @Router /api/v1/tgminiapp/auth [get]
 func (ctl *Controller) TelegramMiniAppAuth(c *gin.Context) {
 
-	bottoken := config.Get().Telegram.BotToken
-	c.JSON(200, gin.H{
-		"message": "tg miniapp auth" + bottoken,
+	html.Render(c, http.StatusOK, "modules/tgminiapp/html/miniapp", gin.H{
+		"title": "Create article",
+	})
+	// bottoken := config.Get().Telegram.BotToken
+	// c.JSON(200, gin.H{
+	// 	"message": "tg miniapp auth" + bottoken,
+	// })
+}
+
+func (ctl *Controller) TelegramCallBack(c *gin.Context) {
+
+	data, _ := c.GetRawData()
+	fmt.Println("Telegram Callback:", string(data))
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+		"data":   string(data),
+	})
+}
+
+func (ctl *Controller) ProtectedTG(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
 	})
 }
