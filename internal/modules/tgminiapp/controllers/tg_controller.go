@@ -39,7 +39,7 @@ func New() *Controller {
 // @Param tg_miniapp_auth query string true "Tg miniapp auth data"
 // @Success 200 {object} map[string]string "Token"
 // @Router /api/v1/tgminiapp/auth [get]
-func (ctl *Controller) TelegramMiniAppAuth(c *gin.Context) {
+func (ctl *Controller) TelegramMiniAppIndex(c *gin.Context) {
 
 	html.Render(c, http.StatusOK, "modules/tgminiapp/html/miniapp", gin.H{
 		"title": "Create article",
@@ -60,6 +60,11 @@ func (ctl *Controller) TelegramCallBack(c *gin.Context) {
 	})
 }
 
+func (ctl *Controller) TelegramMiniAppAuth(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+	})
+}
 func (ctl *Controller) ProtectedTG(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": "ok",
