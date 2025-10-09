@@ -71,15 +71,16 @@ func (ctl *Controller) TelegramMiniAppAuth(c *gin.Context) {
 }
 func (ctl *Controller) ProtectedTG(c *gin.Context) {
 	//data, _ := c.GetRawData()
-	//fmt.Println("Telegram Callback:", string(data))
+
 	user_id, _ := c.Get("user_id")
 	username, _ := c.Get("username")
 
-	fmt.Println("Authenticated user_id:", user_id)
-	fmt.Println("Authenticated username:", username)
-	c.JSON(http.StatusOK, gin.H{
-		"status":    "ok",
-		"user_id":   user_id,
-		"user_name": username,
+	//fmt.Println("Authenticated user_id:", user_id)
+	//fmt.Println("Authenticated username:", username)
+	ctl.json.Success(c, rest.RestConfig{
+		Data: map[string]interface{}{
+			"user_id":   user_id,
+			"user_name": username,
+		},
 	})
 }

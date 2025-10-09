@@ -79,9 +79,15 @@
         if (response.ok) {
             const data = await response.json();
             console.log('Authenticated:', data);
+            tg.showPopup({
+            title: 'Authentication Successful',
+            message: `Welcome, ${data.data.user_name}!`,
+            buttons: [{ text: 'OK', type: 'default', id: 'ok' }]
+            });
             // ذخیره token یا ادامه اپ
         } else {
             alert('Authentication failed');
+            tg.showAlert('Authentication failed. Please try again.');
         }
         }
         authenticate();

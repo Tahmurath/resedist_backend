@@ -14,7 +14,7 @@ func Routes(router *gin.Engine) {
 
 	tgGroup.GET("/", tgController.TelegramMiniAppIndex)
 	tgGroup.POST("/callback", tgController.TelegramCallBack)
-	tgGroup.POST("/auth", tgController.TelegramMiniAppAuth)
+	tgGroup.POST("/auth", middlewares.TgAuthMiddleware())
 
 	tgGroup.Use(middlewares.TgAuthMiddleware())
 	{
