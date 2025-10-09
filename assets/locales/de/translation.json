@@ -1,0 +1,47 @@
+{
+  "site": {
+    "home": "Startseite",
+    "admin": "Administratorin",
+    "panel": "Bedienfeld",
+    "title": "Titel",
+    "refresh": "Aktualisieren",
+    "edit": "Edit",
+    "signup": "Sign up",
+    "login": "Login",
+    "departments": "Departments",
+    "is_active": "Is Active?",
+    "typetosearch": "Suchbegriff eingeben...",
+    "rows_per_page": "Zeilen pro Seite"
+  },
+  "login": {
+    "apple": "Mit Apple anmelden",
+    "google": "Mit Google anmelden",
+    "or_continue_with": "Oder fortfahren mit",
+    "email": "E-Mail",
+    "email_placeholder": "Geben Sie Ihre E-Mail ein",
+    "email_description": "Wir geben Ihre E-Mail niemals weiter.",
+    "password": "Passwort",
+    "password_placeholder": "Geben Sie Ihr Passwort ein",
+    "password_description": "Ihr Passwort muss mindestens 6 Zeichen lang sein.",
+    "forgot_password": "Passwort vergessen?",
+    "loading": "Wird geladen...",
+    "submit": "Anmelden",
+    "no_account": "Noch kein Konto?",
+    "terms_privacy": "Mit der Anmeldung stimmen Sie unseren",
+    "terms_of_service": "Nutzungsbedingungen",
+    "and": "und",
+    "privacy_policy": "Datenschutzrichtlinien",
+    "welcome_back": "Willkommen zurück!",
+    "social_login_description": "Melden Sie sich mit Ihrem sozialen Konto an."
+  },
+  "department": {
+    "department": "Abteilung",
+    "departments": "Abteilung",
+    "deptype": "Abteilungstyp",
+    "deptypes": "Abteilungstypen",
+    "parent": "übergeordnete Abteilung",
+    "add_new_dep":"Neue Abteilung hinzufügen",
+    "searchbytitle":"Abteilungstitel...",
+    "departmentslist":"Liste der Abteilungen"
+  }
+}

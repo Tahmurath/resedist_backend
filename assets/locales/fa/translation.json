@@ -1,0 +1,47 @@
+{
+  "site": {
+    "home": "خانه",
+    "admin": "مدیریت",
+    "panel": "پنل",
+    "title": "عنوان",
+    "refresh": "بروزرسانی",
+    "edit": "ویرایش",
+    "signup": "ثبتنام",
+    "login": "ورود",
+    "departments": "دپارتمان ها",
+    "is_active": "فعال",
+    "typetosearch": "برای جستجو تایپ کنید...",
+    "rows_per_page": "تعداد سطر در صفحه"
+  },
+  "login": {
+    "apple": "ورود با اپل",
+    "google": "ورود با گوگل",
+    "or_continue_with": "یا ادامه با",
+    "email": "ایمیل",
+    "email_placeholder": "ایمیل خود را وارد کنید",
+    "email_description": "ما هرگز ایمیل شما را به اشتراک نمی‌گذاریم.",
+    "password": "رمز عبور",
+    "password_placeholder": "رمز عبور خود را وارد کنید",
+    "password_description": "رمز عبور باید حداقل ۶ کاراکتر باشد.",
+    "forgot_password": "رمز عبور را فراموش کرده‌اید؟",
+    "loading": "در حال بارگذاری...",
+    "submit": "ورود",
+    "no_account": "حساب کاربری ندارید؟",
+    "terms_privacy": "با ورود، شما با",
+    "terms_of_service": "شرایط استفاده",
+    "and": "و",
+    "privacy_policy": "سیاست حفظ حریم خصوصی",
+    "welcome_back": "خوش آمدید!",
+    "social_login_description": "با حساب اجتماعی خود وارد شوید."
+  },
+  "department": {
+    "department": "دپارتمان",
+    "departments": "دپارتمان ها",
+    "deptype": "نوع دپارتمان",
+    "deptypes": "انواع دپارتمان ها",
+    "parent": "دپارتمان والد",
+    "add_new_dep":"دپارتمان جدید",
+    "searchbytitle":"عنوان دپارتمان...",
+    "departmentslist":"لیست دپارتمان ها"
+  }
+}

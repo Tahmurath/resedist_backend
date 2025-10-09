@@ -1,0 +1,116 @@
+{{ define "modules/tgminiapp/html/miniapp" }}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Telegram Mini App</title>
+    <script src="/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f9f9f9;
+            text-align: center;
+            padding: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background: #0088cc;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>🚀 Telegram Mini App</h1>
+<p>Welcome, <span id="username"></span></p>
+<button id="send">Send Data to Backend</button>
+<button id="auth">Auth</button>
+
+<script>
+    const tg = window.Telegram.WebApp;
+
+    // Expand the app to full screen
+    tg.expand();
+    //tg.showAlert("Welcome to the Mini App!");
+
+    // نمایش نام کاربر
+    document.getElementById("username").textContent = tg.initDataUnsafe?.user?.first_name || "Guest";
+
+    // دکمه ارسال
+    document.getElementById("send").addEventListener("click", async () => {
+        const data = {
+            user: tg.initDataUnsafe?.user,
+            message: "Hello from Mini App!",
+        };
+
+        try {
+            const res = await fetch("/tg/miniapp/callback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            alert("Server response: " + JSON.stringify(result));
+        } catch (err) {
+            alert("Error: " + err);
+        }
+    });
+    
+    document.getElementById("auth").addEventListener("click", async () => {
+        
+
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        async function authenticate() {
+        const initData = tg.initData;
+        const response = await fetch('/tg/miniapp/protected', {
+            method: 'POST',
+            headers: {
+            'Authorization': `Bearer ${initData}`
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Authenticated:', data);
+            tg.showPopup({
+            title: 'Authentication Successful',
+            message: `Welcome, ${data.data.user_name}!`,
+            buttons: [{ text: 'OK', type: 'default', id: 'ok' }]
+            });
+            // ذخیره token یا ادامه اپ
+        } else {
+            alert('Authentication failed');
+            tg.showAlert('Authentication failed. Please try again.');
+        }
+        }
+        authenticate();
+        // داخل صفحه وبی که به عنوان Telegram Mini App اجرا می‌شود
+        // window.Telegram.WebApp.initData در اکثر کلاینت‌ها موجود است.
+        // const initData = window.Telegram?.WebApp?.initData || '';
+        // // ارسال به سرور برای اعتبارسنجی و گرفتن JWT/session
+        // fetch('/tg/miniapp/auth', {
+        // method: 'POST',
+        // headers: { 'Content-Type': 'application/json' },
+        // body: JSON.stringify({ init_data: initData })
+        // })
+        // .then(r => r.json())
+        // .then(res => {
+        // if (res.token) {
+        //     // ذخیره توکن در کوکی یا localStorage طبق نیازِ شما
+        //     console.log('Authenticated, token:', res.token);
+        // } else {
+        //     console.error('Auth failed', res);
+        // }
+        // });
+    });
+</script>
+</body>
+</html>
+{{ end }}
