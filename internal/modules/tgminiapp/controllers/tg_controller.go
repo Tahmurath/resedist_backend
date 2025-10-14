@@ -2,14 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	configStruct "resedist/config"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/html"
 	"resedist/pkg/rest"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
@@ -60,27 +59,13 @@ func (ctl *Controller) TelegramCallBack(c *gin.Context) {
 	})
 }
 
-func (ctl *Controller) TelegramMiniAppAuth(c *gin.Context) {
-	user_id := c.GetString("user_id")
-	username := c.GetString("user_id")
-	c.JSON(http.StatusOK, gin.H{
-		"status":    "ok",
-		"user_id":   user_id,
-		"user_name": username,
-	})
-}
-func (ctl *Controller) ProtectedTG(c *gin.Context) {
-	//data, _ := c.GetRawData()
+func (ctl *Controller) TgAuth(c *gin.Context) {
 
-	user_id, _ := c.Get("user_id")
-	username, _ := c.Get("username")
+	tg_user, _ := c.Get("tg_user")
 
-	//fmt.Println("Authenticated user_id:", user_id)
-	//fmt.Println("Authenticated username:", username)
 	ctl.json.Success(c, rest.RestConfig{
 		Data: map[string]interface{}{
-			"user_id":   user_id,
-			"user_name": username,
+			"user": tg_user,
 		},
 	})
 }

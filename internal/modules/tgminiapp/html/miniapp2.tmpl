@@ -1,0 +1,60 @@
+{{ define "modules/tgminiapp/html/miniapp2" }}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Telegram Auth Demo</title>
+        <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- اسکریپت Telegram Web App -->
+        <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; }
+            button { padding: 10px 20px; background-color: #0088cc; color: white; border: none; cursor: pointer; }
+            button:hover { background-color: #005f8a; }
+            pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+    <div class="container">
+        <h1>Telegram Auth Demo</h1>
+        <button onclick="getTokens()">Get Tokens</button>
+        <h3>Response:</h3>
+        <pre id="response">Click the button to get tokens...</pre>
+    </div>
+
+    <script>
+        // دسترسی به Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.ready(); // آماده‌سازی Web App
+
+        async function getTokens() {
+            const initData = tg.initData; // گرفتن initData از Telegram
+            if (!initData) {
+                document.getElementById('response').innerText = 'Error: initData not available';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8080/refresh-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ initData }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('response').innerText = `Error: ${data.error}`;
+                }
+            } catch (error) {
+                document.getElementById('response').innerText = `Error: ${error.message}`;
+            }
+        }
+    </script>
+    </body>
+    </html>
+{{ end }}

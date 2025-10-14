@@ -49,6 +49,7 @@ rest:
 
 telegram:
   bottoken: "8275723706:AAGbwqB6Bq0lj-0fKulIzDdHVYEz_L3sRCs"
+  TokenExpr: "24h0m0s"
 #  chatid: "-1001943735741"
 
 

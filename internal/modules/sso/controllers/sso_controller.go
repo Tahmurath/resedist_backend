@@ -6,12 +6,12 @@ import (
 	"net/http"
 	configStruct "resedist/config"
 	"resedist/internal/modules/user/requests/auth"
-	UserResponse "resedist/internal/modules/user/responses"
 	UserService "resedist/internal/modules/user/services"
 	"resedist/pkg/applog"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/html"
+	"resedist/pkg/jwtutil"
 	"resedist/pkg/rest"
 	"time"
 )
@@ -19,8 +19,9 @@ import (
 var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
 
 type Claims struct {
-	ID   uint
-	Type string
+	ID         uint
+	Type       string
+	ClientType string
 	jwt.RegisteredClaims
 }
 type Controller struct {
@@ -74,7 +75,7 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	refresh_token, err := ctl.generateRefreshToken(user)
+	refresh_token, err := jwtutil.GenerateRefreshToken(user.ID, "webapp")
 	if err != nil {
 		ctl.json.NotFound(c, rest.RestConfig{
 			Error_message: err.Error(),
@@ -165,8 +166,9 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 func GenerateAccessToken(user_id uint) (string, error) {
 
 	claims := &Claims{
-		ID:   user_id,
-		Type: "access",
+		ID:         user_id,
+		Type:       "access",
+		ClientType: "webapp",
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Get().Jwt.AccessDuration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -176,20 +178,6 @@ func GenerateAccessToken(user_id uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte(config.Get().Jwt.Secret))
-}
-
-func (ctl *Controller) generateRefreshToken(user UserResponse.User) (string, error) {
-
-	claims := &Claims{
-		ID:   user.ID,
-		Type: "refresh",
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Get().Jwt.RefreshDuration)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtKey)
 }
 
 func (ctl *Controller) Home(c *gin.Context) {

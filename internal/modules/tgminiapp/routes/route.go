@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-
 	"resedist/internal/middlewares"
+
 	tgCtrl "resedist/internal/modules/tgminiapp/controllers"
 )
 
@@ -14,11 +14,15 @@ func Routes(router *gin.Engine) {
 
 	tgGroup.GET("/", tgController.TelegramMiniAppIndex)
 	tgGroup.POST("/callback", tgController.TelegramCallBack)
-	tgGroup.POST("/auth", middlewares.TgAuthMiddleware())
 
 	tgGroup.Use(middlewares.TgAuthMiddleware())
 	{
-		tgGroup.POST("/protected", tgController.ProtectedTG)
+		tgGroup.POST("/auth", tgController.TgAuth)
 	}
+
+	//tgGroup.Use(middlewares.TgAuthMiddleware())
+	//{
+	//	tgGroup.POST("/protected", tgController.ProtectedTG)
+	//}
 
 }

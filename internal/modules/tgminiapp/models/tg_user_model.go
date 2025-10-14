@@ -12,4 +12,6 @@ type TgUser struct {
 	Username     string `gorm:"unique;size:255;not null" json:"username"`
 	LanguageCode string `gorm:"size:10;not null" json:"language_code"`
 	PhotoURL     string `gorm:"size:255" json:"photo_url"`
+	IsBot        bool   `gorm:"default:false;not null" json:"is_bot"`
+	IsPremium    bool   `gorm:"default:false;not null" json:"is_premium"`
 }

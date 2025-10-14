@@ -70,7 +70,7 @@
         tg.ready();
         async function authenticate() {
         const initData = tg.initData;
-        const response = await fetch('/tg/miniapp/protected', {
+        const response = await fetch('/tg/miniapp/auth', {
             method: 'POST',
             headers: {
             'Authorization': `Bearer ${initData}`
