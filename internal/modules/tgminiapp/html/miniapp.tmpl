@@ -81,7 +81,7 @@
             console.log('Authenticated:', data);
             tg.showPopup({
             title: 'Authentication Successful',
-            message: `Welcome, ${data.data.user_name}!`,
+            message: `Welcome, ${data.data.user.user.username}!`,
             buttons: [{ text: 'OK', type: 'default', id: 'ok' }]
             });
             // ذخیره token یا ادامه اپ

@@ -20,7 +20,7 @@ func ToUser(user userModels.User) User {
 	return User{
 		ID:    user.ID,
 		Name:  user.Name,
-		Email: user.Email,
+		Email: *user.Email,
 		Image: fmt.Sprintf("https://ui-avatars.com/api/?name=%s", user.Name),
 	}
 }

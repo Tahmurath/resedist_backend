@@ -32,15 +32,20 @@ func (UserService *UserService) Create(request auth.RegisterRequest) (UserRespon
 	var response UserResponse.User
 	var user userModels.User
 
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), 12)
-	if err != nil {
-		log.Fatal("hash password error")
-		return response, errors.New("hash password error")
+	password := ""
+	if request.Password != "" {
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), 12)
+		if err != nil {
+			log.Fatal("hash password error")
+			return response, errors.New("hash password error")
+		}
+
+		password = string(hashPassword)
 	}
 
 	user.Name = request.Name
-	user.Email = request.Email
-	user.Password = string(hashPassword)
+	user.Email = &request.Email
+	user.Password = &password
 
 	newUser := UserService.userRepository.Create(user)
 
@@ -71,7 +76,7 @@ func (UserService *UserService) HandleUserLogin(request auth.LoginRequest) (User
 		return response, errors.New("invalid credentials")
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(existUser.Password), []byte(request.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(*existUser.Password), []byte(request.Password))
 	if err != nil {
 		return response, errors.New("invalid credentials")
 	}

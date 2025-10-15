@@ -18,12 +18,6 @@ import (
 
 var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
 
-type Claims struct {
-	ID         uint
-	Type       string
-	ClientType string
-	jwt.RegisteredClaims
-}
 type Controller struct {
 	userService UserService.UserServiceInterface
 	errFmt      *errors.ErrorFormat
@@ -66,7 +60,7 @@ func (ctl *Controller) HandleLogin(c *gin.Context) {
 		return
 	}
 
-	access_token, err := GenerateAccessToken(user.ID)
+	access_token, err := jwtutil.GenerateAccessToken(user.ID, "webapp")
 	if err != nil {
 		ctl.json.NotFound(c, rest.RestConfig{
 			Error_message: err.Error(),
@@ -133,7 +127,7 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	claims := &Claims{}
+	claims := &jwtutil.Claims{}
 	token, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
@@ -146,7 +140,7 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	access_token, err := GenerateAccessToken(claims.ID)
+	access_token, err := jwtutil.GenerateAccessToken(claims.ID, claims.ClientType)
 
 	if err != nil {
 		ctl.json.ServerError(c, rest.RestConfig{
@@ -161,23 +155,6 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 			"access_token": access_token,
 		},
 	})
-}
-
-func GenerateAccessToken(user_id uint) (string, error) {
-
-	claims := &Claims{
-		ID:         user_id,
-		Type:       "access",
-		ClientType: "webapp",
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Get().Jwt.AccessDuration)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString([]byte(config.Get().Jwt.Secret))
 }
 
 func (ctl *Controller) Home(c *gin.Context) {

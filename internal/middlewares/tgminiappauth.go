@@ -37,6 +37,8 @@ func TgAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		c.Set("tg_user_id", initData.User.ID)
+		c.Set("tg_user_name", initData.User.Username)
 		c.Set("tg_user", initData)
 		c.Next()
 	}
