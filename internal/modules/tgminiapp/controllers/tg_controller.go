@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	configStruct "resedist/config"
+	tgAuth "resedist/internal/modules/tgminiapp/requests/auth"
 	tgUserServices "resedist/internal/modules/tgminiapp/services"
 	"resedist/internal/modules/user/requests/auth"
 	UserService "resedist/internal/modules/user/services"
@@ -84,7 +85,7 @@ func (ctl *Controller) TgAuth(c *gin.Context) {
 
 	} else {
 
-		create, err := ctl.UserService.Create(auth.RegisterRequest{
+		user, err := ctl.UserService.Create(auth.RegisterRequest{
 			Name: fmt.Sprint(tg_username),
 			//Email:    fmt.Sprint(tg_username) + "@" + fmt.Sprint(tg_id) + ".com",
 			//Password: "tguser" + fmt.Sprint(tg_id),
@@ -98,20 +99,26 @@ func (ctl *Controller) TgAuth(c *gin.Context) {
 			return
 		}
 
-		//tgcreate, err := ctl.tgUserService.Create(tg_id, create.ID)
-		//if err != nil {
-		//	ctl.json.ServerError(c, rest.RestConfig{
-		//		Error_message: err.Error(),
-		//		Http:          http.StatusInternalServerError,
-		//	})
-		//	return
-		//}
+		tgcreate, err := ctl.tgUserService.Create(tgAuth.TgRegisterRequest{
+			Username:  fmt.Sprint(tg_username),
+			TgID:      tg_id,
+			FirstName: "",
+			LastName:  "",
+		}, user)
+		if err != nil {
+			ctl.json.ServerError(c, rest.RestConfig{
+				Error_message: err.Error(),
+				Http:          http.StatusInternalServerError,
+			})
+			return
+		}
 
 		ctl.json.Success(c, rest.RestConfig{
 			Data: map[string]interface{}{
 				"message": "User created",
 				"tg_id":   tg_id,
-				"user":    create,
+				"user":    user,
+				"tguser":  tgcreate,
 			},
 		})
 		//ctl.UserService.Create(UserResponse.User{

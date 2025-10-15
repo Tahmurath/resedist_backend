@@ -1,9 +1,15 @@
 package services
 
 import (
+	"errors"
+	tguserModels "resedist/internal/modules/tgminiapp/models"
+	UserResponse "resedist/internal/modules/user/responses"
+
 	//UserRepository "resedist/internal/modules/user/repositories"
 	//UserResponse "resedist/internal/modules/user/responses"
 	tgUserRepository "resedist/internal/modules/tgminiapp/repositories"
+	"resedist/internal/modules/tgminiapp/requests/auth"
+	tgUserResponse "resedist/internal/modules/tgminiapp/responses"
 	//UserResponse "resedist/internal/modules/user/responses"
 )
 
@@ -28,29 +34,26 @@ func (TgUserService *TgUserService) CheckUserExist(tgId int64) bool {
 	return false
 }
 
-//func (TgUserService *TgUserService) Create(request auth.RegisterRequest) (UserResponse.User, error) {
-//
-//	var response UserResponse.User
-//	var user userModels.User
-//
-//	hashPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), 12)
-//	if err != nil {
-//		log.Fatal("hash password error")
-//		return response, errors.New("hash password error")
-//	}
-//
-//	user.Name = request.Name
-//	user.Email = request.Email
-//	user.Password = string(hashPassword)
-//
-//	newUser := UserService.userRepository.Create(user)
-//
-//	if newUser.ID == 0 {
-//		return response, errors.New("user create fail")
-//	}
-//
-//	return UserResponse.ToUser(newUser), nil
-//}
+func (TgUserService *TgUserService) Create(request auth.TgRegisterRequest, user UserResponse.User) (tgUserResponse.TgRegisterResponse, error) {
+
+	var response tgUserResponse.TgRegisterResponse
+	var tguser tguserModels.TgUser
+
+	tguser.Username = request.Username
+	tguser.TgID = request.TgID
+	tguser.FirstName = request.FirstName
+	tguser.LastName = request.LastName
+
+	tguser.UserID = user.ID
+
+	newUser := TgUserService.tgUserRepository.Create(tguser)
+
+	if newUser.ID == 0 {
+		return response, errors.New("user create fail")
+	}
+
+	return response, nil
+}
 
 //func (UserService *UserService) HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error) {
 //
