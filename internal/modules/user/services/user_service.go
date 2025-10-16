@@ -32,20 +32,25 @@ func (UserService *UserService) Create(request auth.RegisterRequest) (UserRespon
 	var response UserResponse.User
 	var user userModels.User
 
-	password := ""
-	if request.Password != "" {
+	if request.Email == "" {
+		user.Email = nil
+	} else {
+		user.Email = &request.Email
+	}
+
+	if request.Password == "" {
+		user.Password = nil
+	} else {
 		hashPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), 12)
 		if err != nil {
 			log.Fatal("hash password error")
 			return response, errors.New("hash password error")
 		}
-
-		password = string(hashPassword)
+		password := string(hashPassword)
+		user.Password = &password
 	}
 
 	user.Name = request.Name
-	user.Email = &request.Email
-	user.Password = &password
 
 	newUser := UserService.userRepository.Create(user)
 

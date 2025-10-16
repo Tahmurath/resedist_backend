@@ -3,15 +3,20 @@ package controllers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 	configStruct "resedist/config"
+	tguserModels "resedist/internal/modules/tgminiapp/models"
 	tgAuth "resedist/internal/modules/tgminiapp/requests/auth"
+	//tgUserResponse "resedist/internal/modules/tgminiapp/responses"
 	tgUserServices "resedist/internal/modules/tgminiapp/services"
 	"resedist/internal/modules/user/requests/auth"
+	//UserResponse "resedist/internal/modules/user/responses"
 	UserService "resedist/internal/modules/user/services"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
 	"resedist/pkg/html"
+	"resedist/pkg/jwtutil"
 	"resedist/pkg/rest"
 )
 
@@ -68,79 +73,83 @@ func (ctl *Controller) TelegramCallBack(c *gin.Context) {
 
 func (ctl *Controller) TgAuth(c *gin.Context) {
 
-	tg_id := c.GetInt64("tg_user_id")
-	tg_username := c.GetString("tg_user_name")
-
-	//fmt.Println(tg_id.(int64))
-	//return
-
-	if ctl.tgUserService.CheckUserExist(tg_id) {
-
-		ctl.json.Success(c, rest.RestConfig{
-			Data: map[string]interface{}{
-				"message": "User exist",
-				"tg_id":   tg_id,
-			},
-		})
-
-	} else {
-
-		user, err := ctl.UserService.Create(auth.RegisterRequest{
-			Name: fmt.Sprint(tg_username),
-			//Email:    fmt.Sprint(tg_username) + "@" + fmt.Sprint(tg_id) + ".com",
-			//Password: "tguser" + fmt.Sprint(tg_id),
-		})
-
-		if err != nil {
-			ctl.json.ServerError(c, rest.RestConfig{
-				Error_message: err.Error(),
-				Http:          http.StatusInternalServerError,
-			})
-			return
-		}
-
-		tgcreate, err := ctl.tgUserService.Create(tgAuth.TgRegisterRequest{
-			Username:  fmt.Sprint(tg_username),
-			TgID:      tg_id,
-			FirstName: "",
-			LastName:  "",
-		}, user)
-		if err != nil {
-			ctl.json.ServerError(c, rest.RestConfig{
-				Error_message: err.Error(),
-				Http:          http.StatusInternalServerError,
-			})
-			return
-		}
-
-		ctl.json.Success(c, rest.RestConfig{
-			Data: map[string]interface{}{
-				"message": "User created",
-				"tg_id":   tg_id,
-				"user":    user,
-				"tguser":  tgcreate,
-			},
-		})
-		//ctl.UserService.Create(UserResponse.User{
-		//	Name:  fmt.Sprint(tg_username),
-		//	Email: fmt.Sprint(tg_username) + "@" + fmt.Sprint(tg_id) + ".com",
-		//	Password: "tguser" + fmt.Sprint(tg_id),
-		//	//TgId:     tg_id,
-		//})
-
-		//ctl.tgUserService.
-
+	ctgUser, _ := c.Get("tg_user")
+	tgUser, ok := ctgUser.(initdata.InitData)
+	if !ok {
+		ctl.json.ServerError(c, rest.RestConfig{Error_message: "Invalid user data"})
+		return
 	}
-	//if user, exist := c.Get("user"); exist {
-	//	if typedUser, ok := user.(UserResponse.User); ok {
-	//		return typedUser
-	//	}
-	//}
-	//fmt.Println(tg_user)
 
-	//ctl.json.Success(c, rest.RestConfig{
-	//	Data: map[string]interface{}{
-	//		"user": tg_id,
-	//	},
-	//})
+	user, err := ctl.getOrCreateUser(tgUser)
+	if err != nil {
+		ctl.json.ServerError(c, rest.RestConfig{Error_message: err.Error()})
+		return
+	}
+
+	accessToken, refreshToken, err := ctl.generateTokens(user.ID)
+	if err != nil {
+		ctl.json.ServerError(c, rest.RestConfig{Error_message: err.Error()})
+		return
+	}
+
+	ctl.setRefreshCookie(c, refreshToken)
+
+	ctl.json.Success(c, rest.RestConfig{
+		Data: map[string]interface{}{
+			"access_token":  accessToken,
+			"refresh_token": refreshToken,
+			"user":          user,
+		},
+	})
+}
+
+func (ctl *Controller) generateTokens(userID uint) (string, string, error) {
+	accessToken, err := jwtutil.GenerateAccessToken(userID, "tgminiapp")
+	if err != nil {
+		return "", "", err
+	}
+	refreshToken, err := jwtutil.GenerateRefreshToken(userID, "tgminiapp")
+	if err != nil {
+		return "", "", err
+	}
+	return accessToken, refreshToken, nil
+}
+
+func (ctl *Controller) setRefreshCookie(c *gin.Context, refreshToken string) {
+	c.SetCookie(
+		"refresh_token",
+		refreshToken,
+		int(config.Get().Jwt.RefreshDuration.Seconds()),
+		"/",
+		"abler-carmela-pliant.ngrok-free.dev",
+		true,
+		true,
+	)
+}
+
+func (ctl *Controller) getOrCreateUser(tgUser initdata.InitData) (tguserModels.TgUser, error) {
+
+	var telegramUser tguserModels.TgUser
+
+	if user, found := ctl.tgUserService.FindByTgID(tgUser.User.ID); found {
+		return user, nil
+	}
+
+	user, err := ctl.UserService.Create(auth.RegisterRequest{Name: fmt.Sprint(tgUser.User.Username)})
+	if err != nil {
+		return telegramUser, err
+	}
+
+	telegramUser, err = ctl.tgUserService.Create(tgAuth.TgRegisterRequest{
+		TgID:         tgUser.User.ID,
+		FirstName:    tgUser.User.FirstName,
+		LastName:     tgUser.User.LastName,
+		Username:     tgUser.User.Username,
+		LanguageCode: tgUser.User.LanguageCode,
+		PhotoURL:     tgUser.User.PhotoURL,
+		IsBot:        tgUser.User.IsBot,
+		IsPremium:    tgUser.User.IsPremium,
+	}, user)
+
+	return telegramUser, err
 }

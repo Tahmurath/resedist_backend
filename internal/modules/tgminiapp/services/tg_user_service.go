@@ -9,7 +9,6 @@ import (
 	//UserResponse "resedist/internal/modules/user/responses"
 	tgUserRepository "resedist/internal/modules/tgminiapp/repositories"
 	"resedist/internal/modules/tgminiapp/requests/auth"
-	tgUserResponse "resedist/internal/modules/tgminiapp/responses"
 	//UserResponse "resedist/internal/modules/user/responses"
 )
 
@@ -34,9 +33,17 @@ func (TgUserService *TgUserService) CheckUserExist(tgId int64) bool {
 	return false
 }
 
-func (TgUserService *TgUserService) Create(request auth.TgRegisterRequest, user UserResponse.User) (tgUserResponse.TgRegisterResponse, error) {
+func (TgUserService *TgUserService) FindByTgID(tgId int64) (tguserModels.TgUser, bool) {
+	user := TgUserService.tgUserRepository.FindByTgID(tgId)
+	if user.ID != 0 {
+		return user, true
+	}
+	return user, false
+}
 
-	var response tgUserResponse.TgRegisterResponse
+func (TgUserService *TgUserService) Create(request auth.TgRegisterRequest, user UserResponse.User) (tguserModels.TgUser, error) {
+
+	//var response tgUserResponse.TgRegisterResponse
 	var tguser tguserModels.TgUser
 
 	tguser.Username = request.Username
@@ -49,10 +56,10 @@ func (TgUserService *TgUserService) Create(request auth.TgRegisterRequest, user 
 	newUser := TgUserService.tgUserRepository.Create(tguser)
 
 	if newUser.ID == 0 {
-		return response, errors.New("user create fail")
+		return tguser, errors.New("user create fail")
 	}
 
-	return response, nil
+	return tguser, nil
 }
 
 //func (UserService *UserService) HandleUserLogin(request auth.LoginRequest) (UserResponse.User, error) {
