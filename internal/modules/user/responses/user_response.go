@@ -17,10 +17,14 @@ type Users struct {
 }
 
 func ToUser(user userModels.User) User {
+	var email string
+	if user.Email != nil {
+		email = *user.Email
+	}
 	return User{
 		ID:    user.ID,
 		Name:  user.Name,
-		Email: *user.Email,
+		Email: email,
 		Image: fmt.Sprintf("https://ui-avatars.com/api/?name=%s", user.Name),
 	}
 }

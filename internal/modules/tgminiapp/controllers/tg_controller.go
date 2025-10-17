@@ -92,7 +92,8 @@ func (ctl *Controller) TgAuth(c *gin.Context) {
 		return
 	}
 
-	ctl.setRefreshCookie(c, refreshToken)
+	ctl.setTokenCookie(c, refreshToken, "refresh_token")
+	ctl.setTokenCookie(c, accessToken, "access_token")
 
 	ctl.json.Success(c, rest.RestConfig{
 		Data: map[string]interface{}{
@@ -115,10 +116,10 @@ func (ctl *Controller) generateTokens(userID uint) (string, string, error) {
 	return accessToken, refreshToken, nil
 }
 
-func (ctl *Controller) setRefreshCookie(c *gin.Context, refreshToken string) {
+func (ctl *Controller) setTokenCookie(c *gin.Context, jwtToken string, name string) {
 	c.SetCookie(
-		"refresh_token",
-		refreshToken,
+		name,
+		jwtToken,
 		int(config.Get().Jwt.RefreshDuration.Seconds()),
 		"/",
 		"abler-carmela-pliant.ngrok-free.dev",
