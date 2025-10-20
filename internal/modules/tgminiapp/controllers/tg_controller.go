@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 	configStruct "resedist/config"
@@ -20,6 +21,8 @@ import (
 	"resedist/pkg/jwtutil"
 	"resedist/pkg/rest"
 )
+
+var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
 
 type Controller struct {
 	tgUserService tgUserServices.TgUserServiceInterface
@@ -154,4 +157,47 @@ func (ctl *Controller) getOrCreateUser(tgUser initdata.InitData) (TgUserResponse
 	}, user)
 
 	return telegramUser, err
+}
+
+func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
+
+	refreshToken, err := c.Cookie("refresh_token")
+	if err != nil {
+		ctl.json.NotFound(c, rest.RestConfig{
+			Http:          http.StatusUnauthorized,
+			Error_message: err.Error(),
+		})
+		return
+	}
+
+	claims := &jwtutil.Claims{}
+	token, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+
+	if err != nil || !token.Valid || claims.Type != "refresh" || claims.ClientType != "tgminiapp" {
+		ctl.json.NotFound(c, rest.RestConfig{
+			Http:          http.StatusUnauthorized,
+			Error_message: err.Error(),
+		})
+		return
+	}
+
+	accessToken, err := jwtutil.GenerateAccessToken(claims.ID, claims.ClientType)
+
+	if err != nil {
+		ctl.json.ServerError(c, rest.RestConfig{
+			Error_message: err.Error(),
+			Http:          http.StatusInternalServerError,
+		})
+		return
+	}
+
+	ctl.setTokenCookie(c, accessToken, "access_token")
+
+	ctl.json.Success(c, rest.RestConfig{
+		Data: map[string]interface{}{
+			"access_token": accessToken,
+		},
+	})
 }

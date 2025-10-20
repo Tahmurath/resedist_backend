@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
+//var jwtKey = []byte("fc2e19d78c179b5dbb5358069f73156f835030ee43afe0fa9e257cdb421ccc5c")
 
 type Controller struct {
 	userService UserService.UserServiceInterface
@@ -129,10 +129,10 @@ func (ctl *Controller) RefreshAccessToken(c *gin.Context) {
 
 	claims := &jwtutil.Claims{}
 	token, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
+		return config.Get().Jwt.Secret, nil
 	})
 
-	if err != nil || !token.Valid || claims.Type != "refresh" {
+	if err != nil || !token.Valid || claims.Type != "refresh" || claims.ClientType != "webapp" {
 		ctl.json.NotFound(c, rest.RestConfig{
 			Http:          http.StatusUnauthorized,
 			Error_message: err.Error(),
