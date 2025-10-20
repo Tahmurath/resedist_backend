@@ -6,8 +6,9 @@ import (
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 	configStruct "resedist/config"
-	tguserModels "resedist/internal/modules/tgminiapp/models"
 	tgAuth "resedist/internal/modules/tgminiapp/requests/auth"
+	TgUserResponse "resedist/internal/modules/tgminiapp/responses"
+
 	//tgUserResponse "resedist/internal/modules/tgminiapp/responses"
 	tgUserServices "resedist/internal/modules/tgminiapp/services"
 	"resedist/internal/modules/user/requests/auth"
@@ -73,8 +74,8 @@ func (ctl *Controller) TelegramCallBack(c *gin.Context) {
 
 func (ctl *Controller) TgAuth(c *gin.Context) {
 
-	ctgUser, _ := c.Get("tg_user")
-	tgUser, ok := ctgUser.(initdata.InitData)
+	tg_user, _ := c.Get("tg_user")
+	tgUser, ok := tg_user.(initdata.InitData)
 	if !ok {
 		ctl.json.ServerError(c, rest.RestConfig{Error_message: "Invalid user data"})
 		return
@@ -128,9 +129,9 @@ func (ctl *Controller) setTokenCookie(c *gin.Context, jwtToken string, name stri
 	)
 }
 
-func (ctl *Controller) getOrCreateUser(tgUser initdata.InitData) (tguserModels.TgUser, error) {
+func (ctl *Controller) getOrCreateUser(tgUser initdata.InitData) (TgUserResponse.TgUser, error) {
 
-	var telegramUser tguserModels.TgUser
+	var telegramUser TgUserResponse.TgUser
 
 	if user, found := ctl.tgUserService.FindByTgID(tgUser.User.ID); found {
 		return user, nil
