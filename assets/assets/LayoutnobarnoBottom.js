@@ -1,0 +1,1 @@
+import{j as e,O as s}from"./index.js";import{T as t}from"./theme-provider.js";const l=()=>e.jsx(t,{defaultTheme:"dark",storageKey:"vite-ui-theme",children:e.jsx("div",{className:"bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10",children:e.jsx("div",{className:"flex w-full max-w-sm flex-col gap-6",children:e.jsx(s,{})})})});export{l as default};

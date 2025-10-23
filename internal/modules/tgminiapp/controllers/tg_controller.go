@@ -56,7 +56,7 @@ func New() *Controller {
 // @Router /api/v1/tgminiapp/auth [get]
 func (ctl *Controller) TelegramMiniAppIndex(c *gin.Context) {
 
-	html.Render(c, http.StatusOK, "modules/tgminiapp/html/miniapp", gin.H{
+	html.Render(c, http.StatusOK, "modules/tgminiapp/html/miniapp2", gin.H{
 		"title": "Create article",
 	})
 	// bottoken := config.Get().Telegram.BotToken
