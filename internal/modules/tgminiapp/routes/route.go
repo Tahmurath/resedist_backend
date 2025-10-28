@@ -16,6 +16,7 @@ func Routes(router *gin.Engine) {
 	tgGroup.POST("/callback", tgController.TelegramCallBack)
 	tgGroup.POST("/refresh-token", tgController.RefreshAccessToken)
 
+	tgGroup = router.Group("/api/tg/miniapp")
 	tgGroup.Use(middlewares.TgAuthMiddleware())
 	{
 		tgGroup.POST("/auth", tgController.TgAuth)

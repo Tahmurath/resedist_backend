@@ -1,1 +1,1 @@
-import{j as r}from"./index.js";function i(){return r.jsx(r.Fragment,{children:r.jsx("div",{children:r.jsx("div",{children:"Profile"})})})}export{i as default};
+import{j as r}from"./index.js";import{u as e}from"./useTranslation.js";function s(){const{t}=e();return r.jsx(r.Fragment,{children:r.jsx("div",{children:r.jsx("div",{children:t("site.Profile")})})})}export{s as default};
