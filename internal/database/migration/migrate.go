@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	contactModels "resedist/internal/modules/contact/models"
+	daberModels "resedist/internal/modules/daberton/models"
 	departmentModels "resedist/internal/modules/department/department/models"
 	orderModels "resedist/internal/modules/order/models"
 	tenantModels "resedist/internal/modules/tenant/models"
@@ -23,6 +24,10 @@ func Migrate() {
 		&departmentModels.Department{},
 		&tenantModels.Tenant{},
 		&tgModels.TgUser{},
+		&daberModels.RoomTemplate{},
+		&daberModels.RoomInstance{},
+		&daberModels.RoomPlayer{},
+		&daberModels.RoomQueue{},
 	)
 
 	if err != nil {
