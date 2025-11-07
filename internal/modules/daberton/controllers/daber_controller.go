@@ -1,56 +1,77 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	configStruct "resedist/config"
+
+	"github.com/gin-gonic/gin"
+
 	//tgUserResponse "resedist/internal/modules/tgminiapp/responses"
-	tgUserServices "resedist/internal/modules/tgminiapp/services"
+	roomServices "resedist/internal/modules/daberton/services"
 	//UserResponse "resedist/internal/modules/user/responses"
+	authHelpers "resedist/internal/modules/auth/helpers"
+	RoomRequest "resedist/internal/modules/daberton/requests"
+	_ "resedist/internal/modules/daberton/responses"
 	UserService "resedist/internal/modules/user/services"
 	"resedist/pkg/config"
 	"resedist/pkg/errors"
-	"resedist/pkg/html"
 	"resedist/pkg/rest"
 )
 
 type Controller struct {
-	tgUserService tgUserServices.TgUserServiceInterface
-	UserService   UserService.UserServiceInterface
-	errFmt        *errors.ErrorFormat
-	json          *rest.Jsonresponse
-	rest          configStruct.Rest
+	RoomService roomServices.RoomServiceInterface
+	UserService UserService.UserServiceInterface
+	errFmt      *errors.ErrorFormat
+	json        *rest.Jsonresponse
+	rest        configStruct.Rest
 }
 
 func New() *Controller {
 
 	return &Controller{
 		//departmentService: DepartmentService.New(),
-		tgUserService: tgUserServices.New(),
-		UserService:   UserService.New(),
-		rest:          config.Get().Rest,
-		errFmt:        errors.New(),
-		json:          rest.New(),
+		RoomService: roomServices.New(),
+		UserService: UserService.New(),
+		rest:        config.Get().Rest,
+		errFmt:      errors.New(),
+		json:        rest.New(),
 	}
 }
 
-// @Summary Tg miniapp auth
-// @Description Returns a JWT token for authenticated user
+// @Summary Create room template
+// @Description Returns room template json (requires JWT)
 // @Security BearerAuth
-// @ID tg-miniapp-auth
-// @Tags tgminiapp
+// @ID create-room-template
+// @Tags roomTemplate
 // @Accept json
 // @Produce json
-// @Param tg_miniapp_auth query string true "Tg miniapp auth data"
-// @Success 200 {object} map[string]string "Token"
-// @Router /api/v1/tgminiapp/auth [get]
-func (ctl *Controller) TelegramMiniAppIndex(c *gin.Context) {
+// @Param request query RoomRequest.RoomTemplateRequest true "Department Create request"
+// @Success 200 {object} _.RoomTemplate "Response object"
+// @Router /api/v1/daberton/roomtemplate [post]
+func (ctl *Controller) CreateRoomTemplate(c *gin.Context) {
 
-	html.Render(c, http.StatusOK, "modules/tgminiapp/html/miniapp2", gin.H{
-		"title": "Create article",
+	var request RoomRequest.RoomTemplateRequest
+
+	if err := c.ShouldBind(&request); err != nil {
+		ctl.json.Badrequest(c, rest.RestConfig{
+			Error_message: ctl.errFmt.SetFromError(err),
+		})
+		return
+	}
+
+	user := authHelpers.AuthJWT(c)
+
+	_, err := ctl.RoomService.CreateRoomTemplate(request, user)
+	if err != nil {
+		ctl.json.ServerError(c, rest.RestConfig{
+			Error_message: user,
+		})
+		return
+	}
+
+	ctl.json.Success(c, rest.RestConfig{
+		Data: request,
+		Http: http.StatusCreated,
 	})
-	// bottoken := config.Get().Telegram.BotToken
-	// c.JSON(200, gin.H{
-	// 	"message": "tg miniapp auth" + bottoken,
-	// })
+
 }

@@ -118,6 +118,46 @@ definitions:
       pagination:
         $ref: '#/definitions/pagination.PagePack'
     type: object
+  responses.RoomTemplate:
+    properties:
+      created_at:
+        type: string
+      creator:
+        $ref: '#/definitions/responses.User'
+      entry_fee:
+        type: number
+      game_style:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      is_public:
+        type: boolean
+      is_system:
+        type: boolean
+      max_players:
+        type: integer
+      min_players:
+        type: integer
+      timeout:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  responses.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -180,6 +220,66 @@ paths:
       summary: Refresh access token
       tags:
       - auth
+  /api/v1/daberton/roomtemplate:
+    post:
+      consumes:
+      - application/json
+      description: Returns room template json (requires JWT)
+      operationId: create-room-template
+      parameters:
+      - in: query
+        minimum: 0
+        name: entry_fee
+        required: true
+        type: number
+      - enum:
+        - tombola
+        - Bingo
+        - 90-ball
+        - azerbaijan
+        - russia
+        - iran
+        - iraq
+        - classic
+        - modern
+        - daberton
+        in: query
+        name: game_style
+        required: true
+        type: string
+      - in: query
+        name: is_public
+        required: true
+        type: boolean
+      - in: query
+        name: max_players
+        required: true
+        type: integer
+      - in: query
+        minimum: 2
+        name: min_players
+        required: true
+        type: integer
+      - in: query
+        name: timeout
+        required: true
+        type: integer
+      - in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.RoomTemplate'
+      security:
+      - BearerAuth: []
+      summary: Create room template
+      tags:
+      - roomTemplate
   /api/v1/department-type/:
     get:
       consumes:
@@ -546,6 +646,32 @@ paths:
       summary: Refresh access token
       tags:
       - SSO
+  /api/v1/tgminiapp/auth:
+    get:
+      consumes:
+      - application/json
+      description: Returns a JWT token for authenticated user
+      operationId: tg-miniapp-auth
+      parameters:
+      - description: Tg miniapp auth data
+        in: query
+        name: tg_miniapp_auth
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Tg miniapp auth
+      tags:
+      - tgminiapp
 securityDefinitions:
   BearerAuth:
     in: header

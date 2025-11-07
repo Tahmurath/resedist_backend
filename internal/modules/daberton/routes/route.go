@@ -2,25 +2,31 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"resedist/internal/middlewares"
 
-	tgCtrl "resedist/internal/modules/tgminiapp/controllers"
+	"resedist/internal/middlewares"
+	roomCtrl "resedist/internal/modules/daberton/controllers"
 )
 
 func Routes(router *gin.Engine) {
-	tgController := tgCtrl.New()
+	roomController := roomCtrl.New()
 
-	tgGroup := router.Group("/tg/miniapp")
+	roomGroup := router.Group("/api/v1/daberton")
 
-	tgGroup.GET("/*action", tgController.TelegramMiniAppIndex)
-	tgGroup.POST("/callback", tgController.TelegramCallBack)
-	tgGroup.POST("/refresh-token", tgController.RefreshAccessToken)
+	//roomGroup.POST("/roomtemplate", roomController.CreateRoomTemplate)
 
-	tgGroup = router.Group("/api/tg/miniapp")
-	tgGroup.Use(middlewares.TgAuthMiddleware())
+	roomGroup.Use(middlewares.IsAuthJwt())
 	{
-		tgGroup.POST("/auth", tgController.TgAuth)
+		roomGroup.POST("/roomtemplate", roomController.CreateRoomTemplate)
+
+		// authGroup.GET("/department-type", DepartmentTypeController.Search)
+
 	}
+
+	// tgGroup = router.Group("/api/tg/miniapp")
+	// tgGroup.Use(middlewares.TgAuthMiddleware())
+	// {
+	// 	tgGroup.POST("/auth", tgController.TgAuth)
+	// }
 
 	//tgGroup.Use(middlewares.TgAuthMiddleware())
 	//{

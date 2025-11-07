@@ -2,6 +2,7 @@ package routes
 
 import (
 	authRoutes "resedist/internal/modules/auth/routes"
+	daberRoutes "resedist/internal/modules/daberton/routes"
 	depRoutes "resedist/internal/modules/department/department/routes"
 	depTypeRoutes "resedist/internal/modules/department/department_type/routes"
 	indexRoutes "resedist/internal/modules/index/routes"
@@ -31,6 +32,7 @@ func RegisterRoutes(router *gin.Engine) {
 	depTypeRoutes.Routes(router)
 	ssoRoutes.Routes(router)
 	tgRoutes.Routes(router)
+	daberRoutes.Routes(router)
 
 }
 

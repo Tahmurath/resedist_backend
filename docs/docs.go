@@ -107,6 +107,93 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/daberton/roomtemplate": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns room template json (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roomTemplate"
+                ],
+                "summary": "Create room template",
+                "operationId": "create-room-template",
+                "parameters": [
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "name": "entry_fee",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "tombola",
+                            "Bingo",
+                            "90-ball",
+                            "azerbaijan",
+                            "russia",
+                            "iran",
+                            "iraq",
+                            "classic",
+                            "modern",
+                            "daberton"
+                        ],
+                        "type": "string",
+                        "name": "game_style",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_public",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "max_players",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 2,
+                        "type": "integer",
+                        "name": "min_players",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "timeout",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RoomTemplate"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/department-type/": {
             "get": {
                 "security": [
@@ -693,6 +780,47 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/tgminiapp/auth": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a JWT token for authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tgminiapp"
+                ],
+                "summary": "Tg miniapp auth",
+                "operationId": "tg-miniapp-auth",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tg miniapp auth data",
+                        "name": "tg_miniapp_auth",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -866,6 +994,67 @@ const docTemplate = `{
                 },
                 "pagination": {
                     "$ref": "#/definitions/pagination.PagePack"
+                }
+            }
+        },
+        "responses.RoomTemplate": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "creator": {
+                    "$ref": "#/definitions/responses.User"
+                },
+                "entry_fee": {
+                    "type": "number"
+                },
+                "game_style": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_public": {
+                    "type": "boolean"
+                },
+                "is_system": {
+                    "type": "boolean"
+                },
+                "max_players": {
+                    "type": "integer"
+                },
+                "min_players": {
+                    "type": "integer"
+                },
+                "timeout": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }
