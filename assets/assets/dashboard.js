@@ -1,1 +1,0 @@
-import{r as o,u as a,j as s,B as i}from"./index.js";function d(){const[t,e]=o.useState(0),{t:n}=a();return s.jsx(s.Fragment,{children:s.jsxs("div",{children:[s.jsx("h3",{children:"Dashboard page"}),s.jsxs("div",{className:"card",children:[s.jsxs(i,{onClick:()=>e(r=>r+1),children:["Home is ",t]}),n("login.description")]})]})})}export{d as default};

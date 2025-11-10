@@ -2,9 +2,12 @@ package routes
 
 import (
 	authRoutes "resedist/internal/modules/auth/routes"
+	daberRoutes "resedist/internal/modules/daberton/routes"
 	depRoutes "resedist/internal/modules/department/department/routes"
 	depTypeRoutes "resedist/internal/modules/department/department_type/routes"
+	indexRoutes "resedist/internal/modules/index/routes"
 	ssoRoutes "resedist/internal/modules/sso/routes"
+	tgRoutes "resedist/internal/modules/tgminiapp/routes"
 	userRoutes "resedist/internal/modules/user/routes"
 
 	"github.com/gin-gonic/gin"
@@ -22,19 +25,21 @@ import (
 
 func RegisterRoutes(router *gin.Engine) {
 
+	indexRoutes.Routes(router)
 	userRoutes.Routes(router)
 	authRoutes.Routes(router)
 	depRoutes.Routes(router)
 	depTypeRoutes.Routes(router)
 	ssoRoutes.Routes(router)
+	tgRoutes.Routes(router)
+	daberRoutes.Routes(router)
 
 }
 
 func RegisterSwaggerRoute(router *gin.Engine) {
-	// Redirect از ریشه به Swagger
-	router.GET("/", func(c *gin.Context) {
-		c.Redirect(302, "/swagger/index.html")
-	})
+	//router.GET("/", func(c *gin.Context) {
+	//	c.Redirect(302, "/swagger/index.html")
+	//})
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 

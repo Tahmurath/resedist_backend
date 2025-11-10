@@ -15,7 +15,11 @@ func UserSeed() userModels.User {
 		return user
 	}
 
-	user = userModels.User{Name: "uanme", Email: "test@test.com", Password: string(hashPassword)}
+	email := "test@test.com"
+	password := string(hashPassword)
+
+	user = userModels.User{Name: "uanme", Email: &email, Password: &password}
+
 	db.Create(&user) // pass pointer of data to Create
 
 	log.Printf("User created with email: %s", user.Email)

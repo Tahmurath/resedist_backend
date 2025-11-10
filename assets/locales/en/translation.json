@@ -3,6 +3,8 @@
     "home": "Home",
     "admin": "Admin",
     "panel": "Panel",
+    "profile": "Profile",
+    "settings": "Settings",
     "title": "Title",
     "refresh": "Refresh",
     "edit": "Edit",
@@ -11,7 +13,14 @@
     "departments": "Departments",
     "is_active": "Is Active?",
     "typetosearch": "Type to search...",
-    "rows_per_page": "Rows per page"
+    "rows_per_page": "Rows per page",
+    "mode": "Mode",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "mode": "Mode",
+    "language": "Language"
+
   },
   "login": {
     "apple": "Sign in with Apple",

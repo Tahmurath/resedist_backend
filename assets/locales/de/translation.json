@@ -3,6 +3,8 @@
     "home": "Startseite",
     "admin": "Administratorin",
     "panel": "Bedienfeld",
+    "profile": "Profil",
+    "settings": "Einstellungen",
     "title": "Titel",
     "refresh": "Aktualisieren",
     "edit": "Edit",
@@ -11,7 +13,12 @@
     "departments": "Departments",
     "is_active": "Is Active?",
     "typetosearch": "Suchbegriff eingeben...",
-    "rows_per_page": "Zeilen pro Seite"
+    "rows_per_page": "Zeilen pro Seite",
+    "mode": "Modus",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System",
+    "language": "Sprache"
   },
   "login": {
     "apple": "Mit Apple anmelden",
@@ -40,8 +47,8 @@
     "deptype": "Abteilungstyp",
     "deptypes": "Abteilungstypen",
     "parent": "übergeordnete Abteilung",
-    "add_new_dep":"Neue Abteilung hinzufügen",
-    "searchbytitle":"Abteilungstitel...",
-    "departmentslist":"Liste der Abteilungen"
+    "add_new_dep": "Neue Abteilung hinzufügen",
+    "searchbytitle": "Abteilungstitel...",
+    "departmentslist": "Liste der Abteilungen"
   }
 }

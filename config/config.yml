@@ -47,6 +47,11 @@ rest:
   bind_error: "bind_error"
   not_found: "not_found"
 
+telegram:
+  bottoken: "8275723706:AAGbwqB6Bq0lj-0fKulIzDdHVYEz_L3sRCs"
+  TokenExpr: "24h0m0s"
+#  chatid: "-1001943735741"
+
 
 cors:
   AllowOrigins:

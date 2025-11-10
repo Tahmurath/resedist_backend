@@ -1,1 +1,1 @@
-import{j as r}from"./index.js";import{L as o}from"./login-form.js";import"./label.js";import"./index2.js";function n(){return r.jsx(r.Fragment,{children:r.jsx("div",{children:r.jsx(o,{})})})}export{n as default};
+import{j as r}from"./index.js";import{u as n}from"./useTranslation.js";function i(){const{t:e}=n();return r.jsx(r.Fragment,{children:r.jsx("div",{children:r.jsx("div",{children:e("login.welcome_back")})})})}export{i as default};

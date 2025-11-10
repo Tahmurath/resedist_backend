@@ -3,15 +3,16 @@ package config
 import "time"
 
 type Config struct {
-	App    App
-	Server Server
-	DB     DB
-	Rest   Rest
-	Dblog  Dblog
-	Redis  Redis
-	Log    Log
-	Jwt    JWT
-	Cors   CORS
+	App      App
+	Server   Server
+	DB       DB
+	Rest     Rest
+	Telegram Telegram
+	Dblog    Dblog
+	Redis    Redis
+	Log      Log
+	Jwt      JWT
+	Cors     CORS
 }
 
 type App struct {
@@ -44,6 +45,11 @@ type Rest struct {
 	Failed        string
 	Bind_error    string
 	Not_found     string
+}
+
+type Telegram struct {
+	BotToken  string
+	TokenExpr time.Duration
 }
 
 type Dblog struct {

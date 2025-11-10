@@ -1,2 +1,2 @@
 [build]
-    exclude_dir = ["front","tmp"]
+    exclude_dir = ["front","tmp","assets"]
