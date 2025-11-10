@@ -31,12 +31,12 @@ func (RoomService *RoomService) CreateRoomTemplate(request RoomRequest.RoomTempl
 	room.CreatorID = int64(user.ID)
 	room.EntryFee = request.EntryFee
 	room.GameStyle = request.GameStyle
-	room.IsPublic = *request.IsPublic
 	room.MaxPlayers = request.MaxPlayers
 	room.MinPlayers = request.MinPlayers
 	room.Timeout = request.Timeout
 	room.Title = request.Title
-	room.IsActive = true
+	room.IsPublic = *request.IsPublic
+	room.IsActive = *request.IsActive
 	room.IsSystem = false
 
 	newRoom := RoomService.roomRepository.CreateTemplate(room)

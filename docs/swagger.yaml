@@ -248,6 +248,9 @@ paths:
         required: true
         type: string
       - in: query
+        name: is_active
+        type: boolean
+      - in: query
         name: is_public
         required: true
         type: boolean

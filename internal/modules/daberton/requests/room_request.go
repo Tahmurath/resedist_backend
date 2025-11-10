@@ -8,6 +8,7 @@ type RoomTemplateRequest struct {
 	Timeout    int     `form:"timeout" json:"timeout" binding:"required,gt=0"`
 	GameStyle  string  `form:"game_style" json:"game_style" binding:"required,oneof=tombola Bingo 90-ball azerbaijan russia iran iraq classic modern daberton"`
 	IsPublic   *bool   `form:"is_public" json:"is_public" binding:"required"`
+	IsActive   *bool   `form:"is_active" json:"is_active"`
 }
 
 type CreateRoomInstanceRequest struct {

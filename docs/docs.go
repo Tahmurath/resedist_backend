@@ -154,6 +154,11 @@ const docTemplate = `{
                     },
                     {
                         "type": "boolean",
+                        "name": "is_active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
                         "name": "is_public",
                         "in": "query",
                         "required": true
