@@ -1,20 +1,17 @@
 package middlewares
 
 import (
-	"fmt"
+	"github.com/gin-gonic/gin"
+	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 	"resedist/pkg/config"
 	"strings"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	initdata "github.com/telegram-mini-apps/init-data-golang"
 )
 
 func TgAuthMiddleware() gin.HandlerFunc {
 
 	botToken := config.Get().Telegram.BotToken
-	expIn := 24 * time.Hour
+	expIn := config.Get().Telegram.TokenExpr
 
 	return func(c *gin.Context) {
 		initDataStr := c.GetHeader("Authorization")
@@ -27,7 +24,6 @@ func TgAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// پارس initData
 		initData, err := initdata.Parse(initDataStr)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid initData format"})
@@ -35,25 +31,15 @@ func TgAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println(initData)
-
-		//initdata.Validate(initDataStr, botToken, expIn)
-		// اعتبارسنجی
 		if err := initdata.Validate(initDataStr, botToken, expIn); err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid initData: " + err.Error()})
 			c.Abort()
 			return
 		}
 
-		// اگر معتبر باشه، اطلاعات کاربر رو به context اضافه کنید
-		c.Set("user_id", initData.User.ID)
-		c.Set("username", initData.User.Username)
-
-		//user_id, _ := c.Get("user_id")
-		//username, _ := c.Get("user_id")
-		//
-		//fmt.Println("Authenticated user_id:", user_id)
-		//fmt.Println("Authenticated username:", username)
+		c.Set("tg_user_id", initData.User.ID)
+		c.Set("tg_user_name", initData.User.Username)
+		c.Set("tg_user", initData)
 		c.Next()
 	}
 }

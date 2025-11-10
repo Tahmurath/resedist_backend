@@ -48,7 +48,8 @@ type Rest struct {
 }
 
 type Telegram struct {
-	BotToken string
+	BotToken  string
+	TokenExpr time.Duration
 }
 
 type Dblog struct {
