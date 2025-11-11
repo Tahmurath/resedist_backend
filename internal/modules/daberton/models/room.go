@@ -14,10 +14,10 @@ type RoomTemplate struct {
 	MaxPlayers int     `gorm:"not null" json:"max_players"`
 	Timeout    int     `gorm:"not null" json:"timeout"`
 	GameStyle  string  `gorm:"type:enum('tombola','Bingo','90-ball','azerbaijan','russia','iran','iraq','classic','modern','daberton');default:'classic'" json:"game_style"`
-	IsPublic   bool    `gorm:"default:true;not null" json:"is_public"`
+	IsPublic   bool    `gorm:"default:false;not null" json:"is_public"`
 	CreatorID  int64   `gorm:"not null" json:"creator_id"`
 	IsSystem   bool    `gorm:"default:false;not null" json:"is_system"`
-	IsActive   bool    `gorm:"default:true;not null" json:"is_active"`
+	IsActive   bool    `gorm:"default:false;not null" json:"is_active"`
 
 	Creator userModels.User `gorm:"foreignKey:CreatorID" json:"creator,omitempty"`
 }

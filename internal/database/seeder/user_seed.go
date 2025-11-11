@@ -10,12 +10,12 @@ func UserSeed() userModels.User {
 
 	var user userModels.User
 
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte("password"), 12)
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte("hooman@test.com"), 12)
 	if err != nil {
 		return user
 	}
 
-	email := "test@test.com"
+	email := "hooman@test.com"
 	password := string(hashPassword)
 
 	user = userModels.User{Name: "uanme", Email: &email, Password: &password}

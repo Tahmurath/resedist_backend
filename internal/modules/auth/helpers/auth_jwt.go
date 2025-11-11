@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	UserResponse "resedist/internal/modules/user/responses"
+	UserService "resedist/internal/modules/user/services"
 	"resedist/pkg/applog"
 	"resedist/pkg/config"
 	"strings"
@@ -71,6 +72,9 @@ func getUserFromContext(c *gin.Context) (UserResponse.User, bool) {
 
 func AuthJWT(c *gin.Context) UserResponse.User {
 	// Try to get user from context
+
+	var response UserResponse.User
+
 	if user, found := getUserFromContext(c); found {
 		applog.Info("return user from context")
 		return user
@@ -88,13 +92,23 @@ func AuthJWT(c *gin.Context) UserResponse.User {
 	}
 	if tokenString == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization token missing"})
-		return UserResponse.User{}
+		return response
 	}
 
 	user, err := getUserByToken(tokenString)
 	if err != nil || user.ID == 0 {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		return UserResponse.User{}
+		return response
+	}
+
+	userService := UserService.New()
+	foundUser, err := userService.GetCachedUserById(int(user.ID))
+	if err != nil {
+		return response
+	}
+
+	if foundUser.ID == 0 {
+		return response
 	}
 
 	// Store the user in the context
