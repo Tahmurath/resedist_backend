@@ -107,7 +107,189 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/daberton/admin/roomtemplate": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns room template json (requires JWT)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AdminRoomTemplate"
+                ],
+                "summary": "Create room template by admin",
+                "operationId": "admin-create-room-template",
+                "parameters": [
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "name": "entry_fee",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "tombola",
+                            "Bingo",
+                            "90-ball",
+                            "azerbaijan",
+                            "russia",
+                            "iran",
+                            "iraq",
+                            "classic",
+                            "modern",
+                            "daberton"
+                        ],
+                        "type": "string",
+                        "name": "game_style",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_public",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "max_players",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 2,
+                        "type": "integer",
+                        "name": "min_players",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "timeout",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RoomTemplate"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/daberton/roomtemplate": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns a list of room templates",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roomTemplate"
+                ],
+                "summary": "Get room templates",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "creator_id",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "number",
+                        "name": "entry_fee",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "expand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "GameStyle string  ` + "`" + `form:\"game_style\" json:\"game_style\" binding:\"oneof=tombola Bingo 90-ball azerbaijan russia iran iraq classic modern daberton\"` + "`" + `",
+                        "name": "game_style",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_public",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "is_system",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Response object",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RoomTemplates"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1043,6 +1225,17 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "responses.RoomTemplates": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.RoomTemplate"
+                    }
                 }
             }
         },

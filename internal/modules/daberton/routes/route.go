@@ -17,6 +17,7 @@ func Routes(router *gin.Engine) {
 	roomGroup.Use(middlewares.IsAuthJwt())
 	{
 		roomGroup.POST("/roomtemplate", roomController.CreateRoomTemplate)
+		roomGroup.GET("/roomtemplate", roomController.AdminSearchRoomTemplate)
 
 		// authGroup.GET("/department-type", DepartmentTypeController.Search)
 

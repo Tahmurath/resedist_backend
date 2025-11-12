@@ -147,6 +147,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  responses.RoomTemplates:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/responses.RoomTemplate'
+        type: array
+    type: object
   responses.User:
     properties:
       email:
@@ -220,7 +227,126 @@ paths:
       summary: Refresh access token
       tags:
       - auth
+  /api/v1/daberton/admin/roomtemplate:
+    post:
+      consumes:
+      - application/json
+      description: Returns room template json (requires JWT)
+      operationId: admin-create-room-template
+      parameters:
+      - in: query
+        minimum: 0
+        name: entry_fee
+        required: true
+        type: number
+      - enum:
+        - tombola
+        - Bingo
+        - 90-ball
+        - azerbaijan
+        - russia
+        - iran
+        - iraq
+        - classic
+        - modern
+        - daberton
+        in: query
+        name: game_style
+        required: true
+        type: string
+      - in: query
+        name: is_active
+        type: boolean
+      - in: query
+        name: is_public
+        required: true
+        type: boolean
+      - in: query
+        name: max_players
+        required: true
+        type: integer
+      - in: query
+        minimum: 2
+        name: min_players
+        required: true
+        type: integer
+      - in: query
+        name: timeout
+        required: true
+        type: integer
+      - in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.RoomTemplate'
+      security:
+      - BearerAuth: []
+      summary: Create room template by admin
+      tags:
+      - AdminRoomTemplate
   /api/v1/daberton/roomtemplate:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of room templates
+      parameters:
+      - in: query
+        name: creator_id
+        type: integer
+      - in: query
+        minimum: 0
+        name: entry_fee
+        type: number
+      - in: query
+        name: expand
+        type: boolean
+      - description: GameStyle string  `form:"game_style" json:"game_style" binding:"oneof=tombola
+          Bingo 90-ball azerbaijan russia iran iraq classic modern daberton"`
+        in: query
+        name: game_style
+        type: string
+      - in: query
+        name: is_active
+        type: boolean
+      - in: query
+        name: is_public
+        type: boolean
+      - in: query
+        name: is_system
+        type: boolean
+      - in: query
+        name: order
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - in: query
+        name: sort
+        type: string
+      - in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response object
+          schema:
+            $ref: '#/definitions/responses.RoomTemplates'
+      security:
+      - BearerAuth: []
+      summary: Get room templates
+      tags:
+      - roomTemplate
     post:
       consumes:
       - application/json

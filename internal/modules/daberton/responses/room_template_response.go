@@ -44,7 +44,7 @@ func ToRoomTemplate(roomTemplate roomModels.RoomTemplate) RoomTemplate {
 	}
 }
 
-func ToRoomTemplates(roomTemplates []roomModels.RoomTemplate) RoomTemplates {
+func ToRoomTemplates(roomTemplates []roomModels.RoomTemplate, expand bool) RoomTemplates {
 	var responseRoomTemplates []RoomTemplate
 
 	for _, roomTemplate := range roomTemplates {
