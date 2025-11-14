@@ -1187,12 +1187,6 @@ const docTemplate = `{
         "responses.RoomTemplate": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "creator": {
-                    "$ref": "#/definitions/responses.User"
-                },
                 "entry_fee": {
                     "type": "number"
                 },
@@ -1222,9 +1216,6 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
                 }
             }
         },
@@ -1236,23 +1227,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/responses.RoomTemplate"
                     }
-                }
-            }
-        },
-        "responses.User": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
                 }
             }
         }

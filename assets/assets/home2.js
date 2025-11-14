@@ -1,1 +1,1 @@
-import{j as e}from"./index.js";function n(){return e.jsx(e.Fragment,{children:e.jsx("div",{children:"Welcome Home"})})}export{n as default};
+import{j as e,N as t}from"./index.js";function n(){return e.jsx(e.Fragment,{children:e.jsxs("div",{children:["Welcome Home",e.jsx("br",{}),e.jsx(t,{to:"/tg/miniapp/in/roomtemplates",children:"roomtemplates"})]})})}export{n as default};

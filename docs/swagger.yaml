@@ -120,10 +120,6 @@ definitions:
     type: object
   responses.RoomTemplate:
     properties:
-      created_at:
-        type: string
-      creator:
-        $ref: '#/definitions/responses.User'
       entry_fee:
         type: number
       game_style:
@@ -144,8 +140,6 @@ definitions:
         type: integer
       title:
         type: string
-      updated_at:
-        type: string
     type: object
   responses.RoomTemplates:
     properties:
@@ -153,17 +147,6 @@ definitions:
         items:
           $ref: '#/definitions/responses.RoomTemplate'
         type: array
-    type: object
-  responses.User:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      name:
-        type: string
     type: object
 info:
   contact: {}
